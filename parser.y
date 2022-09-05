@@ -1,7 +1,7 @@
 %{
     #include <stdio.h>
-
-
+    int yylex(void);
+    void yyerror(char *); 
 
 %}
 
@@ -14,3 +14,15 @@
 
 
 %%
+
+void yyerror(char *s) 
+{
+    fprintf(stderr, "%s\n", s);
+} 
+
+
+int main()
+{
+    yyparse();
+    return 0;
+}
