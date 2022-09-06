@@ -1,5 +1,5 @@
 D			[0-9]
-L			[a-zA-Z]
+L			[a-zA-Z_]
 H			[a-fA-F0-9]
 E			[Ee][+-]?{D}+
 DS			(d|D)
@@ -7,15 +7,16 @@ IS			(i|I)*
 
 %{
 #include <stdio.h>
+#include "parser.tab.h"
 
 void count();
 %}
 
 %%
-("/*"|"#n"|"#n" "/*" )	{ Enumerated Comments }
 
-"declare"		{ count(); return(DECLARE); }
-"receive"		{ count(); return(RECEIVE); }
+
+"declare"		    { count(); return(DECLARE); }
+"receive"		    { count(); return(RECEIVE); }
 "if"			{ count(); return(IF); }
 "else"			{ count(); return(ELSE); }
 "break"			{ count(); return(BREAK); }
@@ -28,8 +29,8 @@ void count();
 "int_64"		{ count(); return(INT_64); }
 "double_128"		{ count(); return(DOUBLE_128); }
 
-"#Tex"			{ count(); return(#TEX); }
-
+"TeX"           { count(); return(TEX); }
+{L}({L}|{D})*   
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
 "[{"			{ count(); return(SF_OPEN); }
@@ -66,16 +67,15 @@ static int no_of_characters=0;
 void count()
 {
     no_of_characters++;
-
+    printf("%d", no_of_characters);
 }
 int yywrap(void)
 {
     return 1;
 }
 
-int main()
-{
-    yylex();
-    return 0;
-    
-}
+// int main()
+// {
+//     yylex();
+//     return 0;
+// }
