@@ -33,7 +33,7 @@ void count();
 "void"			{ count(); return(VOID); }
 
 "TeX{"([^"}"])*"}"      {count(); return(TEX);}
-{L}({L}|{D})*   { count();printf("ID\n"); /*return(ID);   */}
+{L}({L}|{D})*   { count(); return(ID);   }
 
 
 "[:"			{ count(); return(TEX_OPEN); }
