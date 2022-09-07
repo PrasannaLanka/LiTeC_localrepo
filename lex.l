@@ -12,7 +12,7 @@ void count();
 
 %%
 
-"TeX{"([^"}"])*"}"      {count(); return(TEX);}
+"TeX{"([^"}"])*"}"      { count(); return(TEX); }
 "/*"			{ standard_comment(); }
 "!"		       	{ enumerated_comment(); }
 
@@ -21,7 +21,7 @@ void count();
 "char_8"		{ count(); return(CHAR_8); }
 "continue"		{ count(); return(CONTINUE); }
 "declare"		{ count(); return(DECLARE); }
-"double_128"	{ count(); return(DOUBLE_128); }
+"double_128"		{ count(); return(DOUBLE_128); }
 "else"			{ count(); return(ELSE); }
 "if"			{ count(); return(IF); }
 "int_64"		{ count(); return(INT_64); }
@@ -30,7 +30,7 @@ void count();
 "return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
 
-{L}({L}|{D})*   { count(); return(ID);   }
+{L}({L}|{D})*  		{ count(); return(ID); }
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
