@@ -1,7 +1,7 @@
 %{
     #include <stdio.h>
-
-
+    int yylex(void);
+    void yyerror(char *);
 
 %}
 
@@ -10,7 +10,22 @@
 %token #TEX TEX_OPEN TEX_CLOSE SF_OPEN SF_CLOSE MS_OPEN MS_CLOSE
 
 %%
-
-
+operator
+    : '+'
+    | '-'
+    | '*'
+    | '/'
+    ;
 
 %%
+
+void yyerror(char *s)
+{
+    fprintf(stderr, "%s\n",s);
+}
+
+int main()
+{
+    yyparse();
+    return 0;
+}
