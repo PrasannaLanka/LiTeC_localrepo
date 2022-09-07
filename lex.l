@@ -1,9 +1,7 @@
-D			[0-9]
-L			[a-zA-Z]
-H			[a-fA-F0-9]
-E			[Ee][+-]?{D}+
-DS			(d|D)
-IS			(i|I)*
+D		     	[0-9]
+L		     	[a-zA-Z]
+H		     	[a-fA-F0-9]
+E		     	[Ee][+-]?{D}+
 
 %{
 #include <stdio.h>
@@ -14,16 +12,16 @@ void count();
 
 %%
 
-
+"TeX{"([^"}"])*"}"      {count(); return(TEX);}
 "/*"			{ standard_comment(); }
-"!"			{ enumerated_comment(); }
+"!"		       	{ enumerated_comment(); }
 
 "bool_1"		{ count(); return(BOOL_1); }
 "break"			{ count(); return(BREAK); }
 "char_8"		{ count(); return(CHAR_8); }
 "continue"		{ count(); return(CONTINUE); }
 "declare"		{ count(); return(DECLARE); }
-"double_128"		{ count(); return(DOUBLE_128); }
+"double_128"	{ count(); return(DOUBLE_128); }
 "else"			{ count(); return(ELSE); }
 "if"			{ count(); return(IF); }
 "int_64"		{ count(); return(INT_64); }
@@ -32,9 +30,7 @@ void count();
 "return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
 
-"TeX{"([^"}"])*"}"      {count(); return(TEX);}
 {L}({L}|{D})*   { count(); return(ID);   }
-
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
@@ -42,28 +38,33 @@ void count();
 "}]"			{ count(); return(SUBFILE_CLOSE); }
 "[("			{ count(); return(MAINSECTION_OPEN); }
 ")]"			{ count(); return(MAINSECTION_CLOSE); }
-"+"			{ count(); return('+'); }
-"-"			{ count(); return('-'); }
-"*"			{ count(); return('*'); }
-"/"			{ count(); return('/'); }
-"%"			{ count(); return('%'); }
-"="			{ count(); return('='); }
-"<"			{ count(); return('<'); }
-">"			{ count(); return('>'); }
-"^"			{ count(); return('^'); }
-"|"			{ count(); return('|'); }
-"~"			{ count(); return('~'); }
-":"			{ count(); return(':'); }
-"&"			{ count(); return('&'); }
-"{"			{ count(); return('{'); }
-"}"			{ count(); return('}'); }
-"("			{ count(); return('('); }
-")"			{ count(); return(')'); }
-"["			{ count(); return('['); }
-"]"			{ count(); return(']'); }
-"."			{ count(); return('.'); }
-","			{ count(); return(','); }
-";"			{ count(); return(';'); }
+
+"+"		       	{ count(); return('+'); }
+"-"		       	{ count(); return('-'); }
+"*"		       	{ count(); return('*'); }
+"/"		       	{ count(); return('/'); }
+"%"		       	{ count(); return('%'); }
+
+"="		       	{ count(); return('='); }
+"<"		       	{ count(); return('<'); }
+">"		       	{ count(); return('>'); }
+"^"		       	{ count(); return('^'); }
+"|"		       	{ count(); return('|'); }
+"~"		       	{ count(); return('~'); }
+":"		       	{ count(); return(':'); }
+
+"&"		       	{ count(); return('&'); }
+
+"{"		       	{ count(); return('{'); }
+"}"		       	{ count(); return('}'); }
+"("		       	{ count(); return('('); }
+")"		       	{ count(); return(')'); }
+"["		       	{ count(); return('['); }
+"]"		       	{ count(); return(']'); }
+
+"."		       	{ count(); return('.'); }
+","		       	{ count(); return(','); }
+";"		       	{ count(); return(';'); }
 
 [ \t\n]			{ count(); }
 .
@@ -93,43 +94,30 @@ loop:
 		putchar(b);
 }
 
-int num = 1;
-int pair = 0;
-void enumerated_comment()
+int k=1; 
+int a=0; 
+void enumeratred_comment()
 {
-	char a;
-	int temp = 0;
+    char a;
+	int input_number = 0;
 	
 	while((int)(a = input()) <= 57 && (int)a >= 48)
 	{
 		putchar(a);
-		temp = temp*10;
-		temp += (int)a - 48;
+		input_number = temp*10;
+		input_number += (int)a - 48;
 	}
-	
-	if(temp == num)
-	{
-		if(pair == 0)
-		{
-			pair = 1;
-		}
-		else
-		{
-			pair = 0;
-			if((a = input()) == " ")
-			{
-				putchar(a);
-				if((a = input()) == "/")
-				{
-					putchar(a);
-					if((a = input() == "*")
-					{
-						putchar(a);
-						standard_comment():
-					}
-				}
-			}
-			num++;
-		}
-	}
+    if(a=0)
+        {
+        if(input_number != k)
+            { printf("Inaccurate comment numbering error"); }
+        a=1;
+        }
+    else
+        {
+        if(input_number != k)
+           { printf("Inaccurate comment numbering error"); }
+        a=0;
+        k++;
+        }
 }
