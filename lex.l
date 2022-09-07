@@ -15,7 +15,7 @@ void count();
 %%
 
 “Tex”			{ count(); }
-“/*"			{ standard_comment(); }
+“/*"			{ comment(); }
 
 “declare”		{ count(); return(DECLARE); }
 “if”			{ count(); return(IF); }
@@ -68,10 +68,21 @@ int yywrap(void)
 	return 1;
 }
 
-declare int_64 n : 1;
-declare bool_1 b : 0;
-enumerated_comment()
+void comment()
 {
+	char a, b;
 	
+loop:
+	while((a = input()) != '*' && a != 0)
+		putchar(a);
+	
+	if((b = input()) != '/' && b != 0)
+	{
+		unput(b);
+		goto loop;
+	}
+	
+	if(a != 0)
+		putchar(b);
 }
 
