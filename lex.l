@@ -114,10 +114,13 @@ void enumerated_comment()
 			pair = 0;
 			if((a = input()) == " ")
 			{
+				putchar(a);
 				if((a = input()) == "/")
 				{
+					putchar(a);
 					if((a = input() == "*")
 					{
+						putchar(a);
 						standard_comment():
 					}
 				}
