@@ -25,6 +25,8 @@ void count();
 “invariant”		{ count(); return(INVARIANT); }
 “loop”			{ count(); return(LOOP); }
 “return”		{ count(); return(RETURN); }
+"void"			{ count(); return(VOID); }
+
 
 “bool_1”		{ count(); return(BOOL_1); }
 “char_8”		{ count(); return(CHAR_8); }
