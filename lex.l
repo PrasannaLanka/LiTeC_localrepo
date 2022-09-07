@@ -1,17 +1,20 @@
 D			[0-9]
 L			[a-zA-Z]
 H			[a-fA-F0-9]
+E			[Ee][+-]?{D}+
+DS			(d|D)
+IS			(i|I)*
 
 %{
-receive StandardLibrary;
-receive yTabH;
-count();
+#include <stdio.h>
+#include "parser.tab.h"
+
+void count();
 %}
 
 %%
 
-“#Tex”			{ count(); }
-”#” 			{ enumerated_comment(); }
+“Tex”			{ count(); }
 “/*"			{ standard_comment(); }
 
 “declare”		{ count(); return(DECLARE); }
@@ -56,43 +59,13 @@ count();
 “.”			{ count(); return('.'); }
 “,”			{ count(); return(','); }
 “;”			{ count(); return(';'); }
+
 [ \t\n]			{ count(); }
 .
 
-declare YWrap()
+int yywrap(void)
 {
 	return 1;
-}
-
-declare int_64 col : 0;
-declare count()
-{
-	declare int_64 i : 0;
-	for (i : 0; (~ YText[i] '\0'); (+ i 1))
-		if (= YTtext[i] '\n')
-			{ col : 0; }
-		else if (~ YText[i] '\t')
-			{ col : (+ col (- 8 (% col 8))); }
-		else
-			{ (+ col 1); }
-	ECHO;
-}
-
-standard_comment()
-{
-	declare char_8 c1;
-	declare char_8 c2;
-L:
-{ 	loop (; (~ (c1 = input()) ‘*') ^ (~ c1 0); )
-		{ putchar(c1); }
-
-	if ((~ (c2 = input()) ‘/') ^ (! c2 0))
-	{
-		unput(c1);
-		goto L;
-	}
-	if (~ c 0)
-		{ putchar(c1); }
 }
 
 declare int_64 n : 1;
@@ -101,3 +74,4 @@ enumerated_comment()
 {
 	
 }
+
