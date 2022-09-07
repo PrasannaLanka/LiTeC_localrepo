@@ -65,22 +65,8 @@ void count();
 "?"			{ count(); return('?'); }
 
 %%
-static int no_of_characters=0;
-void count()
-{
-    no_of_characters++;
-    printf("%d", no_of_characters);
-}
+
 int yywrap(void)
 {
     return 1;
 }
-
-/* int main()
-{
-    
-    yylex();
-    fclose(yyin);
-    return 0;
- }
- */
