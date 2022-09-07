@@ -14,31 +14,30 @@ void count();
 
 %%
 
-“Tex”			{ count(); }
-“/*"			{ standard_comment(); }
+"Tex"			{ count(); }
+"/*"			{ standard_comment(); }
 "!"			{ enumerated_comment(); }
 
-“declare”		{ count(); return(DECLARE); }
-“if”			{ count(); return(IF); }
-“else”			{ count(); return(ELSE); }
-“break”			{ count(); return(BREAK); }
-“continue”		{ count(); return(CONTINUE); }
-“invariant”		{ count(); return(INVARIANT); }
-“loop”			{ count(); return(LOOP); }
-“return”		{ count(); return(RETURN); }
+"bool_1"		{ count(); return(BOOL_1); }
+"break"			{ count(); return(BREAK); }
+"char_8"		{ count(); return(CHAR_8); }
+"continue"		{ count(); return(CONTINUE); }
+"declare"		{ count(); return(DECLARE); }
+"double_128"		{ count(); return(DOUBLE_128); }
+"else"			{ count(); return(ELSE); }
+"if"			{ count(); return(IF); }
+"int_64"		{ count(); return(INT_64); }
+"invariant"		{ count(); return(INVARIANT); }
+"loop"			{ count(); return(LOOP); }
+"return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
 
-“bool_1”		{ count(); return(BOOL_1); }
-“char_8”		{ count(); return(CHAR_8); }
-“int_64”		{ count(); return(INT_64); }
-“double_128”		{ count(); return(DOUBLE_128); }
-
-“[:”			{ count(); return(TEX_OPEN); }
-“:]”			{ count(); return(TEX_CLOSE); }
-“[{“			{ count(); return(SUBFILE_OPEN); }
-“}]”			{ count(); return(SUBFILE_CLOSE); }
-“[(“			{ count(); return(MAINSECTION_OPEN); }
-“)]”			{ count(); return(MAINSECTION_CLOSE); }
+"[:"			{ count(); return(TEX_OPEN); }
+":]"			{ count(); return(TEX_CLOSE); }
+"[{"			{ count(); return(SUBFILE_OPEN); }
+"}]"			{ count(); return(SUBFILE_CLOSE); }
+"[("			{ count(); return(MAINSECTION_OPEN); }
+")]"			{ count(); return(MAINSECTION_CLOSE); }
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
 "*"			{ count(); return('*'); }
@@ -52,15 +51,15 @@ void count();
 "~"			{ count(); return('~'); }
 ":"			{ count(); return(':'); }
 "&"			{ count(); return('&'); }
-“{“			{ count(); return('{'); }
-“}”			{ count(); return('}'); }
-“(“			{ count(); return('('); }
-“)”			{ count(); return(')'); }
-“[“			{ count(); return('['); }
-“]”			{ count(); return(']'); }
-“.”			{ count(); return('.'); }
-“,”			{ count(); return(','); }
-“;”			{ count(); return(';'); }
+"{"			{ count(); return('{'); }
+"}"			{ count(); return('}'); }
+"("			{ count(); return('('); }
+")"			{ count(); return(')'); }
+"["			{ count(); return('['); }
+"]"			{ count(); return(']'); }
+"."			{ count(); return('.'); }
+","			{ count(); return(','); }
+";"			{ count(); return(';'); }
 
 [ \t\n]			{ count(); }
 .
