@@ -15,7 +15,8 @@ void count();
 %%
 
 “Tex”			{ count(); }
-“/*"			{ comment(); }
+“/*"			{ standard_comment(); }
+"!"			{ enumerated_comment(); }
 
 “declare”		{ count(); return(DECLARE); }
 “if”			{ count(); return(IF); }
@@ -26,7 +27,6 @@ void count();
 “loop”			{ count(); return(LOOP); }
 “return”		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
-
 
 “bool_1”		{ count(); return(BOOL_1); }
 “char_8”		{ count(); return(CHAR_8); }
@@ -65,12 +65,14 @@ void count();
 [ \t\n]			{ count(); }
 .
 
+%%
+
 int yywrap(void)
 {
 	return 1;
 }
 
-void comment()
+void standard_comment()
 {
 	char a, b;
 	
@@ -88,3 +90,40 @@ loop:
 		putchar(b);
 }
 
+int num = 1;
+int pair = 0;
+void enumerated_comment()
+{
+	char a;
+	int temp = 0;
+	
+	while((int)(a = input()) <= 57 && (int)a >= 48)
+	{
+		putchar(a);
+		temp = temp*10;
+		temp += (int)a - 48;
+	}
+	
+	if(temp == num)
+	{
+		if(pair == 0)
+		{
+			pair = 1;
+		}
+		else
+		{
+			pair = 0;
+			if((a = input()) == " ")
+			{
+				if((a = input()) == "/")
+				{
+					if((a = input() == "*")
+					{
+						standard_comment():
+					}
+				}
+			}
+			num++;
+		}
+	}
+}
