@@ -14,7 +14,7 @@ void count();
 
 %%
 
-"Tex"			{ count(); }
+
 "/*"			{ standard_comment(); }
 "!"			{ enumerated_comment(); }
 
@@ -31,6 +31,10 @@ void count();
 "loop"			{ count(); return(LOOP); }
 "return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
+
+"TeX{"([^"}"])*"}"      {count(); return(TEX);}
+{L}({L}|{D})*   { count();printf("ID\n"); /*return(ID);   */}
+
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
