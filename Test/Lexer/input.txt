@@ -1,0 +1,6 @@
+int_64 main () 
+{
+	declare int_64 x = 10 ;
+	TeX{Latex programming }
+	return 0;
+}
