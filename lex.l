@@ -31,6 +31,7 @@ void count();
 "void"			{ count(); return(VOID); }
 
 {L}({L}|{D})*  		{ count(); return(ID); }
+{D}+			{ count(); return(CONSTANT); }
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
