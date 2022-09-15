@@ -30,8 +30,10 @@ void count();
 "return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
 
-{L}({L}|{D})*  		{ count(); return(ID); }
+{L}({L}|{D})*  		{ count(); return(IDENTIFIER); }
 {D}+			{ count(); return(CONSTANT); }
+
+L?\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
