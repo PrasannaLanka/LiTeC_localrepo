@@ -1,0 +1,20 @@
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<h1>404 Not Found</h1>
+<ul>
+<li>Code: NoSuchKey</li>
+<li>Message: The specified key does not exist.</li>
+<li>Key: [object Blob]</li>
+<li>RequestId: Q0EQH6NZGT2VNE4Z</li>
+<li>HostId: ESJykuq/OM02/UmG3kXdJL4JSkEXTIFQnR1Krz3QlkInykrNF8J8vCJZp1Ka0t5T8fh5sDUzZVA=</li>
+</ul>
+<h3>An Error Occurred While Attempting to Retrieve a Custom Error Document</h3>
+<ul>
+<li>Code: NoSuchKey</li>
+<li>Message: The specified key does not exist.</li>
+<li>Key: error.html</li>
+</ul>
+<hr/>
+</body>
+</html>
