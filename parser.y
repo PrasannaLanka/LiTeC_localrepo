@@ -162,3 +162,58 @@ logical_expression
    | expression logical_operator expression
    ;
 
+binary_operator
+   : '+'
+   | '-'
+   | '*'
+   | '/'
+   | '%'
+   | '<'
+   | '>'
+   | '='
+   ;
+ 
+logical_operator
+   : '<'
+   | '>'
+   | '='
+   ;
+ 
+ 
+type_specifier
+   : CHAR
+   | INT
+   | DOUBLE
+   | BOOL
+   | STRUCT
+   ;
+ 
+primary_expression
+   : CONSTANT
+   | ID
+   | STRING_LITERAL
+   ;
+%%
+ 
+void yyerror(char *s)
+{
+   fprintf(stderr, "%s\n", s);
+   return ;
+} 
+ 
+ 
+int main(void)
+{
+   yyin= fopen("input.ltc","r");
+   if (yyparse())
+   {
+       printf("\n Syntax error Parsing error \n");
+   }
+   else
+   {
+       printf("\n parsing completed \n");
+   }
+   fclose(yyin);
+   return 0;
+}
+ 
