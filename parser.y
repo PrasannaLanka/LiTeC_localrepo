@@ -122,4 +122,43 @@ assignment_expression
    | ID ':' postfix_expression
    ;
 
+init_declarator_list
+   : init_declarator
+   ;
+ 
+init_declarator
+   : declarator
+   | declarator ':' primary_expression
+   | declarator ':' postfix_expression
+   ;
+ 
+declarator
+   : ID
+   | ID '('')'
+   | ID '(' parameter_type_list ')'
+   | ID '(' parameter_list ')'
+   ;
+ 
+ 
+parameter_type_list
+   : type_specifier ID
+   | parameter_type_list ',' type_specifier ID
+   ;
+ 
+parameter_list
+   : ID
+   | parameter_list ',' ID
+   ;
+ 
+postfix_expression
+   : '(' binary_operator primary_expression primary_expression  ')'
+   | '(' binary_operator primary_expression postfix_expression  ')'
+   | '(' binary_operator postfix_expression primary_expression  ')'
+   | '(' binary_operator postfix_expression postfix_expression  ')'
+   ;
+ 
+logical_expression
+   : primary_expression
+   | expression logical_operator expression
+   ;
 
