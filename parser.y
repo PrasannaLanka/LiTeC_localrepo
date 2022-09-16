@@ -34,6 +34,29 @@ external_declaration
    | function_definition
    ;
 
+function_definition
+   :DECLARE declaration_specifiers declarator compound_statement
+ 
+compound_statement
+   : '{''}'
+   |  '{' compound_statement_content '}'
+   ;
+ 
+compound_statement_content
+   : declaration
+   | statement
+   | compound_statement_content declaration
+   | compound_statement_content statement
+   ;
+ 
+statement
+   : compound_statement
+   | expression_statement
+   | selection_statement
+   | iteration_statement
+   | jump_statement
+   | tex_statement
+   ;
 
 
 
