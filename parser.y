@@ -58,5 +58,35 @@ statement
    | tex_statement
    ;
 
+tex_statement
+   : TEX '{' tex_data '}'
+   ;
+ 
+tex_data
+   : STRING_LITERAL
+   | tex_function
+   | tex_data STRING_LITERAL
+   | tex_data tex_function
+   ;
+ 
+tex_function
+   : TEX_OPEN declarator TEX_CLOSE
+   ;
+ 
+ 
+ 
+declaration
+   :DECLARE  declaration_specifiers init_declarator_list ';'
+   |DECLARE  INVARIANT declaration_specifiers init_declarator_list ';'
+   |DECLARE  STRUCT '{'  declaration DECLARE  declaration_specifiers init_declarator_list ';'  '}' ';'
+   |DECLARE  STRUCT '{'  declaration DECLARE  INVARIANT declaration_specifiers init_declarator_list ';'  '}' ';'
+   ;
+ 
+ 
+ 
+declaration_specifiers
+   : type_specifier
+   ;
+
 
 
