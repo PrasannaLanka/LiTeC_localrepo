@@ -28,11 +28,15 @@ void count();
 "invariant"		{ count(); return(INVARIANT); }
 "loop"			{ count();return(LOOP); }
 "return"		{ count(); return(RETURN); }
+
 "bool"		{ count(); return(BOOL); }
 "char"		{ count(); return(CHAR); }
 "int"		{ count(); return(INT);  }
 "double"		{ count(); return(DOUBLE); }
 "struct"		{ count(); return(STRUCT); }
+
+"void"			{ count(); return(VOID); }
+
 
 "TeX"           { count(); return(TEX); }
 "[:"			{ count(); return(TEX_OPEN); }
