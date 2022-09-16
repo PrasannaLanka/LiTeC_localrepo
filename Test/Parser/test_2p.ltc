@@ -1,9 +1,11 @@
 [(
-    int_32 main()
+    Main
+    [{
+        declare int x : 17;
+    }]
+    int main()
     {
-        declare int_32 x : 17;
-        
-        loop(int_32 i : 0; i < 10; i : ( + i 1 ))
+        loop(declare int i : 0; i < 10; i : ( + i 1 ))
         {
             x : ( + x ( % x 10 ) );
         }
