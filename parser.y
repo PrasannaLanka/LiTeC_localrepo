@@ -105,5 +105,21 @@ jump_statement
   | RETURN expression ';'
   ;
  
+expression_statement
+   : ';'
+   |  expression ';'
+   ;
+ 
+ 
+expression
+   : assignment_expression
+   | primary_expression
+   | postfix_expression
+   ;
+ 
+assignment_expression
+   : ID ':' primary_expression
+   | ID ':' postfix_expression
+   ;
 
 
