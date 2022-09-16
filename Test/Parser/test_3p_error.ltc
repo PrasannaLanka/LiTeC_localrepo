@@ -1,0 +1,40 @@
+[(
+    Main
+    [{
+        declare struct student
+        {
+            /* Used , instead of ; at the end of attribute declaration in the struct student */
+            char name[50],
+            
+            /* No ; at the end of attribute declaration in the struct student */
+            int id
+        };
+    }]
+    
+    int main(void)
+    {
+        
+        return 0;
+    }
+)]
+
+[(
+    SF1
+    [{
+        declare struct engineering_student
+        {
+            /* Used , instead of ; at the end of attribute declaration in the struct engineering_student */
+            struct student st,
+            int year,
+            
+            /* No ; at the end of attribute declaration in the struct engineering_student */
+            bool graduated
+        };
+    }]
+    
+    int main(void)
+    {
+        
+        return 0;
+    }
+)]
