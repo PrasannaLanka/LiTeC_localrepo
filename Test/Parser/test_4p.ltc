@@ -1,0 +1,22 @@
+[(
+    Main
+    [{
+        declare int x : 10 ;
+    }]
+    
+    int main(void)
+    {
+        
+        if( = ( % x 2 ) 0 )
+        {
+            Tex
+            {
+                "This is a "
+                [: function_1( 1, 2, 3) :]
+                "sample text"
+            }
+        }
+        
+        return 0;
+    }
+)]
