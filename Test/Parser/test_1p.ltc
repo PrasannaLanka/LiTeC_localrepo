@@ -1,5 +1,8 @@
-[{
-    declare int x : 4000;
+[(
+    Main
+    [{
+        declare int x : 4000;
+    }]
     
     int main(void)
     {
@@ -10,18 +13,21 @@
 
         return 0;
     }
-}]
+)]
 
-[{
-    declare int a : 8000;
+[(
+    SF1
+    [{
+        declare int a : 8000;
+    }]
 
     int main()
     {
         declare int b : 2022;
 
-        a : ( - a ( % b 1000 );
+        a : ( - a ( % b 1000 ) );
         b : ( * ( + ( / ( - ( % b 100 ) 20 ) 1 ) 100 ) 4 );
         
         return 0;
     }
-}]
+)]
