@@ -88,5 +88,22 @@ declaration_specifiers
    : type_specifier
    ;
 
+selection_statement
+  : IF '(' logical_expression ')' compound_statement
+  | IF '(' logical_expression ')' compound_statement ELSE compound_statement
+  ;
+ 
+iteration_statement
+  : LOOP '(' expression_statement expression_statement ')' statement
+  | LOOP '(' expression_statement expression_statement expression ')' statement
+  ;
+ 
+jump_statement
+  : CONTINUE ';'
+  | BREAK ';'
+  | RETURN ';'
+  | RETURN expression ';'
+  ;
+ 
 
 
