@@ -1,0 +1,27 @@
+[{
+    declare int_32 x : 4000;
+    
+    int_64 main(void)
+    {
+        declare int_32 y : 2020;
+
+        y : ( + 100 44 );
+        y : ( * ( / y 10 ) 7 );
+
+        return 0;
+    }
+}]
+
+[{
+    declare int_32 a : 8000;
+
+    int_64 main(void)
+    {
+        declare int_32 b : 2022;
+
+        a : ( - a ( % b 1000 );
+        b : ( * ( + ( / ( - ( % b 100 ) 20 ) 1 ) 100 ) 4 );
+        
+        return 0;
+    }
+}]
