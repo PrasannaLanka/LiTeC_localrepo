@@ -1,0 +1,84 @@
+- reorganized repo
+- Add files via upload
+- Add files via upload
+- Create test_4p.ltc
+- Create test_3p_error.ltc
+- Create test_2p_error.ltc
+- Update test_3p.ltc
+- Grammar updated
+- Create test_1p_error.ltc
+- update grammer
+- update grammer
+- Merge pull request #12 from IITH-COMPILERS2/ashwitha
+- Update parser.y
+- created readme file
+- Added parser.out
+- Merge pull request #11 from IITH-COMPILERS2/rohith-2
+- Update parser.y
+- .out file
+- added compiled files
+- Update test_1p.ltc
+- Merge pull request #10 from IITH-COMPILERS2/prasanna
+- Merge pull request #9 from IITH-COMPILERS2/SL
+- added grammer
+- Update parser.y
+- Create test_3p.ltc
+- Merge pull request #8 from IITH-COMPILERS2/J1
+- Merge branch 'main' into J1
+- modified lex.l file
+- Update test_2p.ltc
+- added declaration part , tokens
+- Update test_1p.ltc
+- delete previous parser.tab.h file
+- delete previous parser.tab.c  file
+- delete previous lex.yy.x file
+- Rename test_1.ltc to test_1p.ltc
+- Create test_2p.ltc
+- Rename test.ltc to test_1.ltc
+- Update and rename test.txt to test.ltc
+- delete me
+- Added Parser_PPT.pdf
+- Added 2 minute video for parser
+- Update lex.l
+- added constant token
+- Merge pull request #6 from IITH-COMPILERS2/lexer1
+- Merge branch 'J1' into lexer1
+- Add files via upload
+- Add files via upload
+- Update lex.l
+- Add files via upload
+- Delete Lexer_PPT.pdf
+- Add files via upload
+- Delete Lexer.pdf
+- deleted wrong count function and main function
+- Merge branch 'lexer1' of https://github.com/IITH-COMPILERS2/compilers-2-project-team-8-aug22 into lexer1
+- deleted
+- Update lex.l
+- Added modified files
+- Update lex.l
+- Add files via upload
+- rename
+- Update and rename temp.txt to test_1.txt
+- Adder Lexer test files
+- Create temp.txt
+- update Identifier actions
+- rename test.l to lex.l
+- Added TeX and Identifiers
+- Update lex.l
+- Update lex.l
+- Update lex.l
+- Update lex.l
+- Update lex.l
+- Update parser.y
+- Update and rename lexltc.l to lex.l
+- Update lexltc.l
+- Update and rename test.l to lexltc.l
+- Added files
+- deleted refer file
+- Merge pull request #1 from IITH-COMPILERS2/lexer1
+- Added .l file
+- update parser
+- Merge branch 'lexer1' of https://github.com/IITH-COMPILERS2/compilers-2-project-team-8-aug22 into lexer1
+- deleted refer file
+- updated
+- Added Language Specification
