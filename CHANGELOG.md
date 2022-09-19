@@ -69,6 +69,7 @@
 - Update lex.l
 - Update lex.l
 - Update lex.l
+- using ! instead of # for ennumerated comments
 - Update parser.y
 - Update and rename lexltc.l to lex.l
 - Update lexltc.l
