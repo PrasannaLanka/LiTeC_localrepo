@@ -2,7 +2,7 @@
 
 
 
-enum data_type={ int , double , float , char }
+enum data_type={ int_t , double_t , float_t , char_t ,array_t}
 
 union Value
 {
@@ -13,7 +13,27 @@ union Value
 }typedef value_t;
 
 
+union array_info
+{
+    data_type data_type_t;
+    unsigned int array_size;
+}typedef array_info_t;
 
+union function_info
+{
+    
+}typedef fun_info;
+
+
+
+union data_type_info
+{
+    //array information array size , data type
+    array_info_t array_inf;
+
+    //return type for function
+    data_type return_type;
+}data_type_info_t;
 
 
 struct item_
@@ -22,7 +42,10 @@ struct item_
 
     value_t value_;
 
+    int scope;
+
     data_type data_type_t;
+    data_type_info_t data_info;
 
 
 
