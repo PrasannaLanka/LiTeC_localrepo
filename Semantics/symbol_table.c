@@ -8,6 +8,7 @@ void init_hash()
     
 }
 
+//using identifier name , generate an unsigned key 
 unsigned int hash_key(char id_name[],int len)
 {
     unsigned int key;
@@ -23,7 +24,7 @@ unsigned int hash_key(char id_name[],int len)
 
 unsigned int insert_symbol_tbl()
 {
-    
+
 
 
 
