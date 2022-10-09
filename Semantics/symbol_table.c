@@ -1,4 +1,7 @@
 #include "symbol_table.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 
@@ -22,7 +25,7 @@ unsigned int hash_key(char id_name[],int len)
 }
 
 
-unsigned int insert_symbol_tbl()
+unsigned int insert_symbol_tbl(char* name,enum data_type data_type_t , value_t val ,int scope , id_data_t data_info )
 {
 
 
