@@ -31,14 +31,14 @@ union function_info
 
 
 
-union data_type_info
+union identifier_data
 {
     //array information array size , data type
     array_info_t array_inf;
 
     //return type for function
     enum data_type return_type;
-}data_type_info_t;
+}typedef id_data;
 
 
 struct item_
@@ -50,7 +50,7 @@ struct item_
     int scope;
 
     enum data_type data_type_t;
-    data_type_info_t data_info;
+    id_data data_info;
 
 
 
