@@ -1,8 +1,13 @@
 #define MAX_HASH_SIZE 200
 
+// symbol table is implementated using hashing , each bucket has linked list 
+
+// item is the entry in the symbol table .
 
 
-enum data_type={ int_t , double_t , float_t , char_t ,array_t}
+
+
+enum data_type{ int_t , double_t , float_t , char_t ,array_t};
 
 union Value
 {
@@ -15,7 +20,7 @@ union Value
 
 union array_info
 {
-    data_type data_type_t;
+    enum data_type data_type_t;
     unsigned int array_size;
 }typedef array_info_t;
 
@@ -32,7 +37,7 @@ union data_type_info
     array_info_t array_inf;
 
     //return type for function
-    data_type return_type;
+    enum data_type return_type;
 }data_type_info_t;
 
 
@@ -44,7 +49,7 @@ struct item_
 
     int scope;
 
-    data_type data_type_t;
+    enum data_type data_type_t;
     data_type_info_t data_info;
 
 
