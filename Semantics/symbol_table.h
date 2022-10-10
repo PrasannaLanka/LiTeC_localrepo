@@ -1,9 +1,13 @@
-#define MAX_HASH_SIZE 200
+#define MAX_SYMBOL_TABLE_SIZE 200
 
 // symbol table is implementated using hashing , each bucket has linked list 
 
 // item is the entry in the symbol table .
 
+
+// symbol table  data structures :  p->p->p->p-> ....... and each p pointes to p->  item* -> item*->  item*->......
+
+static item_t **symbol_table_t;
 
 
 
