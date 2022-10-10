@@ -7,7 +7,7 @@
 
 // symbol table  data structures :  p->p->p->p-> ....... and each p pointes to p->  item* -> item*->  item*->......
 
-static item_t **symbol_table_t;
+
 
 
 
