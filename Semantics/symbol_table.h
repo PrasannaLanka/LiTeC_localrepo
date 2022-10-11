@@ -75,10 +75,11 @@ struct item_
 
 
 
-void init_hash();
+void init_symbol_table();
 
-unsigned int hash_key();
+unsigned int get_hash_key();
 
 void insert(char* name,enum data_type data_type_t , value_t val ,int scope , id_data_t data_info );
 
+item_t* search_in_symbol_table(char* name);
 

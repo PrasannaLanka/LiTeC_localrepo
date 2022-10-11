@@ -5,13 +5,13 @@
 
 
 static item_t **symbol_table_t;
-void init_hash()
+void init_symbol_table()
 {
     symbol_table_t=(item_t**)malloc(sizeof(item_t*)*MAX_SYMBOL_TABLE_SIZE);
 }
 
 //using identifier name , generate an unsigned key 
-unsigned int hash_key(char *id_name,int len)
+unsigned int get_hash_key(char *id_name,int len)
 {
     unsigned int key;
 
@@ -30,7 +30,7 @@ unsigned int insert_symbol_tbl(char* name,enum data_type data_type_t , value_t v
     size_t sz=strlen(name);
     int l = (int)sz;
     
-    unsigned int key=hash_key(name,l);
+    unsigned int key=get_hash_key(name,l);
     item_t *head;
     head=symbol_table_t[1];
     item_t *it=head;
@@ -55,6 +55,7 @@ unsigned int insert_symbol_tbl(char* name,enum data_type data_type_t , value_t v
         new_item->value_=val;
         new_item->scope=scope;
         new_item->data_info;
+        new_item->next=NULL;
         it=new_item;
         
     }
@@ -64,4 +65,22 @@ unsigned int insert_symbol_tbl(char* name,enum data_type data_type_t , value_t v
 
 
 
+}
+
+
+
+// search in symbol table and return item if exist or NULL if not.
+item_t* search_in_symbol_table(char *name)
+{
+    size_t sz=strlen(name);
+    int l = (int)sz;
+    unsigned int key=get_hash_key(name,l);
+    item_t *head=symbol_table_t[key];
+
+    item_t *it=head;
+    while (*(it->name)!=*name && it!=NULL)
+    {
+        it=it->next;
+    }
+    return it;
 }
