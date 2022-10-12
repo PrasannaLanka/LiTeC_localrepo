@@ -13,14 +13,14 @@ void init_symbol_table()
 //using identifier name , generate an unsigned key 
 unsigned int get_hash_key(char *id_name,int len)
 {
-    unsigned int key;
-
-    for (int i = 0; i < len; i++)
+    key = key + 1;
+    
+    if(key >= 100)
     {
-        key+=(int)id_name[i]-(int)id_name/2;
+        key = 0;
     }
-    key+=len+(int)id_name[len/2];
-    return key%MAX_SYMBOL_TABLE_SIZE;
+    
+    return key;
 }
 
 
