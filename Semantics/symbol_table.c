@@ -13,11 +13,11 @@ void init_symbol_table()
 //using identifier name , generate an unsigned key 
 unsigned int get_hash_key(char *id_name,int len)
 {
-    unsigned int key;
+    unsigned int key=0;
 
     for (int i = 0; i < len; i++)
     {
-        key+=(int)id_name[i]-(int)id_name/2;
+        key+=(int)id_name[i]-(int)id_name[i]%2;
     }
     key+=len+(int)id_name[len/2];
     return key%MAX_SYMBOL_TABLE_SIZE;
@@ -32,7 +32,7 @@ unsigned int insert_symbol_tbl(char* name,enum data_type data_type_t , value_t v
     
     unsigned int key=get_hash_key(name,l);
     item_t *head;
-    head=symbol_table_t[1];
+    head=symbol_table_t[key];
     item_t *it=head;
     while (it!=NULL)
     {
