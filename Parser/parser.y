@@ -204,16 +204,8 @@ void yyerror(char *s)
  
 int main(void)
 {
-   yyin= fopen("input.ltc","r");
-   if (yyparse())
-   {
-       printf("\n Syntax error Parsing error \n");
-   }
-   else
-   {
-       printf("\n parsing completed \n");
-   }
-   fclose(yyin);
+   
+   yyparse();
    return 0;
 }
  
