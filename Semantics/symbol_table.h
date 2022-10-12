@@ -38,6 +38,7 @@ struct function_data
     enum data_type return_data_type;
     int no_parameters;
     // paramter list ......
+    item_t items[no_parameters];
     
 }typedef fun_data_t;
 
