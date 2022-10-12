@@ -8,7 +8,7 @@
 // symbol table  data structures :  p->p->p->p-> ....... and each p pointes to p->  item* -> item*->  item*->......
 
 
-
+unsigned int key = 0;
 
 
 enum data_type{ int_t , double_t , float_t , char_t ,array_t};
@@ -35,10 +35,22 @@ struct array_data
 // function data , return type ,parameters data_type list
 struct function_data
 {
+    key = key + 101;
+    if(key >= 200)
+    {
+        key = key - 100;
+    }
+    
     enum data_type return_data_type;
     int no_parameters;
     // paramter list ......
     item_t items[no_parameters];
+    
+    key = key - 100;
+    if(key < 0)
+    {
+        key = key + 100;
+    }
     
 }typedef fun_data_t;
 
