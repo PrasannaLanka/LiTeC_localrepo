@@ -62,16 +62,17 @@ extern int yydebug;
     CHAR = 268,
     INT = 269,
     DOUBLE = 270,
-    ID = 271,
-    STRING_LITERAL = 272,
-    SF_OPEN = 273,
-    SF_CLOSE = 274,
-    STRUCT = 275,
-    TEX = 276,
-    TEX_OPEN = 277,
-    TEX_CLOSE = 278,
-    MS_OPEN = 279,
-    MS_CLOSE = 280
+    VOID = 271,
+    ID = 272,
+    STRING_LITERAL = 273,
+    SF_OPEN = 274,
+    SF_CLOSE = 275,
+    STRUCT = 276,
+    TEX = 277,
+    TEX_OPEN = 278,
+    TEX_CLOSE = 279,
+    MS_OPEN = 280,
+    MS_CLOSE = 281
   };
 #endif
 /* Tokens.  */
@@ -88,16 +89,17 @@ extern int yydebug;
 #define CHAR 268
 #define INT 269
 #define DOUBLE 270
-#define ID 271
-#define STRING_LITERAL 272
-#define SF_OPEN 273
-#define SF_CLOSE 274
-#define STRUCT 275
-#define TEX 276
-#define TEX_OPEN 277
-#define TEX_CLOSE 278
-#define MS_OPEN 279
-#define MS_CLOSE 280
+#define VOID 271
+#define ID 272
+#define STRING_LITERAL 273
+#define SF_OPEN 274
+#define SF_CLOSE 275
+#define STRUCT 276
+#define TEX 277
+#define TEX_OPEN 278
+#define TEX_CLOSE 279
+#define MS_OPEN 280
+#define MS_CLOSE 281
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
