@@ -8,7 +8,6 @@
  
 %}
  
-%%
 %token DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
 %token BOOL CHAR INT DOUBLE ID STRING_LITERAL STRUCT
 %token TEX TEX_OPEN TEX_CLOSE SF_OPEN SF_CLOSE
@@ -205,16 +204,8 @@ void yyerror(char *s)
  
 int main(void)
 {
-   yyin= fopen("input.ltc","r");
-   if (yyparse())
-   {
-       printf("\n Syntax error Parsing error \n");
-   }
-   else
-   {
-       printf("\n parsing completed \n");
-   }
-   fclose(yyin);
+   
+   yyparse();
    return 0;
 }
  

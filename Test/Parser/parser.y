@@ -210,12 +210,22 @@ void yyerror(char *s)
 }  
 
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	
-    yyparse();
-	
-    return 0;
+
+   		yyin=fopen(argv[--argc],"r");
+		if (yyparse())
+		{
+			printf("\n Parsing error \n");
+		}
+		else
+		{
+			printf("\n parsing completed \n");
+		}
+		fclose(yyin);
+
+		printf("\n Completed \n") ;
+		return 0;
 }
 
 
