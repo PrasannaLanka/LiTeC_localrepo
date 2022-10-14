@@ -17,7 +17,7 @@ unsigned int get_hash_key(char *id_name,int len)
 
     for (int i = 0; i < len; i++)
     {
-        key+=(int)id_name[i]-(int)id_name[i]%2;
+        key+=(int)id_name[i]-(int)id_name[i]%10;
     }
     key+=len+(int)id_name[len/2];
     return key%MAX_SYMBOL_TABLE_SIZE;
