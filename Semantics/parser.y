@@ -8,21 +8,20 @@
  
 %}
  
-%%
+
+
+
 %token DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
-%token BOOL CHAR INT DOUBLE ID STRING_LITERAL STRUCT
-%token TEX TEX_OPEN TEX_CLOSE SF_OPEN SF_CLOSE
+%token BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
+%token TEX TEX_OPEN TEX_CLOSE 
  
  
 %start translation_main
 
+%%
+
 translation_main
-   : translation
-   ;
- 
-translation
-   : translation SF_OPEN translation_unit SF_CLOSE
-   | SF_OPEN translation_unit SF_CLOSE
+   : translation_unit
    ;
  
 translation_unit
@@ -186,6 +185,7 @@ type_specifier
    | INT
    | DOUBLE
    | BOOL
+   | VOID
    | STRUCT
    ;
  

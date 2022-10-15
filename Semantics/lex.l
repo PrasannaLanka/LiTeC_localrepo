@@ -1,8 +1,7 @@
 
 D		     	[0-9]
 L		     	[a-zA-Z]
-H		     	[a-fA-F0-9]
-E		     	[Ee][+-]?{D}+
+
 
 
 %{
@@ -41,10 +40,7 @@ void count();
 "TeX"           { count(); return(TEX); }
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
-"[("			{ count(); return(SF_OPEN); }
-")]"			{ count(); return(SF_CLOSE); }
-"[{"			{ count(); return(MS_OPEN); }
-"}]"			{ count(); return(MS_CLOSE); }
+
 
 {L}({L}|{D})*   { count(); return(ID); }
 {D}+			{ count(); return(CONSTANT); }
