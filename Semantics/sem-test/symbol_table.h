@@ -89,5 +89,6 @@ unsigned int get_hash_key(char *id_name,int len);
 bool insert_symbol_tbl_lex(char* name);
 
 item_t* search_in_symbol_table(char* name);
+void print_symbol_table();
 void terminate_symbol_table();
 

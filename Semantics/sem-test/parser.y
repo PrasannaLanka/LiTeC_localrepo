@@ -1,21 +1,23 @@
 %{
-    #include <stdio.h>
-	#include <stdlib.h>
-    int yylex(void);
-    void yyerror(char *); 
-
-	extern FILE *yyin;
-
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include "symbol_table.h"
+   int yylex(void);
+   void yyerror(char *);
+ 
+   extern FILE *yyin;
+ 
 %}
-
+ 
 %token DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
 %token BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
 %token TEX TEX_OPEN TEX_CLOSE 
-
-
+ 
+ 
 %start translation_main
 
 %%
+
 
 translation_main
 	: translation_unit
@@ -183,7 +185,7 @@ type_specifier
 	: CHAR
 	| INT
 	| DOUBLE
-    | BOOL
+   | BOOL
 	| STRUCT
 	| VOID
 	;
@@ -194,22 +196,28 @@ primary_expression
 	| STRING_LITERAL
 	;
 %%
-
-void yyerror(char *s) 
+ 
+void yyerror(char *s)
 {
-    fprintf(stderr, "%s\n", s);
-	return ;
-}  
-
-
-int main(void)
+   fprintf(stderr, "%s\n", s);
+   return ;
+} 
+ 
+int main(int argc, char *argv[])
 {
-	
-    yyparse();
-	
-    return 0;
+      init_symbol_table();
+
+   	yyin=fopen(argv[--argc],"r");
+		if (yyparse())
+		{
+			printf("\n Parsing error \n");
+		}
+		else
+		{
+			printf("\n parsing completed \n");
+		}
+		fclose(yyin);
+
+		printf("\n Completed \n") ;
+		return 0;
 }
-
-
-
-

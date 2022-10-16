@@ -8,17 +8,18 @@ L		     	[a-zA-Z]
 #include <stdio.h>
 #include "y.tab.h"
 #include "symbol_table.h"
-
-
 #include <string.h>
+#include <stdlib.h>
 
+char *param_name="Fixed";
+value_t v; 
+ 
+id_data_t d;
 
 void count();
 %}
 
 %%
-
-
 
 
 "if"			{ count();return(IF); }
@@ -45,8 +46,9 @@ void count();
 
 {L}({L}|{D})*   {   param_name=(char*)malloc(sizeof(yytext));
 					strcpy(param_name,yytext);
-					if( insert_symbol_tbl_lex(param_name)==false )
+					if( insert_symbol_tbl_lex(param_name)==false )     
 					{
+						// if identifier already in symbol table
 						//give error
 						fprintf(stderr,"%s already declared \n",param_name);
 					}    
@@ -129,5 +131,5 @@ void count()
 		else
 			column++;
 
-	ECHO;
+	//ECHO;
 }

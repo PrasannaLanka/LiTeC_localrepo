@@ -1,0 +1,23 @@
+
+
+int x ;
+int y ;
+
+
+int fun()
+{
+
+    int f1 : 50 ;
+    int f2 : 40 ;
+    return 1 ;
+}
+
+int main()
+{
+    int z ;
+    int z1 : 30 ;
+
+    TeX { "aaaaaaaaaa" [: Function() :] "bbbbbbbbbbbbbbbb"  }
+    return 0;
+}
+
