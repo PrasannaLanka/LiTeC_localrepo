@@ -75,6 +75,7 @@ struct item_
     enum data_type_t data_type;
     value_t value;
     id_data_t id_info;
+    int scope;
 
 }typedef item_t;
 
@@ -86,8 +87,27 @@ void init_symbol_table();
 
 unsigned int get_hash_key(char *id_name,int len);
 
-bool insert_symbol_tbl_lex(char* name);
+bool insert_symbol_tbl_lex(char* name,int scope);
 
 item_t* search_in_symbol_table(char* name);
+
+
+/*For Insertion */
+
+enum data_type_t temp_data_type;
+value_t *temp_value;
+
+void store_data_type();
+
+
+
+
+
+
+
+
+
+
+
 void terminate_symbol_table();
 

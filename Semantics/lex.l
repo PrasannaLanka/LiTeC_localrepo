@@ -11,7 +11,8 @@ L		     	[a-zA-Z]
 
 
 #include <string.h>
-
+char *param_name="Fixed";
+int current_scope=0;  // if we encounter { we increment curr_scope , decrement when } occurs
 
 void count();
 %}
@@ -45,7 +46,7 @@ void count();
 
 {L}({L}|{D})*   {   param_name=(char*)malloc(sizeof(yytext));
 					strcpy(param_name,yytext);
-					if( insert_symbol_tbl_lex(param_name)==false )
+					if( insert_symbol_tbl_lex(param_name,current_scope)==false )
 					{
 						//give error
 						fprintf(stderr,"%s already declared \n",param_name);
@@ -58,7 +59,7 @@ void count();
 					count(); return(ID);                            }
 
 
-					
+
 {D}+			{ count(); return(CONSTANT); }
 \"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 
@@ -75,8 +76,8 @@ void count();
 "~"			{ count(); return('~'); }
 ":"			{ count(); return(':'); }
 "&"			{ count(); return('&'); }
-"{"			{ count(); return('{'); }
-"}"			{ count(); return('}'); }
+"{"			{ current_scope+=1; count(); return('{'); }
+"}"			{ current_scope-=1; count(); return('}'); }
 "("			{ count(); return('('); }
 ")"			{ count(); return(')'); }
 "["			{ count(); return('['); }

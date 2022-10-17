@@ -2,16 +2,33 @@
    #include <stdio.h>
    #include <stdlib.h>
    #include "symbol_table.h"
+   #include "ast.h"
    int yylex(void);
    void yyerror(char *);
  
    extern FILE *yyin;
+
+
+
+   void enter_token_name_into_token_node();
  
 %}
+
+
+
+%union{
+			struct token_node_t{
+				char *name_token;
+				struct ast_node* node;
+				
+			}typedef token_node;
+
+
+}
  
-%token DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
-%token BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
-%token TEX TEX_OPEN TEX_CLOSE 
+%token <token_node> DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
+%token <token_node> BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
+%token <token_node> TEX TEX_OPEN TEX_CLOSE 
  
  
 %start translation_main
@@ -152,7 +169,7 @@ parameter_list
 	;
 
 postfix_expression
-	: '(' binary_operator primary_expression primary_expression  ')'
+	: '(' binary_operator primary_expression primary_expression  ')'      { $$.nd = build_node($2.name_token, $3.node, $4.node); }
 	| '(' binary_operator primary_expression postfix_expression  ')'
 	| '(' binary_operator postfix_expression primary_expression  ')'
 	| '(' binary_operator postfix_expression postfix_expression  ')'
@@ -182,16 +199,16 @@ logical_operator
 
 
 type_specifier
-	: CHAR
+	: CHAR {  }
 	| INT
 	| DOUBLE
-   | BOOL
+    | BOOL
 	| STRUCT
 	| VOID
 	;
 
 primary_expression
-	: CONSTANT
+	: CONSTANT {  }
 	| ID
 	| STRING_LITERAL
 	;
@@ -220,4 +237,11 @@ int main(int argc, char *argv[])
 
 		printf("\n Completed \n") ;
 		return 0;
+}
+
+
+void enter_token_name_into_token_node()
+{
+	strcpy(yylval.token_node.name,yytext);
+
 }

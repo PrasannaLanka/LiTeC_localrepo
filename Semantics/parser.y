@@ -1,6 +1,9 @@
 %{
     #include <stdio.h>
 	#include <stdlib.h>
+
+	#include "symbol_table.h"
+
     int yylex(void);
     void yyerror(char *); 
 
@@ -132,7 +135,7 @@ init_declarator
 	;
 
 declarator
-	: ID
+	: ID										{    }
 	| ID '('')' 
 	| ID '(' parameter_type_list ')'
 	| ID '(' parameter_list ')'
@@ -180,12 +183,12 @@ logical_operator
 
 
 type_specifier
-	: CHAR
-	| INT
-	| DOUBLE
-    | BOOL
-	| STRUCT
-	| VOID
+	: CHAR                  {  store_data_type(); }
+	| INT					{  store_data_type(); }
+	| DOUBLE				{  store_data_type(); }
+    | BOOL					{  store_data_type(); }
+	| STRUCT				{  store_data_type(); }
+	| VOID					{  store_data_type(); }
 	;
 
 primary_expression
@@ -200,6 +203,43 @@ void yyerror(char *s)
     fprintf(stderr, "%s\n", s);
 	return ;
 }  
+
+/*For insertion we store data temporarily*/
+char *int_ptr="int";
+char *char_ptr="char";
+char *float_ptr="float";
+char *doubl_ptr="double";
+
+void store_data_type()
+{
+	//temp_data_type is declarated in symbol_table.h
+	//It is used to store the variable data type tempararlily	
+    if(strcmp(yytext,int_ptr)==0)
+	{
+		temp_data_type = int_t;
+	}
+	else if(strcmp(yytext,char_ptr)==0)
+	{
+		temp_data_type = char_t;
+	}
+	else if(strcmp(yytext,float_ptr)==0)
+	{
+		temp_data_type = float_t;
+	}
+	else if(strcmp(yytext,doubl_ptr)==0)
+	{
+		temp_data_type = double_t;
+	}
+	return;
+}
+
+void add_data_type()
+{
+	item_t *item=search_in_symbol_table(yytext);
+}
+
+
+
 
 
 int main(void)

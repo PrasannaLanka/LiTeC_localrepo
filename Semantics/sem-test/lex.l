@@ -17,6 +17,7 @@ value_t v;
 id_data_t d;
 
 void count();
+
 %}
 
 %%
@@ -133,3 +134,6 @@ void count()
 
 	//ECHO;
 }
+
+
+
