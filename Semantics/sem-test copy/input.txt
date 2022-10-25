@@ -1,0 +1,11 @@
+
+
+int x ;
+int y ;
+
+int main()
+{
+    int z ;
+    int z1 : 30 ;
+    return 0;
+}

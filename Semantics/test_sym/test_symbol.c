@@ -4,16 +4,11 @@
 
 int f1()
 {
-    init_symbol_table();
-    char *p="function";
-    id_data_t d;
-    d.function_info.no_parameters=3;
-    d.function_info.return_data_type=int_t;
-    value_t v;
-    v.int_value=0;
-    enum data_type f=int_t;
+    
+    char *p="function1";
+   
 
-    insert_symbol_tbl(p,f,v,1,d);
+    insert_symbol_tbl(p);
     item_t *it=search_in_symbol_table(p);
     if (it==NULL)
     {
@@ -21,7 +16,26 @@ int f1()
         return 0;
     }
     
-    printf("Name : %s \n return data_type : %d \n parameters : %d ",it->name,it->data_info.function_info.return_data_type,it->data_info.function_info.no_parameters);
+    printf("Name : %s \n",it->name);
+
+    return 0;
+}
+
+int f2()
+{
+    
+    char *p="function2";
+   
+
+    insert_symbol_tbl(p);
+    item_t *it=search_in_symbol_table(p);
+    if (it==NULL)
+    {
+        printf("Error\n");
+        return 0;
+    }
+    
+    printf("Name : %s\n",it->name);
 
     return 0;
 }
@@ -38,7 +52,10 @@ void key()
 
 int main()
 {
+    init_symbol_table();
 
     f1();
+    f1();
+    terminate_symbol_table();
     return 0;
 }
