@@ -25,13 +25,9 @@ void count();
 
 
 
-"if"			{ count();return(IF); }
-"else"			{ count();return(ELSE); }
-"break"			{ count();return(BREAK); }
-"continue"		{ count();return(CONTINUE); }
-"invariant"		{ count(); return(INVARIANT); }
-"loop"			{ count();return(LOOP); }
-"return"		{ count(); return(RETURN); }
+"declare"   {count() ; return(DECLARE);}
+
+
 
 "bool"		{ count(); return(BOOL); }
 "char"		{ count(); return(CHAR); }
@@ -42,9 +38,7 @@ void count();
 "void"			{ count(); return(VOID); }
 
 
-"TeX"           { count(); return(TEX); }
-"[:"			{ count(); return(TEX_OPEN); }
-":]"			{ count(); return(TEX_CLOSE); }
+
 
 
 {L}({L}|{D})*   {   MC 	count(); return(ID); }

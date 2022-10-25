@@ -2,7 +2,7 @@
     #include <stdio.h>
 	#include <stdlib.h>
 
-	
+	#include <string.h>
 	#include "ast.h"
 
     int yylex(void);
@@ -24,8 +24,8 @@
 
 
 
-%token <token_node> DECLARE INVARIANT 
-%token CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
+%token <token_node> DECLARE 
+%token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
 %token <token_node> BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
 
 
@@ -33,46 +33,50 @@
 %type <token_node>  declarator compound_statement compound_statement_content
 %type <token_node>  statement expression_statement 
 %type <token_node>  init_declarator type_specifier expression
-%type <token_node> assignment_expression primary_expression postfix_expression logical_operator
-%type <token_node> binary_operator parameter_list
+%type <token_node> assignment_expression primary_expression postfix_expression 
+%type <token_node> binary_operator function_body
 
 %start translation_main
 
 %%
 
 translation_main
-	: translation_unit
+	: translation_unit               { ptr="Main"; $$.node=build_node(ptr,$1.node,NULL); root=$$.node ;}
 	;
 
 
 
 translation_unit
-	: external_declaration
-	| translation_unit external_declaration 
+	: external_declaration                          {ptr="trans_unit"; $$.node=build_node(ptr,$1.node,NULL);}
+	| translation_unit external_declaration 		{ ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node);  }
 	;
 
 external_declaration
-	: declaration 
-	| function_definition 
+	: declaration 					{ptr="declr"; $$.node=build_node(ptr,$1.node,NULL);}
+	| function_definition        {ptr="fun_def"; $$.node=build_node(ptr,$1.node,NULL);}
 	;
 
 function_definition
-	:type_specifier declarator compound_statement   {ptr="fun_def"; $$.node=build_node(ptr,)}
+	:type_specifier function_body   {ptr="fun_def"; $$.node=build_node(ptr,$1.node,$2.node);}
+
+function_body
+	:declarator compound_statement {ptr="fun_body"; $$.node=build_node(ptr,$1.node,$2.node);}
+
 
 compound_statement
-	:  '{' compound_statement_content '}' { ptr="cmp_stmt"; $$.nd=build_node(ptr,$2.nd,NULL); }
+	:  '{' compound_statement_content '}' { ptr="cmp_stmt"; $$.node=build_node(ptr,$2.node,NULL); }
 	;
 
 compound_statement_content
-	: declaration							   {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,NULL);}
-	| statement									{ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,NULL);}
-	| compound_statement_content declaration  {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,$2.nd);}
-	| compound_statement_content statement     {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,$2.nd);}
+	: declaration							   {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| statement									{ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| compound_statement_content declaration  {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,$2.node);}
+	| compound_statement_content statement     {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,$2.node);}
 	;
 
 statement
-	: compound_statement                {ptr="comp_st"; $$.nd=build_node(ptr,$1.nd,NULL);}
-	| expression_statement			{ptr="comp_st"; $$.nd=build_node(ptr,$1.nd,NULL);}
+	: compound_statement                {ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	| expression_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
 	;
 
 
@@ -80,7 +84,7 @@ statement
 
 
 declaration
-	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.nd=build_node(ptr,$2.nd,$3.nd);}  
+	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
 	;
 
 
@@ -88,43 +92,40 @@ declaration
 
 
 expression_statement
-	:   expression ';'                  { $$.nd=build_node($1.name_token,$1.nd,NULL); }
+	:   expression ';'                  { $$.node=build_node($1.name_token,$1.node,NULL); }
 	;
 
 
 expression
-	: assignment_expression						{ptr="assign_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
-	| primary_expression						{ptr="prm_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
-	| postfix_expression						{ptr="post_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
+	: assignment_expression						{ptr="assign_exp"; $$.node=build_node(ptr,$1.node,NULL); }
+	| primary_expression						{ptr="prm_exp"; $$.node=build_node(ptr,$1.node,NULL); }
+	| postfix_expression						{ptr="post_exp"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
 assignment_expression
-	: ID ':' primary_expression			{ptr="assignment";$$.nd=build_node(ptr,$1.nd,$3.nd);}
-	| ID ':' postfix_expression			{ptr="assignment";$$.nd=build_node(ptr,$1.nd,$3.nd);}
+	: ID ':' primary_expression			{ptr="assignment";$$.node=build_node(ptr,$1.node,$3.node);}
+	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node(ptr,$1.node,$3.node);}
 	;
 
 
 init_declarator
-	: declarator							{ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,NULL);}
-	| declarator ':' primary_expression    {ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,$3.nd);}
-	| declarator ':' postfix_expression		{ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,$3.nd);}
+	: declarator							{ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL);}
+	| declarator ':' primary_expression    {ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node);}
+	| declarator ':' postfix_expression		{ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node);}
 	;
 
 declarator
 	: ID							{/*add the name_token to symbol table */ 
-										$$.nd=build_node($1.name_token,$1.nd,NULL);	}			
+										$$.node=build_node($1.name_token,$1.node,NULL);	}			
 	| ID '('')' 					{/*add the name_token to symbol table */ 
-										$$.nd=build_node($1.name_token,$1.nd,NULL);	}	
+										$$.node=build_node($1.name_token,$1.node,NULL);	}	
 	;
 
 
 
 	
 
-parameter_list
-	: ID							{$$.node=build_node($1.name_token,NULL,NULL);}
-	| parameter_list ',' ID			{ptr="parameter_list"; $$.node=build_node(ptr,$1.node,$3.node); }
-	;
+
 
 postfix_expression
 	: '(' binary_operator primary_expression primary_expression  ')'   { $$.node=build_node($2.name_token,$3.node,$4.node);   }
@@ -146,11 +147,6 @@ binary_operator
 	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
-logical_operator
-	: '<'                   {ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
-	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
-	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
-	;
 
 
 type_specifier
@@ -186,45 +182,32 @@ char *char_ptr="char";
 char *float_ptr="float";
 char *doubl_ptr="double";
 
-void store_data_type()
-{
-	//temp_data_type is declarated in symbol_table.h
-	//It is used to store the variable data type tempararlily	
-    if(strcmp(yytext,int_ptr)==0)
-	{
-		temp_data_type = int_t;
-	}
-	else if(strcmp(yytext,char_ptr)==0)
-	{
-		temp_data_type = char_t;
-	}
-	else if(strcmp(yytext,float_ptr)==0)
-	{
-		temp_data_type = float_t;
-	}
-	else if(strcmp(yytext,doubl_ptr)==0)
-	{
-		temp_data_type = double_t;
-	}
-	return;
-}
 
-void add_data_type()
+
+int main(int argc, char *argv[])
 {
-	item_t *item=search_in_symbol_table(yytext);
+      init_symbol_table();
+	  ptr=(char*)malloc(sizeof(char)*10);
+   	  yyin=fopen(argv[--argc],"r");
+		if (yyparse())
+		{
+			printf("\n Parsing error \n");
+		}
+		else
+		{
+			printf("\n parsing completed \n");
+		}
+		fclose(yyin);
+		print_ast(root);
+		printf("\n Completed \n") ;
+		return 0;
 }
 
 
 
 
 
-int main(void)
-{
-	
-    yyparse();
-	
-    return 0;
-}
+
 
 
 
