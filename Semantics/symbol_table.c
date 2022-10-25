@@ -29,7 +29,7 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl_lex(char* name,int scope)
+bool insert_symbol_tbl_lex(char* name)
 {
 
     size_t sz=strlen(name);
@@ -99,5 +99,3 @@ void terminate_symbol_table()
 {
     free(symbol_table_t);
 }
-
-

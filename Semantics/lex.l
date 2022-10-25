@@ -6,12 +6,15 @@ L		     	[a-zA-Z]
 
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "y.tab.h"
-#include "symbol_table.h"
+
 
 
 #include <string.h>
-char *param_name="Fixed";
+
+#define MC yylval.token_node.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_node.name_token,yytext);
+
 int current_scope=0;  // if we encounter { we increment curr_scope , decrement when } occurs
 
 void count();
@@ -22,13 +25,9 @@ void count();
 
 
 
-"if"			{ count();return(IF); }
-"else"			{ count();return(ELSE); }
-"break"			{ count();return(BREAK); }
-"continue"		{ count();return(CONTINUE); }
-"invariant"		{ count(); return(INVARIANT); }
-"loop"			{ count();return(LOOP); }
-"return"		{ count(); return(RETURN); }
+"declare"   {count() ; return(DECLARE);}
+
+
 
 "bool"		{ count(); return(BOOL); }
 "char"		{ count(); return(CHAR); }
@@ -39,29 +38,15 @@ void count();
 "void"			{ count(); return(VOID); }
 
 
-"TeX"           { count(); return(TEX); }
-"[:"			{ count(); return(TEX_OPEN); }
-":]"			{ count(); return(TEX_CLOSE); }
-
-
-{L}({L}|{D})*   {   param_name=(char*)malloc(sizeof(yytext));
-					strcpy(param_name,yytext);
-					if( insert_symbol_tbl_lex(param_name,current_scope)==false )
-					{
-						//give error
-						fprintf(stderr,"%s already declared \n",param_name);
-					}    
-					else
-					{
-						fprintf(stderr,"successfully inserted \n");
-					}       
-					                   
-					count(); return(ID);                            }
 
 
 
-{D}+			{ count(); return(CONSTANT); }
-\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
+{L}({L}|{D})*   {   MC 	count(); return(ID); }
+
+
+
+{D}+			{MC count(); return(CONSTANT_INT); }
+\"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
 
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
