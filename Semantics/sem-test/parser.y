@@ -1,44 +1,49 @@
 %{
-   #include <stdio.h>
-   #include <stdlib.h>
-   #include "symbol_table.h"
-   #include "ast.h"
-   int yylex(void);
-   void yyerror(char *);
- 
-   extern FILE *yyin;
+    #include <stdio.h>
+	#include <stdlib.h>
 
+	
+	#include "ast.h"
 
+    int yylex(void);
+    void yyerror(char *); 
 
-   void enter_token_name_into_token_node();
- 
+	extern FILE *yyin;
+
+	char* ptr;
+
 %}
 
-
-
-%union{
-			struct token_node_t{
-				char *name_token;
-				struct ast_node* node;
-				
-			}typedef token_node;
-
-
+%union
+{
+	struct token_node_t{
+		char *name_token;
+		struct ast_node_t *node;
+	}token_node;
 }
- 
-%token <token_node> DECLARE IF ELSE BREAK CONTINUE INVARIANT LOOP RETURN CONSTANT
+
+
+
+%token <token_node> DECLARE INVARIANT 
+%token CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
 %token <token_node> BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
-%token <token_node> TEX TEX_OPEN TEX_CLOSE 
- 
- 
+
+
+%type  <token_node> translation_main translation_unit external_declaration declaration function_definition
+%type <token_node>  declarator compound_statement compound_statement_content
+%type <token_node>  statement expression_statement 
+%type <token_node>  init_declarator type_specifier expression
+%type <token_node> assignment_expression primary_expression postfix_expression logical_operator
+%type <token_node> binary_operator parameter_list
+
 %start translation_main
 
 %%
 
-
 translation_main
 	: translation_unit
-	; 
+	;
+
 
 
 translation_unit
@@ -52,196 +57,175 @@ external_declaration
 	;
 
 function_definition
-	:declaration_specifiers declarator compound_statement
+	:type_specifier declarator compound_statement   {ptr="fun_def"; $$.node=build_node(ptr,)}
 
 compound_statement
-	: '{''}'
-	|  '{' compound_statement_content '}'
+	:  '{' compound_statement_content '}' { ptr="cmp_stmt"; $$.nd=build_node(ptr,$2.nd,NULL); }
 	;
 
 compound_statement_content
-	: declaration
-	| statement
-	| compound_statement_content declaration
-	| compound_statement_content statement
+	: declaration							   {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,NULL);}
+	| statement									{ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,NULL);}
+	| compound_statement_content declaration  {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,$2.nd);}
+	| compound_statement_content statement     {ptr="cmp_stmt"; $$.nd=build_node(ptr,$1.nd,$2.nd);}
 	;
 
 statement
-	: compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
-	| tex_statement
+	: compound_statement                {ptr="comp_st"; $$.nd=build_node(ptr,$1.nd,NULL);}
+	| expression_statement			{ptr="comp_st"; $$.nd=build_node(ptr,$1.nd,NULL);}
 	;
 
-tex_statement
-	: TEX '{' tex_data '}'
-	;
 
-tex_data
-	: STRING_LITERAL
-	| tex_function
-	| tex_data STRING_LITERAL
-	| tex_data tex_function
-	; 
-
-tex_function
-	: TEX_OPEN declarator TEX_CLOSE
-	;
 
 
 
 declaration
-	:DECLARE  declaration_specifiers init_declarator_list ';'
-	|DECLARE  INVARIANT declaration_specifiers init_declarator_list ';'
-	|DECLARE  STRUCT '{'  declaration DECLARE  declaration_specifiers init_declarator_list ';'  '}' ';'
-	|DECLARE  STRUCT '{'  declaration DECLARE  INVARIANT declaration_specifiers init_declarator_list ';'  '}' ';'
+	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.nd=build_node(ptr,$2.nd,$3.nd);}  
 	;
 
 
 
-declaration_specifiers
-	: type_specifier
-	;
 
-selection_statement
-   : IF '(' logical_expression ')' compound_statement
-   | IF '(' logical_expression ')' compound_statement ELSE compound_statement
-   ;
-
-iteration_statement
-   : LOOP '(' expression_statement expression_statement ')' statement
-   | LOOP '(' expression_statement expression_statement expression ')' statement
-   ;
-
- 
-jump_statement
-   : CONTINUE ';'
-   | BREAK ';'
-   | RETURN ';'
-   | RETURN expression ';'
-   ;
 
 expression_statement
-	: ';'
-	|  expression ';'
+	:   expression ';'                  { $$.nd=build_node($1.name_token,$1.nd,NULL); }
 	;
 
 
 expression
-	: assignment_expression
-	| primary_expression
-	| postfix_expression
+	: assignment_expression						{ptr="assign_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
+	| primary_expression						{ptr="prm_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
+	| postfix_expression						{ptr="post_exp"; $$.nd=build_node(ptr,$1.nd,NULL); }
 	;
 
 assignment_expression
-	: ID ':' primary_expression
-	| ID ':' postfix_expression
+	: ID ':' primary_expression			{ptr="assignment";$$.nd=build_node(ptr,$1.nd,$3.nd);}
+	| ID ':' postfix_expression			{ptr="assignment";$$.nd=build_node(ptr,$1.nd,$3.nd);}
 	;
 
-init_declarator_list
-	: init_declarator
-	;
 
 init_declarator
-	: declarator
-	| declarator ':' primary_expression
-	| declarator ':' postfix_expression
+	: declarator							{ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,NULL);}
+	| declarator ':' primary_expression    {ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,$3.nd);}
+	| declarator ':' postfix_expression		{ptr="init_declarator";$$.nd=build_node(ptr,$1.nd,$3.nd);}
 	;
 
 declarator
-	: ID
-	| ID '('')' 
-	| ID '(' parameter_type_list ')'
-	| ID '(' parameter_list ')'
+	: ID							{/*add the name_token to symbol table */ 
+										$$.nd=build_node($1.name_token,$1.nd,NULL);	}			
+	| ID '('')' 					{/*add the name_token to symbol table */ 
+										$$.nd=build_node($1.name_token,$1.nd,NULL);	}	
 	;
 
 
-parameter_type_list
-	: type_specifier ID
-	| parameter_type_list ',' type_specifier ID
-	;
+
+	
 
 parameter_list
-	: ID
-	| parameter_list ',' ID
+	: ID							{$$.node=build_node($1.name_token,NULL,NULL);}
+	| parameter_list ',' ID			{ptr="parameter_list"; $$.node=build_node(ptr,$1.node,$3.node); }
 	;
 
 postfix_expression
-	: '(' binary_operator primary_expression primary_expression  ')'      { $$.nd = build_node($2.name_token, $3.node, $4.node); }
-	| '(' binary_operator primary_expression postfix_expression  ')'
-	| '(' binary_operator postfix_expression primary_expression  ')'
-	| '(' binary_operator postfix_expression postfix_expression  ')'
+	: '(' binary_operator primary_expression primary_expression  ')'   { $$.node=build_node($2.name_token,$3.node,$4.node);   }
+	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.name_token,$3.node,$4.node);   }
+	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.name_token,$3.node,$4.node);   }
+	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.name_token,$3.node,$4.node);   }
 	;
 
-logical_expression
-	: primary_expression
-	| expression logical_operator expression
-	;
+
 
 binary_operator
-	: '+'
-	| '-'
-	| '*'
-	| '/'
-	| '%'
-	| '<'
-	| '>'
-	| '='
+	: '+'					{ptr="+"; $$.node=build_node(ptr,NULL,NULL); }
+	| '-'					{ptr="-"; $$.node=build_node(ptr,NULL,NULL); }
+	| '*'					{ptr="*"; $$.node=build_node(ptr,NULL,NULL); }
+	| '/'					{ptr="/"; $$.node=build_node(ptr,NULL,NULL); }
+	| '%'					{ptr="%"; $$.node=build_node(ptr,NULL,NULL); }
+	| '<'					{ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
+	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
+	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
 logical_operator
-	: '<'
-	| '>'
-	| '='
+	: '<'                   {ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
+	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
+	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
 
 type_specifier
-	: CHAR {  }
-	| INT
-	| DOUBLE
-    | BOOL
-	| STRUCT
-	| VOID
+	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); }      
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); }
+	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); }
+    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); }
+	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
+	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
 primary_expression
-	: CONSTANT {  }
-	| ID
-	| STRING_LITERAL
+	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); }
+	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); }
+	| CONSTANT_FLOAT	    { $$.node=build_node($1.name_token,NULL,NULL); }
+	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); }
+	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); }
+	| STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
 	;
+
+
 %%
- 
-void yyerror(char *s)
-{
-   fprintf(stderr, "%s\n", s);
-   return ;
-} 
- 
-int main(int argc, char *argv[])
-{
-      init_symbol_table();
 
-   	yyin=fopen(argv[--argc],"r");
-		if (yyparse())
-		{
-			printf("\n Parsing error \n");
-		}
-		else
-		{
-			printf("\n parsing completed \n");
-		}
-		fclose(yyin);
+void yyerror(char *s) 
+{
+    fprintf(stderr, "%s\n", s);
+	return ;
+}  
 
-		printf("\n Completed \n") ;
-		return 0;
+/*For insertion we store data temporarily*/
+char *int_ptr="int";
+char *char_ptr="char";
+char *float_ptr="float";
+char *doubl_ptr="double";
+
+void store_data_type()
+{
+	//temp_data_type is declarated in symbol_table.h
+	//It is used to store the variable data type tempararlily	
+    if(strcmp(yytext,int_ptr)==0)
+	{
+		temp_data_type = int_t;
+	}
+	else if(strcmp(yytext,char_ptr)==0)
+	{
+		temp_data_type = char_t;
+	}
+	else if(strcmp(yytext,float_ptr)==0)
+	{
+		temp_data_type = float_t;
+	}
+	else if(strcmp(yytext,doubl_ptr)==0)
+	{
+		temp_data_type = double_t;
+	}
+	return;
+}
+
+void add_data_type()
+{
+	item_t *item=search_in_symbol_table(yytext);
 }
 
 
-void enter_token_name_into_token_node()
-{
-	strcpy(yylval.token_node.name,yytext);
 
+
+
+int main(void)
+{
+	
+    yyparse();
+	
+    return 0;
 }
+
+
+
+

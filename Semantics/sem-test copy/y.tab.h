@@ -49,38 +49,21 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    ID = 259,
-    CONSTANT = 260,
-    END = 261,
-    ASSG = 262
+    RETURN = 258,
+    CONSTANT = 259,
+    INT = 260,
+    ID = 261
   };
 #endif
 /* Tokens.  */
-#define INT 258
-#define ID 259
-#define CONSTANT 260
-#define END 261
-#define ASSG 262
+#define RETURN 258
+#define CONSTANT 259
+#define INT 260
+#define ID 261
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 20 "parser.y"
-
-			struct token_node_t{
-				char *name_token;
-				struct ast_node_t* node;
-				
-			}token_node;
-
-
-
-#line 81 "y.tab.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

@@ -6,21 +6,23 @@ L		     	[a-zA-Z]
 
 %{
 #include <stdio.h>
-#include "y.tab.h"
-#include "symbol_table.h"
-#include <string.h>
 #include <stdlib.h>
+#include "y.tab.h"
 
-char *param_name="Fixed";
-value_t v; 
- 
-id_data_t d;
+
+
+#include <string.h>
+
+#define MC yylval.token_node.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_node.name_token,yytext);
+
+int current_scope=0;  // if we encounter { we increment curr_scope , decrement when } occurs
 
 void count();
-
 %}
 
 %%
+
+
 
 
 "if"			{ count();return(IF); }
@@ -45,25 +47,12 @@ void count();
 ":]"			{ count(); return(TEX_CLOSE); }
 
 
-{L}({L}|{D})*   {   param_name=(char*)malloc(sizeof(yytext));
-					strcpy(param_name,yytext);
-					if( insert_symbol_tbl_lex(param_name)==false )     
-					{
-						// if identifier already in symbol table
-						//give error
-						fprintf(stderr,"%s already declared \n",param_name);
-					}    
-					else
-					{
-						fprintf(stderr,"successfully inserted \n");
-					}       
-					                   
-					count(); return(ID);                            }
+{L}({L}|{D})*   {   MC 	count(); return(ID); }
 
 
-					
-{D}+			{ count(); return(CONSTANT); }
-\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
+
+{D}+			{MC count(); return(CONSTANT_INT); }
+\"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
 
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
@@ -78,8 +67,8 @@ void count();
 "~"			{ count(); return('~'); }
 ":"			{ count(); return(':'); }
 "&"			{ count(); return('&'); }
-"{"			{ count(); return('{'); }
-"}"			{ count(); return('}'); }
+"{"			{ current_scope+=1; count(); return('{'); }
+"}"			{ current_scope-=1; count(); return('}'); }
 "("			{ count(); return('('); }
 ")"			{ count(); return(')'); }
 "["			{ count(); return('['); }
@@ -132,8 +121,5 @@ void count()
 		else
 			column++;
 
-	//ECHO;
+	ECHO;
 }
-
-
-
