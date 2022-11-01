@@ -10,6 +10,8 @@ struct ast_node_t
     struct ast_node_t* right;
 }typedef ast_node;
 
+
+
 typedef enum{
     variable,
     constant,

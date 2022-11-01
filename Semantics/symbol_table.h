@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#define MAX_SYMBOL_TABLE_SIZE 200
+#define MAX_SYMBOL_TABLE_SIZE 50
 
 // symbol table is implementated using hashing , each bucket has linked list 
 
@@ -13,8 +13,8 @@
 
 
 
-enum data_type_t{ int_t , double_t , float_t , char_t ,array_t};
-
+enum data_type_t{ int_t , double_t , float_t , char_t };
+typedef enum id_type{ variable_t , function_t , struct_t , array_t  }id_type;
 
 // only one data type can exist for a variable ,so respective value 
 union Value
@@ -67,12 +67,15 @@ union identifier_data
 }typedef id_data_t;
 
 
+
+
 struct item_
 {
 
     char* name;              // name of the identifier
     struct item_* next;
     enum data_type_t data_type;
+    id_type iden_type;
     value_t value;
     id_data_t id_info;
 
@@ -88,14 +91,33 @@ struct symbol_table
 // item_t **symbol_table_t;
 symbol_table *init_symbol_table();
 
+//get hash key for the given identifier
 unsigned int get_hash_key(char *id_name,int len);
 
-bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name);
+// return true if sucessful insertion or false 
+bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name , id_type iden_type);
 
+
+//search in table
 item_t* search_in_symbol_table(item_t** symbol_table_t ,char* name);
 
-symbol_table *child_symbol_table(symbol_table *parent);
+//search in all tables from current scope to global scope table
+item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name);
 
+// create new symbol table for the new scope for the parent scope
+symbol_table *init_child_symbol_table(symbol_table *parent);
+
+//print symbol table 
 void print_symbol_table();
-void terminate_symbol_table();
 
+// free the memory for the table
+void terminate_symbol_table(item_t** symbol_table_t );
+
+/*
+    variable 
+    function 
+    array
+    struct 
+
+
+*/

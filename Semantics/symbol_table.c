@@ -7,16 +7,16 @@
 
 symbol_table *init_symbol_table()
 {
-    symbol_table *sym_tbl;
+    symbol_table *sym_tbl_t=(symbol_table*)malloc(sizeof(symbol_table));
+    sym_tbl_t->symbol_table_t=(item_t**)malloc(sizeof(item_t)*MAX_SYMBOL_TABLE_SIZE);
     
-    sym_tbl->symbol_table_t=(item_t**)malloc(sizeof(item_t)*MAX_SYMBOL_TABLE_SIZE);
     for (int i = 0; i < MAX_SYMBOL_TABLE_SIZE; i++)
     {
-        sym_tbl->symbol_table_t[i]=NULL;
+        //sym_tbl_t->symbol_table_t[i]=NULL;
     }
-    sym_tbl->parent=NULL;
+    sym_tbl_t->parent=NULL;
 
-    return sym_tbl;
+    return sym_tbl_t;
     
 }
 
@@ -34,7 +34,7 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name)
+bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name , id_type iden_type)
 {
 
     size_t sz=strlen(name);
@@ -47,6 +47,7 @@ bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name)
     {
         item_t *new_item=(item_t*)malloc(sizeof(item_t));
         new_item->name=(char*)malloc(sizeof(name));
+        new_item->iden_type=iden_type;
         strcpy(new_item->name,name);
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
@@ -55,12 +56,13 @@ bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name)
     }
     else
     {
-        printf("Reached \n");
+        //printf("Reached \n");
         item_t *head=symbol_table_t[key];
         while (head->next!=NULL)
         {
             if (strcmp(head->name,name)==0)
             {
+                //printf("\n %s is already declared \n ",name);
                 return false;
             }
             
@@ -70,13 +72,14 @@ bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name)
         {
             item_t *new_item=(item_t*)malloc(sizeof(item_t*));
             new_item->name=(char*)malloc(sizeof(name));
+            new_item->iden_type=iden_type;
             strcpy(new_item->name,name);
             new_item->next=NULL;
             head->next=new_item;
             return true;
             
         }
-
+        //printf("\n %s is already declared \n ",name);
         return false;
     }
 }
@@ -100,12 +103,24 @@ item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
     return it;
 }
 
-symbol_table *child_symbol_table(symbol_table *parent)
+symbol_table *init_child_symbol_table(symbol_table *parent)
 {
     symbol_table *child = init_symbol_table();
     child->parent=parent;
     return child;
 }
+
+item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name)
+{
+    //we can optimise it by passing hash key from here , currently we are doing hasing in search in symbol table function
+    item_t *it=search_in_symbol_table(sym_tbl->symbol_table_t,name);
+    while (it==NULL)
+    {
+        it = search_in_all_sym_tbl(sym_tbl->parent,name);
+    }
+    return it;
+}
+
 
 void terminate_symbol_table(item_t** symbol_table_t )
 {

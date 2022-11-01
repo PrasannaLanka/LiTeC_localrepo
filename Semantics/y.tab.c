@@ -1763,7 +1763,7 @@ char *doubl_ptr="double";
 
 int main(int argc, char *argv[])
 {
-      init_symbol_table();
+      symbol_table *global_sym_tbl = init_symbol_table();
 	  ptr=(char*)malloc(sizeof(char)*10);
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
