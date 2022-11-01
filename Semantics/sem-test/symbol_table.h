@@ -13,7 +13,7 @@
 
 
 
-enum data_type_t{ int_t , double_t , float_t , char_t ,array_t};
+enum data_type_t{ int_t , double_t , float_t , char_t , array_t , struct_t , void_t  };
 
 
 // only one data type can exist for a variable ,so respective value 
@@ -86,7 +86,7 @@ void init_symbol_table();
 
 unsigned int get_hash_key(char *id_name,int len);
 
-bool insert_symbol_tbl_lex(char* name);
+bool insert_symbol_tbl_lex(item_t *item);
 
 item_t* search_in_symbol_table(char* name);
 void print_symbol_table();

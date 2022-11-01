@@ -29,9 +29,11 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl_lex(char* name)
+bool insert_symbol_tbl_lex(item_t *item)
 {
 
+    char* name=(char*)malloc(sizeof(item->name));
+    strcpy(name,item->name);
     size_t sz=strlen(name);
     int l = (int)sz;
     
@@ -43,6 +45,7 @@ bool insert_symbol_tbl_lex(char* name)
         item_t *new_item=(item_t*)malloc(sizeof(item_t));
         new_item->name=(char*)malloc(sizeof(name));
         strcpy(new_item->name,name);
+        new_item->data_type=item->data_type;
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
         return true;
@@ -66,6 +69,7 @@ bool insert_symbol_tbl_lex(char* name)
             item_t *new_item=(item_t*)malloc(sizeof(item_t*));
             new_item->name=(char*)malloc(sizeof(name));
             strcpy(new_item->name,name);
+            new_item->data_type=item->data_type;
             new_item->next=NULL;
             head->next=new_item;
             return true;

@@ -78,17 +78,24 @@ struct item_
 
 }typedef item_t;
 
+struct symbol_table
+{
+    item_t **symbol_table_t;
+    struct symbol_table *parent;
+}typedef symbol_table;
 
 
-
-item_t **symbol_table_t;
-void init_symbol_table();
+// item_t **symbol_table_t;
+symbol_table *init_symbol_table();
 
 unsigned int get_hash_key(char *id_name,int len);
 
-bool insert_symbol_tbl_lex(char* name);
+bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name);
 
-item_t* search_in_symbol_table(char* name);
+item_t* search_in_symbol_table(item_t** symbol_table_t ,char* name);
+
+symbol_table *child_symbol_table(symbol_table *parent);
+
 void print_symbol_table();
 void terminate_symbol_table();
 

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
@@ -44,27 +45,36 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    DECLARE = 258,
-    CONSTANT_INT = 259,
-    CONSTANT_CHAR = 260,
-    CONSTANT_FLOAT = 261,
-    CONSTANT_DOUBLE = 262,
-    BOOL = 263,
-    CHAR = 264,
-    INT = 265,
-    DOUBLE = 266,
-    VOID = 267,
-    ID = 268,
-    STRING_LITERAL = 269,
-    STRUCT = 270
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    DECLARE = 258,                 /* DECLARE  */
+    CONSTANT_INT = 259,            /* CONSTANT_INT  */
+    CONSTANT_CHAR = 260,           /* CONSTANT_CHAR  */
+    CONSTANT_FLOAT = 261,          /* CONSTANT_FLOAT  */
+    CONSTANT_DOUBLE = 262,         /* CONSTANT_DOUBLE  */
+    BOOL = 263,                    /* BOOL  */
+    CHAR = 264,                    /* CHAR  */
+    INT = 265,                     /* INT  */
+    DOUBLE = 266,                  /* DOUBLE  */
+    VOID = 267,                    /* VOID  */
+    ID = 268,                      /* ID  */
+    STRING_LITERAL = 269,          /* STRING_LITERAL  */
+    STRUCT = 270                   /* STRUCT  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define DECLARE 258
 #define CONSTANT_INT 259
 #define CONSTANT_CHAR 260
@@ -90,7 +100,7 @@ union YYSTYPE
 		struct ast_node_t *node;
 	}token_node;
 
-#line 94 "y.tab.h"
+#line 104 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -101,6 +111,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_Y_TAB_H_INCLUDED  */

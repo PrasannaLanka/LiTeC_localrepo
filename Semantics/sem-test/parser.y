@@ -12,6 +12,8 @@
 
 	char* ptr;
 
+	enum data_type_t data_type;
+
 %}
 
 %union
@@ -115,7 +117,7 @@ init_declarator
 	;
 
 declarator
-	: ID							{/*add the name_token to symbol table */ 
+	: ID							{/* insert_symbol_tbl_lex( get_item($1.name_token,data_type)); */ 
 										$$.node=build_node($1.name_token,$1.node,NULL);	}			
 	| ID '('')' 					{/*add the name_token to symbol table */ 
 										$$.node=build_node($1.name_token,$1.node,NULL);	}	
@@ -150,12 +152,12 @@ binary_operator
 
 
 type_specifier
-	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); }      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); }
-	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); }
-    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); }
-	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
-	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); }
+	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t;}      
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t; }
+	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; }
+    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t;}
+	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); data_type=struct_t; }
+	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;}
 	;
 
 primary_expression
@@ -201,6 +203,16 @@ int main(int argc, char *argv[])
 		print_ast(root);
 		printf("\n Completed \n") ;
 		return 0;
+}
+
+
+item_t* get_item(char *name,enum data_type_t data_type)
+{
+	item_t *new_item=(item_t*)malloc(sizeof(item_t));
+	new_item->name=(char*)malloc(sizeof(name));
+	strcpy(new_item->name,name);
+	new_item->data_type=item->data_type;
+	new_item->next=NULL;
 }
 
 

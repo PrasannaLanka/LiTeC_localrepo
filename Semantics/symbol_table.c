@@ -4,14 +4,19 @@
 #include <string.h>
 
 
-item_t **symbol_table_t;
-void init_symbol_table()
+
+symbol_table *init_symbol_table()
 {
-    symbol_table_t=(item_t**)malloc(sizeof(item_t)*MAX_SYMBOL_TABLE_SIZE);
+    symbol_table *sym_tbl;
+    
+    sym_tbl->symbol_table_t=(item_t**)malloc(sizeof(item_t)*MAX_SYMBOL_TABLE_SIZE);
     for (int i = 0; i < MAX_SYMBOL_TABLE_SIZE; i++)
     {
-        symbol_table_t[i]=NULL;
+        sym_tbl->symbol_table_t[i]=NULL;
     }
+    sym_tbl->parent=NULL;
+
+    return sym_tbl;
     
 }
 
@@ -29,7 +34,7 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl_lex(char* name)
+bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name)
 {
 
     size_t sz=strlen(name);
@@ -79,7 +84,7 @@ bool insert_symbol_tbl_lex(char* name)
 
 
 // search in symbol table and return item if exist or NULL if not.
-item_t* search_in_symbol_table(char *name)
+item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
 {
     size_t sz=strlen(name);
     int l = (int)sz;
@@ -95,7 +100,14 @@ item_t* search_in_symbol_table(char *name)
     return it;
 }
 
-void terminate_symbol_table()
+symbol_table *child_symbol_table(symbol_table *parent)
+{
+    symbol_table *child = init_symbol_table();
+    child->parent=parent;
+    return child;
+}
+
+void terminate_symbol_table(item_t** symbol_table_t )
 {
     free(symbol_table_t);
 }
