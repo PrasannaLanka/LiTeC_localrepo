@@ -12,6 +12,7 @@
 
 	char* ptr;
 	symbol_table *current_symbol_table;
+	symbol_table *temp_symbol_table;
 	int counter=0;
 %}
  
@@ -66,7 +67,7 @@ function_body
 
 
 compound_statement
-	:  '{' {table_push(current_symbol_table); current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table); } compound_statement_content '}'  { current_symbol_table=table_pop(); current_symbol_table=table_top();   ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
+	:  '{' {table_push(current_symbol_table); temp_symbol_table=init_child_symbol_table(current_symbol_table);current_symbol_table=temp_symbol_table;   } compound_statement_content '}'  {table_push(temp_symbol_table); /*current_symbol_table=table_pop(); current_symbol_table=table_top();*/   ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
 	;
 
 compound_statement_content
@@ -202,9 +203,9 @@ int main(int argc, char *argv[])
 		}
 		fclose(yyin);
 		print_ast(root);
-		printf("\n Completed \n") ;
-
-		print_symbol_table(global_sym_tbl);
+		//printf("\n Completed \n") ;
+		//table_push(current_symbol_table);
+		print_symbol_table(table_top());
 		return 0;
 }
 

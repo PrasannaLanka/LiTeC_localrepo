@@ -51,7 +51,7 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type)
         strcpy(new_item->name,name);
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
-        printf("\n inserted\n");
+        //printf("\n inserted\n");
         return true;
         
     }
@@ -134,8 +134,14 @@ void terminate_symbol_table(item_t** symbol_table_t )
 void table_push(symbol_table* it)
 {
     m++;
-    printf("\n m is %d\n",m);
+    //printf("\n m is %d\n",m);
     tables[table_size]=it;
+    if (it)
+    {
+        //print_symbol_table(it);
+        //printf("\nentered\n");
+    }
+    
     table_size++;
 }
 
@@ -152,7 +158,7 @@ symbol_table*  table_top()
 
 void print_data(item_t *item)
 {
-    printf("Called\n");
+    //printf("Called\n");
     printf("Name : %s \n", item->name );
     
     if (item->next!=NULL)
@@ -165,18 +171,10 @@ void print_data(item_t *item)
 void print_symbol_table(symbol_table *table_t)
 {
     item_t **sym_tbl;  
-    if (table_t)
-    {
-        printf("\n Exist \n");
-    }
-    else
-    {
-        printf("\nNot Exist \n");
 
-    }
      
     sym_tbl=table_t->symbol_table_t;
-    printf("Called\n");
+    //printf("Called\n");
     if (table_t->parent!=NULL)
     {
         print_symbol_table(table_t->parent);   
