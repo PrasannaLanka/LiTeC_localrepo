@@ -34,7 +34,7 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type)
+bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, enum data_type_t data_type)
 {
 
     size_t sz=strlen(name);
@@ -48,6 +48,7 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type)
         item_t *new_item=(item_t*)malloc(sizeof(item_t));
         new_item->name=(char*)malloc(sizeof(name));
         new_item->iden_type=iden_type;
+        new_item->data_type=data_type;
         strcpy(new_item->name,name);
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
@@ -74,6 +75,7 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type)
             item_t *new_item=(item_t*)malloc(sizeof(item_t*));
             new_item->name=(char*)malloc(sizeof(name));
             new_item->iden_type=iden_type;
+            new_item->data_type=data_type;
             strcpy(new_item->name,name);
             new_item->next=NULL;
             head->next=new_item;
@@ -159,7 +161,10 @@ symbol_table*  table_top()
 void print_data(item_t *item)
 {
     //printf("Called\n");
-    printf("Name : %s \n", item->name );
+    printf("Name : %s \t", item->name );
+    printf("Type : %d\n",item->iden_type);
+
+    
     
     if (item->next!=NULL)
     {

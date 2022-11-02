@@ -14,6 +14,7 @@
 	symbol_table *current_symbol_table;
 	symbol_table *temp_symbol_table;
 	int counter=0;
+	enum data_type_t data_type;
 %}
  
 
@@ -118,9 +119,9 @@ init_declarator
 	;
 
 declarator
-	: ID							{/*add the name_token to symbol table */if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t)==false){printf("redeclared\n");};
+	: ID							{/*add the name_token to symbol table */if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false){printf("redeclared\n");};
 										$$.node=build_node($1.name_token,$1.node,NULL);	}			
-	| ID '('')' 					{/*add the name_token to symbol table */ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t)==false){printf("redeclared\n");};
+	| ID '('')' 					{/*add the name_token to symbol table */ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false){printf("redeclared\n");};
 										$$.node=build_node($1.name_token,$1.node,NULL);	}	
 	;
 
@@ -153,12 +154,12 @@ binary_operator
 
 
 type_specifier
-	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); }      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); }
-	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); }
-    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); }
-	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
-	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); }
+	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ;}      
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;}
+	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; }
+    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ;}
+	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); data_type=struct_t;}
+	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;}
 	;
 
 primary_expression
