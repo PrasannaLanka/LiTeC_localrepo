@@ -11,8 +11,10 @@
 	extern FILE *yyin;
 
 	char* ptr;
-
+	symbol_table *current_symbol_table;
+	int counter=0;
 %}
+ 
 
 %union
 {
@@ -64,7 +66,7 @@ function_body
 
 
 compound_statement
-	:  '{' compound_statement_content '}' { ptr="cmp_stmt"; $$.node=build_node(ptr,$2.node,NULL); }
+	:  '{' {table_push(current_symbol_table); current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table); } compound_statement_content '}'  { current_symbol_table=table_pop(); current_symbol_table=table_top();   ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
 	;
 
 compound_statement_content
@@ -115,9 +117,9 @@ init_declarator
 	;
 
 declarator
-	: ID							{/*add the name_token to symbol table */ 
+	: ID							{/*add the name_token to symbol table */if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t)==false){printf("redeclared\n");};
 										$$.node=build_node($1.name_token,$1.node,NULL);	}			
-	| ID '('')' 					{/*add the name_token to symbol table */ 
+	| ID '('')' 					{/*add the name_token to symbol table */ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t)==false){printf("redeclared\n");};
 										$$.node=build_node($1.name_token,$1.node,NULL);	}	
 	;
 
@@ -187,6 +189,7 @@ char *doubl_ptr="double";
 int main(int argc, char *argv[])
 {
       symbol_table *global_sym_tbl = init_symbol_table();
+	  current_symbol_table=global_sym_tbl;
 	  ptr=(char*)malloc(sizeof(char)*10);
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
@@ -200,6 +203,8 @@ int main(int argc, char *argv[])
 		fclose(yyin);
 		print_ast(root);
 		printf("\n Completed \n") ;
+
+		print_symbol_table(global_sym_tbl);
 		return 0;
 }
 

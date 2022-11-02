@@ -1,7 +1,11 @@
 #include <stdbool.h>
 
 #define MAX_SYMBOL_TABLE_SIZE 50
+#define STACK_SIZE 10
 
+
+static int table_size=0;
+static int m=0;
 // symbol table is implementated using hashing , each bucket has linked list 
 
 // item is the entry in the symbol table .
@@ -87,7 +91,7 @@ struct symbol_table
     struct symbol_table *parent;
 }typedef symbol_table;
 
-
+static symbol_table* tables[STACK_SIZE];
 // item_t **symbol_table_t;
 symbol_table *init_symbol_table();
 
@@ -95,7 +99,7 @@ symbol_table *init_symbol_table();
 unsigned int get_hash_key(char *id_name,int len);
 
 // return true if sucessful insertion or false 
-bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name , id_type iden_type);
+bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type);
 
 
 //search in table
@@ -118,6 +122,11 @@ void terminate_symbol_table(item_t** symbol_table_t );
     function 
     array
     struct 
-
-
 */
+
+void table_push(symbol_table* it);
+
+symbol_table* table_pop();
+symbol_table*  table_top();
+
+void print_symbol_table(symbol_table *table);

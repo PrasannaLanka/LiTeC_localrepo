@@ -34,7 +34,7 @@ unsigned int get_hash_key(char *id_name,int len)
 }
 
 
-bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name , id_type iden_type)
+bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type)
 {
 
     size_t sz=strlen(name);
@@ -51,6 +51,7 @@ bool insert_symbol_tbl_lex(item_t** symbol_table_t ,char* name , id_type iden_ty
         strcpy(new_item->name,name);
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
+        printf("\n inserted\n");
         return true;
         
     }
@@ -125,4 +126,66 @@ item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name)
 void terminate_symbol_table(item_t** symbol_table_t )
 {
     free(symbol_table_t);
+}
+
+
+////-------------------stack ---------------
+
+void table_push(symbol_table* it)
+{
+    m++;
+    printf("\n m is %d\n",m);
+    tables[table_size]=it;
+    table_size++;
+}
+
+symbol_table* table_pop()
+{
+    table_size--;
+    return tables[table_size];
+}
+
+symbol_table*  table_top()
+{
+    return tables[table_size-1];
+}
+
+void print_data(item_t *item)
+{
+    printf("Called\n");
+    printf("Name : %s \n", item->name );
+    
+    if (item->next!=NULL)
+    {
+        print_data(item->next);
+    }
+    
+}
+
+void print_symbol_table(symbol_table *table_t)
+{
+    item_t **sym_tbl;  
+    if (table_t)
+    {
+        printf("\n Exist \n");
+    }
+    else
+    {
+        printf("\nNot Exist \n");
+
+    }
+     
+    sym_tbl=table_t->symbol_table_t;
+    printf("Called\n");
+    if (table_t->parent!=NULL)
+    {
+        print_symbol_table(table_t->parent);   
+    }
+    for (int i = 0; i < MAX_SYMBOL_TABLE_SIZE; i++)
+    {
+        if(sym_tbl[i]!=NULL)
+        {
+            print_data(sym_tbl[i]);
+        }
+    }    
 }
