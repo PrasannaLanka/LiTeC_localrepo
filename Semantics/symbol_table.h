@@ -17,7 +17,7 @@ static int m=0;
 
 
 
-enum data_type_t{char_t, int_t , double_t , float_t ,bool_t , void_t };
+enum data_type_t{char_t, int_t , double_t ,bool_t , void_t };
 typedef enum id_type{ variable_t , function_t , struct_t , array_t  }id_type;
 
 // only one data type can exist for a variable ,so respective value 
@@ -29,6 +29,10 @@ union Value
     char char_value;
 }typedef value_t;
 
+struct data_type_d
+{
+    enum data_type_t data_type;
+}typedef data_type_s;
 
 
 //for array data_type , array_size

@@ -10,7 +10,7 @@ ast_node* build_node(char *name, ast_node *left, ast_node *right){
 
     //memory for name 
     new_ast_node->name=(char*)malloc(sizeof(name));
-
+    
     //assign node_name by name
     strcpy(new_ast_node->name,name);
     new_ast_node->left=left;
@@ -23,6 +23,11 @@ void print_ast(ast_node *node)
     
     // root left right
     printf("%s ",node->name);
+    if (node->data_type)
+    {
+        printf("Data_type : %d ",node->data_type);
+    }
+    
     if (node->left==NULL)
     {
         return;
@@ -37,8 +42,16 @@ void print_ast(ast_node *node)
     }
     else
     {
-        print_ast(node->right);
         printf("\n");
+        print_ast(node->right);
+        
     }
 
+}
+
+data_type_s *get_type(enum data_type_t d)
+{
+    data_type_s *n=(data_type_s*)malloc(sizeof(data_type_s));
+    n->data_type=d;
+    return n;
 }

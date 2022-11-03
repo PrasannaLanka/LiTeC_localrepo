@@ -15,6 +15,10 @@
 	symbol_table *temp_symbol_table;
 	int counter=0;
 	enum data_type_t data_type;
+
+
+	
+	
 %}
  
 
@@ -24,21 +28,27 @@
 		char *name_token;
 		struct ast_node_t *node;
 	}token_node;
+
+	struct token_node_id{
+		char *name_token;
+		struct ast_node_t *node;
+		struct data_type_d *data_type;	
+	}token_id;
 }
 
 
 
-%token <token_node> DECLARE 
+%token <token_node> DECLARE RETURN 
 %token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
-%token <token_node> BOOL CHAR INT DOUBLE VOID ID STRING_LITERAL STRUCT
-
+%token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT
+%token <token_id> ID
 
 %type  <token_node> translation_main translation_unit external_declaration declaration function_definition
 %type <token_node>  declarator compound_statement compound_statement_content
 %type <token_node>  statement expression_statement 
 %type <token_node>  init_declarator type_specifier expression
 %type <token_node> assignment_expression primary_expression postfix_expression 
-%type <token_node> binary_operator function_body
+%type <token_node> binary_operator function_body body parameter_list
 
 %start translation_main
 
@@ -62,9 +72,15 @@ external_declaration
 
 function_definition
 	:type_specifier function_body   {ptr="fun_def"; $$.node=build_node(ptr,$1.node,$2.node);}
+	;
 
 function_body
-	:declarator compound_statement {ptr="fun_body"; $$.node=build_node(ptr,$1.node,$2.node);}
+	:declarator '{' {table_push(current_symbol_table); temp_symbol_table=init_child_symbol_table(current_symbol_table);current_symbol_table=temp_symbol_table;   } body  '}' {table_push(temp_symbol_table); ptr="fun_body"; $$.node=build_node($1.name_token,$1.node,$4.node);}
+	;
+
+body
+	:  compound_statement_content RETURN expression_statement  { ptr="body"; $$.node=build_node(ptr,$1.node,$3.node); }
+	;
 
 
 compound_statement
@@ -91,12 +107,9 @@ declaration
 	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
 	;
 
-
-
-
-
 expression_statement
-	:   expression ';'                  { $$.node=build_node($1.name_token,$1.node,NULL); }
+	:   ';'								{ptr=";"; $$.node=build_node(ptr,NULL,NULL);  }
+	|  expression ';'                  { $$.node=build_node($1.name_token,$1.node,NULL); }
 	;
 
 
@@ -119,13 +132,19 @@ init_declarator
 	;
 
 declarator
-	: ID							{/*add the name_token to symbol table */if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false){printf("redeclared\n");};
-										$$.node=build_node($1.name_token,$1.node,NULL);	}			
-	| ID '('')' 					{/*add the name_token to symbol table */ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false){printf("redeclared\n");};
-										$$.node=build_node($1.name_token,$1.node,NULL);	}	
+	: ID							{/*add the name_token to symbol table */if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false){ptr="Redeclared";yyerror(ptr); printf("redeclared\n");};
+									 $1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;}			
+	| ID '('')' 					{/*add the name_token to symbol table */ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false){ptr="Redeclared";yyerror(ptr);printf("redeclared\n");};
+									$1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;}	
+	| ID '(' parameter_list ')'       {   if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false){ptr="Redeclared";yyerror(ptr);printf("redeclared\n");};
+											$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$3.node ,NULL ); $$.node->data_type=data_type; }
 	;
 
 
+parameter_list
+	: type_specifier ID                          {$2.data_type=get_type(data_type);  $$.node=build_node($2.name_token,$2.node,NULL); $$.node->data_type=data_type; }
+	| parameter_list ',' type_specifier ID				{$4.data_type=get_type(data_type); ptr="param";  $$.node=build_node(ptr,$1.node,$4.node );$$.node->data_type=data_type;}
+	;
 
 	
 
@@ -158,7 +177,7 @@ type_specifier
 	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;}
 	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; }
     | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ;}
-	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); data_type=struct_t;}
+	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
 	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;}
 	;
 
@@ -190,17 +209,20 @@ char *doubl_ptr="double";
 
 int main(int argc, char *argv[])
 {
+	
+	  data_type = int_t;
       symbol_table *global_sym_tbl = init_symbol_table();
 	  current_symbol_table=global_sym_tbl;
 	  ptr=(char*)malloc(sizeof(char)*10);
+	  
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
 		{
-			printf("\n Parsing error \n");
+			printf("\nParsing error \n");
 		}
 		else
 		{
-			printf("\n parsing completed \n");
+			printf("\nparsing completed \n");
 		}
 		fclose(yyin);
 		print_ast(root);

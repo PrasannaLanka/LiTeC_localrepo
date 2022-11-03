@@ -1,9 +1,8 @@
 declare int j : 20 ;
-
-int main()
+int main(int x , int p , int s )
 {
-    declare int p : 50 ;
+    declare int d : 29 ;
+    d : (+ 2 6);
+    declare int d : 90 ;
+    return d;
 }
-
-
-
