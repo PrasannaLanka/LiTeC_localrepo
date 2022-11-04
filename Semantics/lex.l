@@ -14,8 +14,7 @@ L		     	[a-zA-Z]
 #include <string.h>
 
 #define MC yylval.token_node.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_node.name_token,yytext);
-
-int current_scope=0;  // if we encounter { we increment curr_scope , decrement when } occurs
+#define MC_ID yylval.token_id.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_id.name_token,yytext);
 
 void count();
 %}
@@ -36,12 +35,13 @@ void count();
 "struct"		{ count(); return(STRUCT); }
 
 "void"			{ count(); return(VOID); }
+"return"       {count(); return(RETURN); }
 
 
 
 
 
-{L}({L}|{D})*   {   MC 	count(); return(ID); }
+{L}({L}|{D})*   {   MC_ID 	count(); return(ID); }
 
 
 
@@ -61,8 +61,8 @@ void count();
 "~"			{ count(); return('~'); }
 ":"			{ count(); return(':'); }
 "&"			{ count(); return('&'); }
-"{"			{ current_scope+=1; count(); return('{'); }
-"}"			{ current_scope-=1; count(); return('}'); }
+"{"			{ count(); return('{'); }
+"}"			{ count(); return('}'); }
 "("			{ count(); return('('); }
 ")"			{ count(); return(')'); }
 "["			{ count(); return('['); }
@@ -115,5 +115,5 @@ void count()
 		else
 			column++;
 
-	ECHO;
+	//ECHO;
 }

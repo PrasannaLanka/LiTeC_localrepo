@@ -81,7 +81,7 @@ struct item_
 
 
 
-item_t **symbol_table_t;
+//item_t **symbol_table_t;
 void init_symbol_table();
 
 unsigned int get_hash_key(char *id_name,int len);
