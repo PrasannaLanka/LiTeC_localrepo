@@ -22,10 +22,10 @@ void print_ast(ast_node *node)
 {
     
     // root left right
-    printf("%s ",node->name);
+    printf("-- %s ",node->name);
     if (node->data_type)
     {
-        printf("Data_type : %d ",node->data_type);
+        //printf("Data_type : %d ",node->data_type);
     }
     
     if (node->left==NULL)
@@ -46,6 +46,7 @@ void print_ast(ast_node *node)
         print_ast(node->right);
         
     }
+    
 
 }
 

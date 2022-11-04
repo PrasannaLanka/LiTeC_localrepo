@@ -155,17 +155,58 @@ symbol_table* table_pop()
 
 symbol_table*  table_top()
 {
-    return tables[table_size-1];
+    return tables[m-1];
+}
+
+void print_id_type(enum id_type id)
+{
+    if (id==variable_t)
+    {
+        printf("variable");
+    }
+    else if (id==function_param)
+    {
+        printf("parameter");
+    }
+    
+    else if (id==function_t)
+    {
+        printf("function");
+    }
+    
+    printf("\t");
+    
+}
+void print_data_type(enum data_type_t data_type)
+{
+    switch (data_type)
+    {
+    case int_t:
+        printf("int");
+        break;
+    case double_t:
+        printf("double");
+        break;
+    case char_t:
+        printf("char");
+        break;
+    case bool_t:
+        printf("bool");
+        break;
+    default:
+        printf("void");
+        break;
+    }
+    printf("\n");
 }
 
 void print_data(item_t *item)
 {
     //printf("Called\n");
     printf("Name : %s \t", item->name );
-    printf("Type : %d\n",item->iden_type);
+    print_id_type(item->iden_type);
+    print_data_type(item->data_type);
 
-    
-    
     if (item->next!=NULL)
     {
         print_data(item->next);
