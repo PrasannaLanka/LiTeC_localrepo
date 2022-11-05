@@ -21,8 +21,9 @@
 	param* params;
 	int no_of_parameters=0;
 	id_data_t id_info;
+	item_t * item;
 	
-	
+	void link_p(char *name ,enum data_type_t d );
 %}
  
 
@@ -81,7 +82,7 @@ function_definition
 
 function_body
 	:declarator '{' {} 
-		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();  ptr="fun_body"; 
+		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();  ptr="fun_body"; no_of_parameters=0;
 														$$.node=build_node($1.name_token,$1.node,$4.node);}
 	;
 
@@ -147,20 +148,35 @@ declarator
 																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");} 
 																			current_symbol_table=init_child_symbol_table(current_symbol_table); 
 																			table_push(current_symbol_table);
+																			printf("HI\n"); 
+																			item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
 									$1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;          }	
-	| ID '('                     {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);}  
-	parameter_list ')'            {   if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
+	| ID '('                     {  
+									if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
 																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}
-											$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; }
+									current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);}  
+	parameter_list ')'            {    item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
+											
+										function_info.return_data_type=data_type;
+										function_info.no_parameters=no_of_parameters;
+										function_info.parameters=parameter_list->next;
+										id_info.function_info=function_info; 
+										item->id_info=id_info;
+										parameter_list=NULL;
+										params=parameter_list;
+										
+										$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; }
 	;
 
 
 parameter_list
-	: type_specifier ID                          {if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$2.name_token , function_param , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}       $2.data_type=get_type(data_type);  $$.node=build_node($2.name_token,$2.node,NULL); $$.node->data_type=data_type; }
+	: type_specifier ID                          { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$2.name_token , function_param , data_type)==false)
+																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");} no_of_parameters++;      $2.data_type=get_type(data_type);  
+																			$$.node=build_node($2.name_token,$2.node,NULL); $$.node->data_type=data_type; 
+																			link_p($2.name_token,data_type);}
 	| parameter_list ',' type_specifier ID				{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}  $4.data_type=get_type(data_type); 
-															ptr="param";  $$.node=build_node(ptr,$1.node,$4.node );$$.node->data_type=data_type;}
+																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}  $4.data_type=get_type(data_type);  no_of_parameters++;
+															ptr="param";  $$.node=build_node(ptr,$1.node,$4.node );$$.node->data_type=data_type; link_p($3.name_token,data_type);     }
 	;
 
 	
@@ -191,7 +207,7 @@ binary_operator
 
 type_specifier
 	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ;}      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;}
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  }
 	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; }
     | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ;}
 	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
@@ -232,6 +248,10 @@ int main(int argc, char *argv[])
 	  current_symbol_table=global_sym_tbl;
 	  table_push(current_symbol_table);
 	  ptr=(char*)malloc(sizeof(char)*10);
+	  params=(param*)malloc(sizeof(param));
+	  parameter_list=(param*)malloc(sizeof(param));
+	  params=parameter_list;
+	  item=(item_t*)malloc(sizeof(item_t));
 	  
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
@@ -247,7 +267,22 @@ int main(int argc, char *argv[])
 		printf("\n"); 
 		printf("Symbol Table \n");
 		print_symbol_table(table_top());
+		ptr="main";
+		item=search_in_all_sym_tbl(current_symbol_table ,ptr);
+		//printf("\n%d\n",item->id_info.function_info.no_parameters);
 		return 0;
+}
+
+void link_p(char *name ,enum data_type_t d )
+{
+	param* p = (param*)malloc(sizeof(param));
+	p->parameter_name=(char*)malloc(sizeof(name));
+	strcpy(p->parameter_name,name);
+	p->parameter_data_type=d;
+	p->next=NULL;
+	params->next=p;
+	params=p;
+	return ;
 }
 
 
