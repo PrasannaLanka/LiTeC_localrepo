@@ -96,13 +96,15 @@ item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
     int l = (int)sz;
     unsigned int key=get_hash_key(name,l);
     item_t *head=symbol_table_t[key];
-
+    
     const char* p1=name;
     item_t *it=head;
-    while (strcmp(p1,it->name)==1 && it!=NULL)
+    
+    while (it!=NULL && strcmp(p1,it->name)==1 )
     {
         it=it->next;
     }
+    printf("HI");
     return it;
 }
 
@@ -116,8 +118,10 @@ symbol_table *init_child_symbol_table(symbol_table *parent)
 item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name)
 {
     //we can optimise it by passing hash key from here , currently we are doing hasing in search in symbol table function
-    item_t *it=search_in_symbol_table(sym_tbl->symbol_table_t,name);
-    while (it==NULL)
+    item_t *it=(item_t*)malloc(sizeof(item_t));
+    it=search_in_symbol_table(sym_tbl->symbol_table_t,name);
+    
+    while (it==NULL && sym_tbl->parent!=NULL)
     {
         it = search_in_all_sym_tbl(sym_tbl->parent,name);
     }
@@ -155,7 +159,7 @@ symbol_table* table_pop()
 
 symbol_table*  table_top()
 {
-    return tables[m-1];
+    return tables[table_size-1];
 }
 
 void print_id_type(enum id_type id)
