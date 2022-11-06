@@ -17,6 +17,12 @@ void check_function_return(ast_node *node)
     c=node->left->left->name; // c is data type in string .It can be "int", "double" , "bool"
     printf("%s",c);
     nd=node;
+    nd=nd->left->right->right->right->left; // nd is return node
+    c="prm_exp";
+    if (strcmp(c,nd->name)==0)
+    {
+        //check primary exp like constant number , c , id .
+    }
     
 
 
