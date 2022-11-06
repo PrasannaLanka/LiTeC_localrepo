@@ -72,23 +72,26 @@ translation_unit
 
 external_declaration
 	: declaration 					{ptr="external_declr"; $$.node=build_node(ptr,$1.node,NULL);}
-	| function_definition        {ptr="fun_def"; $$.node=build_node(ptr,$1.node,NULL);}
+	| function_definition        {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL);}
 	;
 
 function_definition
 	:type_specifier { } 
-	  function_body   {ptr="fun_def"; $$.node=build_node(ptr,$1.node,$3.node); }
+	  function_body   {ptr="fun_def"; $$.node=build_node($3.node->name,$1.node,$3.node); }
 	;
 
 function_body
 	:declarator '{' {} 
 		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();  ptr="fun_body"; no_of_parameters=0;
-														$$.node=build_node($1.name_token,$1.node,$4.node);}
+													    if($1.node->left!=NULL)
+														{$$.node=build_node($1.node->name,$1.node->left,$4.node);}  
+														else{$$.node=build_node(ptr,NULL,$4.node);}
+														}
 	;
 
 body
 	:  compound_statement_content RETURN expression_statement  { ptr="body"; $$.node=build_node(ptr,$1.node,$3.node); }
-	| RETURN expression_statement {ptr="body"; $$.node=build_node(ptr,NULL,$2.node);  }
+	| RETURN expression_statement { ptr="body"; $$.node=build_node(ptr,NULL,$2.node);  }
 	;  
 
 
@@ -119,7 +122,7 @@ declaration
 
 expression_statement
 	:   ';'								{ptr=";"; $$.node=build_node(ptr,NULL,NULL);  }
-	|  expression ';'                  { $$.node=build_node($1.name_token,$1.node,NULL); }
+	|  expression ';'                  { ptr="expr"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
 
@@ -273,8 +276,8 @@ int main(int argc, char *argv[])
 		fclose(yyin);
 		print_ast(root);
 		printf("\n"); 
-		printf("Symbol Table \n");
-		print_symbol_table(table_top());
+		//printf("Symbol Table \n");
+		//print_symbol_table(table_top());
 
 		return 0;
 }
