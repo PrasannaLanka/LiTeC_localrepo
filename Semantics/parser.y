@@ -53,7 +53,7 @@
 %type <token_node>  statement expression_statement 
 %type <token_node>  init_declarator type_specifier expression
 %type <token_node> assignment_expression primary_expression postfix_expression 
-%type <token_node> binary_operator function_body body parameter_list
+%type <token_node> binary_operator function_body body parameter_list id_list
 
 %start translation_main
 
@@ -88,7 +88,8 @@ function_body
 
 body
 	:  compound_statement_content RETURN expression_statement  { ptr="body"; $$.node=build_node(ptr,$1.node,$3.node); }
-	;
+	| RETURN expression_statement {ptr="body"; $$.node=build_node(ptr,NULL,$2.node);  }
+	;  
 
 
 compound_statement
@@ -148,7 +149,7 @@ declarator
 																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");} 
 																			current_symbol_table=init_child_symbol_table(current_symbol_table); 
 																			table_push(current_symbol_table);
-																			printf("HI\n"); 
+																			
 																			item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
 									$1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;          }	
 	| ID '('                     {  
@@ -178,8 +179,6 @@ parameter_list
 																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}  $4.data_type=get_type(data_type);  no_of_parameters++;
 															ptr="param";  $$.node=build_node(ptr,$1.node,$4.node );$$.node->data_type=data_type; link_p($3.name_token,data_type);     }
 	;
-
-	
 
 
 
@@ -221,7 +220,16 @@ primary_expression
 	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); }
 	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); }
 	| STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
+	| '('ID '('')'')'             { $$.node=$2.node; }
+	| '('ID '(' id_list ')' ')' { $$.node=build_node( $2.name_token, $2.node , $4.node ); }
+ 	;
+
+
+id_list
+	: primary_expression						{$$.node=$1.node;}
+	| id_list ',' primary_expression            {ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
 	;
+
 
 
 %%
@@ -267,9 +275,7 @@ int main(int argc, char *argv[])
 		printf("\n"); 
 		printf("Symbol Table \n");
 		print_symbol_table(table_top());
-		ptr="main";
-		item=search_in_all_sym_tbl(current_symbol_table ,ptr);
-		//printf("\n%d\n",item->id_info.function_info.no_parameters);
+
 		return 0;
 }
 

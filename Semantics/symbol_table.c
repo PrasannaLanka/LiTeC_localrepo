@@ -104,7 +104,7 @@ item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
     {
         it=it->next;
     }
-    printf("HI");
+    
     return it;
 }
 

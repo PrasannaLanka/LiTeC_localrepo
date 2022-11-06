@@ -1,8 +1,14 @@
 declare int j : ( + 10 78 ) ;
 
-int main(int x , int g )
+int fun(int p,int x)
 {
+    return 10 ;
+}
 
-    declare int x : ( + 90 67 );
-    return 9;
+int main()
+{
+    declare int x : 90 ;
+    x : (fun(x,40));
+    x : ( + (fun(30,6)) 0 ) ; 
+    return 0 ;
 }
