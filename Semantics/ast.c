@@ -20,27 +20,17 @@ ast_node* build_node(char *name, ast_node *left, ast_node *right){
 
 void print_ast(ast_node *node)
 {
-    
+
     // root left right
     printf("-- %s ",node->name);
-    if (node->data_type)
-    {
-        //printf("Data_type : %d ",node->data_type);
-    }
     
-    if (node->left==NULL)
-    {
-        return;
-    }
-    else
+    
+    if(node->left!=NULL)
     {
         print_ast(node->left);
     }
-    if (node->right==NULL)
-    {
-        return ;
-    }
-    else
+    
+    if(node->right!=NULL)
     {
         printf("\n");
         print_ast(node->right);
