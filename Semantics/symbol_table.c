@@ -12,7 +12,7 @@ symbol_table *init_symbol_table()
     
     for (int i = 0; i < MAX_SYMBOL_TABLE_SIZE; i++)
     {
-        //sym_tbl_t->symbol_table_t[i]=NULL;
+        sym_tbl_t->symbol_table_t[i]=NULL;
     }
     sym_tbl_t->parent=NULL;
 
@@ -87,14 +87,23 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, 
     }
 }
 
-
+int ccc=0;
 
 // search in symbol table and return item if exist or NULL if not.
 item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
 {
+    
+    
+    
     size_t sz=strlen(name);
     int l = (int)sz;
     unsigned int key=get_hash_key(name,l);
+    if (symbol_table_t[key]==NULL)
+    {
+        
+        return NULL;
+    }
+    
     item_t *head=symbol_table_t[key];
     
     const char* p1=name;
@@ -104,6 +113,7 @@ item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
     {
         it=it->next;
     }
+
     
     return it;
 }
@@ -119,11 +129,17 @@ item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name)
 {
     //we can optimise it by passing hash key from here , currently we are doing hasing in search in symbol table function
     item_t *it=(item_t*)malloc(sizeof(item_t));
+    
     it=search_in_symbol_table(sym_tbl->symbol_table_t,name);
+    
+   
     
     while (it==NULL && sym_tbl->parent!=NULL)
     {
         it = search_in_all_sym_tbl(sym_tbl->parent,name);
+        
+        sym_tbl=sym_tbl->parent;
+        
     }
     return it;
 }

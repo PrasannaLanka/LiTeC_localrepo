@@ -2,7 +2,8 @@ declare int j : ( + 10 78 ) ;
 
 int work(int p,int x)
 {
-    declare int y : 8 ; 
+    declare int y : 8 ;
+    y : r ; 
     return (+ 12 89 ) ;
 }
 

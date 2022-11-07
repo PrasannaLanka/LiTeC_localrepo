@@ -158,7 +158,8 @@ declarator
 	| ID '('                     {  
 									if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
 																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}
-									current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);}  
+									current_symbol_table=init_child_symbol_table(current_symbol_table); ptr="LOCAL"; current_symbol_table->name=(char*)malloc(sizeof(char)*10);
+									strcpy(current_symbol_table->name,ptr); table_push(current_symbol_table);}  
 	parameter_list ')'            {    item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
 											
 										function_info.return_data_type=data_type;
@@ -217,11 +218,11 @@ type_specifier
 	;
 
 primary_expression
-	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); }
-	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); }
-	| CONSTANT_FLOAT	    { $$.node=build_node($1.name_token,NULL,NULL); }
-	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); }
-	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); }
+	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; }
+	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
+	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
+	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
+								if(item==NULL){printf("%s is undeclared identifier\n",$1.name_token);}	}	
 	| STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
 	| '('ID '('')'')'             { $$.node=$2.node; }
 	| '('ID '(' id_list ')' ')' { $$.node=build_node( $2.name_token, $2.node , $4.node ); }
@@ -256,6 +257,9 @@ int main(int argc, char *argv[])
 	
 	  data_type = int_t;
       symbol_table *global_sym_tbl = init_symbol_table();
+	  ptr="GLOBAL";
+	  global_sym_tbl->name=(char*)malloc(sizeof(char)*10);
+	  strcpy(global_sym_tbl->name,ptr);
 	  current_symbol_table=global_sym_tbl;
 	  table_push(current_symbol_table);
 	  ptr=(char*)malloc(sizeof(char)*10);
@@ -276,8 +280,11 @@ int main(int argc, char *argv[])
 		fclose(yyin);
 		print_ast(root);
 		printf("\n"); 
+		
 		//printf("Symbol Table \n");
 		//print_symbol_table(table_top());
+
+
 
 		return 0;
 }
