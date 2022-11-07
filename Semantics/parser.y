@@ -58,6 +58,7 @@
 %type <token_node> binary_operator function_body body parameter_list id_list
 %type <token_node> selection_statement iteration_statement tex_statement logical_expression logical_operator
 
+%type <token_node> tex_data tex_function 
 %start translation_main
 
 %%
