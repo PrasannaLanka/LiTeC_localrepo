@@ -3,8 +3,8 @@
 	#include <stdlib.h>
 
 	#include <string.h>
-	#include "ast.h"
-
+	
+	#include "semantic.h"
     int yylex(void);
     void yyerror(char *); 
 
@@ -43,8 +43,10 @@
 
 
 
+
 %token <token_node> DECLARE RETURN IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
 %token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
+
 %token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT
 %token <token_id> ID
 
@@ -162,7 +164,7 @@ expression_statement
 
 expression
 	: assignment_expression						{ptr="assign_exp"; $$.node=build_node(ptr,$1.node,NULL); }
-	| primary_expression						{ptr="prm_exp"; $$.node=build_node(ptr,$1.node,NULL); }
+	| primary_expression						{ptr="prm_exp"; $$.node=build_node(ptr,$1.node,NULL); $$.node->data_type=$1.node->data_type;}
 	| postfix_expression						{ptr="post_exp"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
@@ -250,24 +252,32 @@ logical_operator
 	;
 
 type_specifier
-	: CHAR                  		{ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ;}      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  }
-	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; }
-    	| BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ;}
+	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ; $$.node->data_type=char_t; }      
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t;}
+	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; $$.node->data_type=double_t; }
+    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ; $$.node->data_type=bool_t;}
+
 	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
-	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;}
+	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;$$.node->data_type=void_t; }
 	;
 
 primary_expression
-	: CONSTANT_INT				{ $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; }
-	| CONSTANT_CHAR				{ $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
-	| CONSTANT_DOUBLE			{ $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
+	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; printf("N :%s , %d \n",$$.node->name,$$.node->data_type);}
+	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
+	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
 	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
-								if(item==NULL){printf("%s is undeclared identifier\n",$1.name_token);}	}	
-	| STRING_LITERAL			{ $$.node=build_node($1.name_token,NULL,NULL); }
-	| '('ID '('')'')'			{ $$.node=$2.node; }
-	| '('ID '(' id_list ')' ')'		{ $$.node=build_node( $2.name_token, $2.node , $4.node ); }
-	| ID '(' id_list ')'			{ $$.node = build_node($1.name_token, $1.node, $3.node ); }
+								if(item==NULL){printf("%s is undeclared identifier\n",$1.name_token);}
+								else{$$.node->data_type=item->data_type;}
+								
+									}	
+	| STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
+	| '('ID '('')'')'             { $$.node=$2.node;item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
+								if(item==NULL){printf("%s is undeclared identifier\n",$2.name_token);} 
+								$$.node->data_type=item->data_type;}
+	| '('ID '(' id_list ')' ')' { $$.node=build_node( $2.name_token, $2.node , $4.node );item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
+								if(item==NULL){printf("%s is undeclared identifier\n",$2.name_token);} 
+								else{$$.node->data_type=item->data_type; }    }
+
  	;
 
 
@@ -327,7 +337,7 @@ int main(int argc, char *argv[])
 		//print_symbol_table(table_top());
 
 
-
+		check_function_return(root->left->left);
 		return 0;
 }
 

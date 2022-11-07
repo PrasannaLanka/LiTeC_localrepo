@@ -1,5 +1,7 @@
 #include <stdbool.h>
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #define MAX_SYMBOL_TABLE_SIZE 50
 #define STACK_SIZE 10
 

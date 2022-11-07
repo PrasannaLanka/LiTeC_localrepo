@@ -58,16 +58,15 @@ extern int yydebug;
     RETURN = 259,                  /* RETURN  */
     CONSTANT_INT = 260,            /* CONSTANT_INT  */
     CONSTANT_CHAR = 261,           /* CONSTANT_CHAR  */
-    CONSTANT_FLOAT = 262,          /* CONSTANT_FLOAT  */
-    CONSTANT_DOUBLE = 263,         /* CONSTANT_DOUBLE  */
-    BOOL = 264,                    /* BOOL  */
-    CHAR = 265,                    /* CHAR  */
-    INT = 266,                     /* INT  */
-    DOUBLE = 267,                  /* DOUBLE  */
-    VOID = 268,                    /* VOID  */
-    STRING_LITERAL = 269,          /* STRING_LITERAL  */
-    STRUCT = 270,                  /* STRUCT  */
-    ID = 271                       /* ID  */
+    CONSTANT_DOUBLE = 262,         /* CONSTANT_DOUBLE  */
+    BOOL = 263,                    /* BOOL  */
+    CHAR = 264,                    /* CHAR  */
+    INT = 265,                     /* INT  */
+    DOUBLE = 266,                  /* DOUBLE  */
+    VOID = 267,                    /* VOID  */
+    STRING_LITERAL = 268,          /* STRING_LITERAL  */
+    STRUCT = 269,                  /* STRUCT  */
+    ID = 270                       /* ID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -80,16 +79,15 @@ extern int yydebug;
 #define RETURN 259
 #define CONSTANT_INT 260
 #define CONSTANT_CHAR 261
-#define CONSTANT_FLOAT 262
-#define CONSTANT_DOUBLE 263
-#define BOOL 264
-#define CHAR 265
-#define INT 266
-#define DOUBLE 267
-#define VOID 268
-#define STRING_LITERAL 269
-#define STRUCT 270
-#define ID 271
+#define CONSTANT_DOUBLE 262
+#define BOOL 263
+#define CHAR 264
+#define INT 265
+#define DOUBLE 266
+#define VOID 267
+#define STRING_LITERAL 268
+#define STRUCT 269
+#define ID 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -108,7 +106,7 @@ union YYSTYPE
 		struct data_type_d *data_type;	
 	}token_id;
 
-#line 112 "y.tab.h"
+#line 110 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
