@@ -147,7 +147,7 @@ tex_data
 	;
 
 tex_function
-	: TEX_OPEN declarator TEX_CLOSE				{ $$.node = $2.node }
+	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node }
 	;
 
 declaration
@@ -267,6 +267,7 @@ primary_expression
 	| STRING_LITERAL			{ $$.node=build_node($1.name_token,NULL,NULL); }
 	| '('ID '('')'')'			{ $$.node=$2.node; }
 	| '('ID '(' id_list ')' ')'		{ $$.node=build_node( $2.name_token, $2.node , $4.node ); }
+	| ID '(' id_list ')'			{ $$.node = build_node($1.name_token, $1.node, $3.node ); }
  	;
 
 
