@@ -1,10 +1,7 @@
-declare int j : ( + 10 78 ) ;
-
-int work(int p,int x)
+void work(int p,int x)
 {
     declare int y : 8 ;
-    y : r ; 
-    return (+ 12 89 ) ;
+    return 10 ;
 }
 
 
