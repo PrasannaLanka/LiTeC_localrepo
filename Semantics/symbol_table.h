@@ -4,6 +4,7 @@
 #define STACK_SIZE 10
 
 
+
 static int table_size=0;
 static int m=0;
 // symbol table is implementated using hashing , each bucket has linked list 
@@ -91,6 +92,7 @@ struct item_
 
 struct symbol_table
 {
+    char *name;
     item_t **symbol_table_t;
     struct symbol_table *parent;
 }typedef symbol_table;
