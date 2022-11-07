@@ -43,8 +43,10 @@
 
 
 
-%token <token_node> DECLARE RETURN 
-%token <token_node> CONSTANT_INT CONSTANT_CHAR  CONSTANT_DOUBLE
+
+%token <token_node> DECLARE RETURN IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
+%token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
+
 %token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT
 %token <token_id> ID
 
@@ -54,6 +56,7 @@
 %type <token_node>  init_declarator type_specifier expression
 %type <token_node> assignment_expression primary_expression postfix_expression 
 %type <token_node> binary_operator function_body body parameter_list id_list
+%type <token_node> selection_statement iteration_statement tex_statement logical_expression logical_operator
 
 %start translation_main
 
@@ -108,16 +111,49 @@ compound_statement_content
 	;
 
 statement
-	: compound_statement                {ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	: compound_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
 	| expression_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	| selection_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	| iteration_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	| tex_statement				{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
 	;
 
+selection_statement
+	: IF '(' logical_expression ')' compound_statement						{ ptr = "if_"; $$.node = build_node(ptr, $3.node, $5.node);}
+	| IF '(' logical_expression ')' compound_statement ELSE compound_statement			{ ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
+	;
 
+iteration_statement
+	: LOOP '(' expression_statement logical_expression ';' ')' compound_statement
+			{
+				ptr = "lp_cdn"; ast_node* lp_cdn = build_node(ptr, $4.node, $7.node);
+				ptr = "loop"; $$.node = build_node(ptr, $3.node, lp_cdn);
+			}
+	| LOOP '(' expression_statement logical_expression ';' expression ')' compound_statement
+			{
+				ptr = "lp_cdn"; ast_node* lp_cdn = build_node(ptr, $4.node, $8.node);
+				ptr = "lp_itr"; ast_node* lp_itr = build_node(ptr, $6.node, lp_cdn);
+				ptr = "loop"; $$.node = build_node(ptr, $3.node, lp_itr);
+			}
+	;
 
+tex_statement
+	: TEX '{' tex_data '}'					{ ptr = "tex"; $$.node = build_node(ptr, $3.node, NULL); }
+	;
 
+tex_data
+	: STRING_LITERAL					{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
+	| tex_function						{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
+	| tex_data STRING_LITERAL				{ ptr = "tex_fun"; $$.node = build_node(ptr, $2.node, $1.node); }
+	| tex_data tex_function					{ ptr = "tex_fun"; $$.node = build_node(ptr, $1.node, $2.node); }
+	;
+
+tex_function
+	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node }
+	;
 
 declaration
-	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
+	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
 	;
 
 expression_statement
@@ -187,13 +223,16 @@ parameter_list
 
 
 postfix_expression
-	: '(' binary_operator primary_expression primary_expression  ')'   { $$.node=build_node($2.node->name,$3.node,$4.node);   }
+	: '(' binary_operator primary_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
 	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
 	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
 	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
 	;
 
-
+logical_expression
+	: primary_expression							{ ptr = "prm_exp"; $$.node = build_node(ptr, $1.node, NULL); }
+	| expression logical_operator expression				{ $$.node = build_node($2.name_token, $1.node, $3.node); }
+	;
 
 binary_operator
 	: '+'					{ptr="+"; $$.node=build_node(ptr,NULL,NULL); }
@@ -206,13 +245,18 @@ binary_operator
 	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
-
+logical_operator
+	: '<'					{ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
+	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
+	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
+	;
 
 type_specifier
 	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ; $$.node->data_type=char_t; }      
 	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t;}
 	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; $$.node->data_type=double_t; }
     | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ; $$.node->data_type=bool_t;}
+
 	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
 	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;$$.node->data_type=void_t; }
 	;
@@ -233,12 +277,13 @@ primary_expression
 	| '('ID '(' id_list ')' ')' { $$.node=build_node( $2.name_token, $2.node , $4.node );item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
 								if(item==NULL){printf("%s is undeclared identifier\n",$2.name_token);} 
 								else{$$.node->data_type=item->data_type; }    }
+
  	;
 
 
 id_list
-	: primary_expression						{$$.node=$1.node;}
-	| id_list ',' primary_expression            {ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
+	: primary_expression				{$$.node=$1.node;}
+	| id_list ',' primary_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
 	;
 
 

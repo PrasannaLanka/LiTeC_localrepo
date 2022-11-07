@@ -28,14 +28,19 @@ void count();
 
 
 
-"bool"		{ count(); return(BOOL); }
-"char"		{ count(); return(CHAR); }
-"int"		{ count(); return(INT);  }
+"bool"			{ count(); return(BOOL); }
+"char"			{ count(); return(CHAR); }
+"int"			{ count(); return(INT);  }
 "double"		{ count(); return(DOUBLE); }
 "struct"		{ count(); return(STRUCT); }
 
+"if"			{ count(); return(IF); }
+"else"			{ count(); return(ELSE); }
+"loop"			{ count(); return(LOOP); }
+"TeX"			{ count(); return(TEX); }
+
 "void"			{ count(); return(VOID); }
-"return"       {count(); return(RETURN); }
+"return"		{count(); return(RETURN); }
 
 
 
@@ -47,6 +52,9 @@ void count();
 
 {D}+			{MC count(); return(CONSTANT_INT); }
 \"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
+
+"[:"			{ count(); return(TEX_OPEN); }
+":]"			{ count(); return(TEX_CLOSE); }
 
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
@@ -67,7 +75,7 @@ void count();
 ")"			{ count(); return(')'); }
 "["			{ count(); return('['); }
 "]"			{ count(); return(']'); }
-"."         { count(); return('.'); }
+"."			{ count(); return('.'); }
 ","			{ count(); return(','); }
 ";"			{ count(); return(';'); }
 "!"			{ count(); return('!'); }
