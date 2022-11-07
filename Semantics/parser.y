@@ -136,22 +136,22 @@ iteration_statement
 	;
 
 tex_statement
-	: TEX '{' tex_data '}'
+	: TEX '{' tex_data '}'					{ ptr = "tex"; $$.node = build_node(ptr, $3.node, NULL); }
 	;
 
 tex_data
-	: STRING_LITERAL
-	| tex_function
-	| tex_data STRING_LITERAL
-	| tex_data tex_function
+	: STRING_LITERAL					{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
+	| tex_function						{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
+	| tex_data STRING_LITERAL				{ ptr = "tex_fun"; $$.node = build_node(ptr, $2.node, $1.node); }
+	| tex_data tex_function					{ ptr = "tex_fun"; $$.node = build_node(ptr, $1.node, $2.node); }
 	;
 
 tex_function
-	: TEX_OPEN declarator TEX_CLOSE
+	: TEX_OPEN declarator TEX_CLOSE				{ $$.node = $2.node }
 	;
 
 declaration
-	:DECLARE  type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
+	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
 	;
 
 expression_statement
