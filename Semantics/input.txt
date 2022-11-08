@@ -1,7 +1,8 @@
-void work(int p,int x)
+bool work(int p,int x)
 {
     declare int y : 8 ;
-    return 10 ;
+    y : 90 ;
+    return ;
 }
 
 

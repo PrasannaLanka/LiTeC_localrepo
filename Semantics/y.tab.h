@@ -56,17 +56,24 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     DECLARE = 258,                 /* DECLARE  */
     RETURN = 259,                  /* RETURN  */
-    CONSTANT_INT = 260,            /* CONSTANT_INT  */
-    CONSTANT_CHAR = 261,           /* CONSTANT_CHAR  */
-    CONSTANT_DOUBLE = 262,         /* CONSTANT_DOUBLE  */
-    BOOL = 263,                    /* BOOL  */
-    CHAR = 264,                    /* CHAR  */
-    INT = 265,                     /* INT  */
-    DOUBLE = 266,                  /* DOUBLE  */
-    VOID = 267,                    /* VOID  */
-    STRING_LITERAL = 268,          /* STRING_LITERAL  */
-    STRUCT = 269,                  /* STRUCT  */
-    ID = 270                       /* ID  */
+    IF = 260,                      /* IF  */
+    ELSE = 261,                    /* ELSE  */
+    LOOP = 262,                    /* LOOP  */
+    TEX = 263,                     /* TEX  */
+    TEX_OPEN = 264,                /* TEX_OPEN  */
+    TEX_CLOSE = 265,               /* TEX_CLOSE  */
+    CONSTANT_INT = 266,            /* CONSTANT_INT  */
+    CONSTANT_CHAR = 267,           /* CONSTANT_CHAR  */
+    CONSTANT_FLOAT = 268,          /* CONSTANT_FLOAT  */
+    CONSTANT_DOUBLE = 269,         /* CONSTANT_DOUBLE  */
+    BOOL = 270,                    /* BOOL  */
+    CHAR = 271,                    /* CHAR  */
+    INT = 272,                     /* INT  */
+    DOUBLE = 273,                  /* DOUBLE  */
+    VOID = 274,                    /* VOID  */
+    STRING_LITERAL = 275,          /* STRING_LITERAL  */
+    STRUCT = 276,                  /* STRUCT  */
+    ID = 277                       /* ID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -77,23 +84,30 @@ extern int yydebug;
 #define YYUNDEF 257
 #define DECLARE 258
 #define RETURN 259
-#define CONSTANT_INT 260
-#define CONSTANT_CHAR 261
-#define CONSTANT_DOUBLE 262
-#define BOOL 263
-#define CHAR 264
-#define INT 265
-#define DOUBLE 266
-#define VOID 267
-#define STRING_LITERAL 268
-#define STRUCT 269
-#define ID 270
+#define IF 260
+#define ELSE 261
+#define LOOP 262
+#define TEX 263
+#define TEX_OPEN 264
+#define TEX_CLOSE 265
+#define CONSTANT_INT 266
+#define CONSTANT_CHAR 267
+#define CONSTANT_FLOAT 268
+#define CONSTANT_DOUBLE 269
+#define BOOL 270
+#define CHAR 271
+#define INT 272
+#define DOUBLE 273
+#define VOID 274
+#define STRING_LITERAL 275
+#define STRUCT 276
+#define ID 277
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "parser.y"
+#line 33 "parser.y"
 
 	struct token_node_t{
 		char *name_token;
@@ -106,7 +120,12 @@ union YYSTYPE
 		struct data_type_d *data_type;	
 	}token_id;
 
-#line 110 "y.tab.h"
+	struct token_node_str{
+		char *name_token;
+		struct ast_node_t *node;
+	}token_str;
+
+#line 129 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

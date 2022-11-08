@@ -30,6 +30,7 @@ union Value
     float float_value;
     double double_value;
     char char_value;
+    char *string;
 }typedef value_t;
 
 struct data_type_d
