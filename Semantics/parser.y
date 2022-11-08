@@ -22,6 +22,8 @@
 	int no_of_parameters=0;
 	id_data_t id_info;
 	item_t * item;
+
+	int single_tex_function=0;
 	
 	void link_p(char *name ,enum data_type_t d );
 %}
@@ -39,6 +41,11 @@
 		struct ast_node_t *node;
 		struct data_type_d *data_type;	
 	}token_id;
+
+	struct token_node_str{
+		char *name_token;
+		struct ast_node_t *node;
+	}token_str;
 }
 
 
@@ -105,23 +112,25 @@ compound_statement
 	;
 
 compound_statement_content
-	: declaration							   {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| statement									{ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| compound_statement_content declaration  {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,$2.node);}
-	| compound_statement_content statement     {ptr="cmp_stmt"; $$.node=build_node(ptr,$1.node,$2.node);}
+	: declaration							   {ptr="declr"; $$.node=build_node(ptr,$1.node,NULL);}
+	| statement									{ptr="stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| compound_statement_content declaration  {ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node);}
+	| compound_statement_content statement     {ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node);}
 	;
 
 statement
-	: compound_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
-	| expression_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
-	| selection_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
-	| iteration_statement			{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
-	| tex_statement				{ptr="comp_st"; $$.node=build_node(ptr,$1.node,NULL);}
+	: compound_statement			{ptr="comp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| expression_statement			{ptr="expr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| selection_statement			{ptr="sel_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| iteration_statement			{ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
+	| tex_statement				{ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
+									single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
 	;
 
 selection_statement
 	: IF '(' logical_expression ')' compound_statement						{ ptr = "if_"; $$.node = build_node(ptr, $3.node, $5.node);}
-	| IF '(' logical_expression ')' compound_statement ELSE compound_statement			{ ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
+	| IF '(' logical_expression ')' compound_statement ELSE compound_statement			{ ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); 
+																							ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
 	;
 
 iteration_statement
@@ -145,12 +154,12 @@ tex_statement
 tex_data
 	: STRING_LITERAL					{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
 	| tex_function						{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
-	| tex_data STRING_LITERAL				{ ptr = "tex_fun"; $$.node = build_node(ptr, $2.node, $1.node); }
-	| tex_data tex_function					{ ptr = "tex_fun"; $$.node = build_node(ptr, $1.node, $2.node); }
+	| tex_data STRING_LITERAL				{ ptr = "tex_data"; $$.node = build_node(ptr, $2.node, $1.node); }
+	| tex_data tex_function					{ ptr = "tex_data"; $$.node = build_node(ptr, $1.node, $2.node); }
 	;
 
 tex_function
-	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node }
+	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node; }
 	;
 
 declaration
@@ -170,8 +179,8 @@ expression
 	;
 
 assignment_expression
-	: ID ':' primary_expression			{ptr="assignment";$$.node=build_node(ptr,$1.node,$3.node);}
-	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node(ptr,$1.node,$3.node);}
+	: ID ':' primary_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
+	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); strcpy($1.node->name,$1.name_token);}
 	;
 
 
@@ -263,7 +272,7 @@ type_specifier
 	;
 
 primary_expression
-	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; printf("N :%s , %d \n",$$.node->name,$$.node->data_type);}
+	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; }
 	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
 	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
 	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
@@ -338,7 +347,7 @@ int main(int argc, char *argv[])
 		//print_symbol_table(table_top());
 
 
-		check_function_return(root->left->left);
+		//check_function_return(root->left->left);
 		return 0;
 }
 

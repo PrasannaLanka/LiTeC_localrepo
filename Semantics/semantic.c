@@ -8,18 +8,42 @@ void check_function_return(ast_node *node)
 {
     char *c="fun_declr";
     enum data_type_t data_type;
+    enum data_type_t void_type;
+    void_type=void_t;
     ast_node *nd;
     if (strcmp(c,node->name)==1)
     {
         printf("Wrong_node \n");
         return ;
     }
+    
     data_type=node->left->left->data_type; // c is data type in string .It can be "int", "double" , "bool"
-    printf("%s",c);
+    
+    printf("%s ",c);
+    
     nd=node;
-    nd=nd->left->right->right->right->left;// nd is return node
-    printf("%s \n",nd->name);
-    printf("name : %d \n",nd->data_type);
+
+    nd=nd->left->right->right->right;// nd is return node
+    printf("name : %s \n",nd->name);
+    c=";";
+    if (strcmp(nd->name,c)==0)
+    {   
+        
+        if (data_type==void_t)
+        {
+            return ;
+        }
+        else
+        {
+            printf("Return type error \n");
+            return ;
+        }
+        
+        
+    }
+    nd=nd->left;
+    printf("name : %s \n",nd->name);
+    printf("data_type : %d \n",nd->data_type);
 
     c="prm_exp";
     if (strcmp(c,nd->name)==0)
@@ -32,7 +56,29 @@ void check_function_return(ast_node *node)
         
     }
     
+}
+void check_assignment(symbol_table* sym_tbl , ast_node *node)
+{
+    char *c="assignment";
+    
 
-
-
+    
+    ast_node *nd ;
+    printf("HII\n");
+  
+    item_t *item = search_in_all_sym_tbl(sym_tbl,node->name);
+    
+    enum data_type_t data_type=item->data_type;
+    
+    if (node->right->data_type==data_type)
+    {
+        return ;
+    }
+    else
+    {
+        printf("Type mismatch \n");
+        return ;
+    }
+    
+    
 }
