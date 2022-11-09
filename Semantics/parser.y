@@ -158,8 +158,8 @@ tex_statement
 tex_data
 	: STRING_LITERAL					{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
 	| tex_function						{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
-	| tex_data STRING_LITERAL				{ ptr = "tex_data"; $$.node = build_node(ptr, $2.node, $1.node); }
-	| tex_data tex_function					{ ptr = "tex_data"; $$.node = build_node(ptr, $1.node, $2.node); }
+	| tex_data ',' STRING_LITERAL				{ ptr = "tex_data"; $$.node = build_node(ptr, $3.node, $1.node); }
+	| tex_data ',' tex_function				{ ptr = "tex_data"; $$.node = build_node(ptr, $1.node, $3.node); }
 	;
 
 tex_function
