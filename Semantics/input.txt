@@ -1,8 +1,13 @@
-bool work(int p,int x)
+int fact(int a1 , int a2)
+{
+    return 90 ;
+}
+
+int work(int p,int x)
 {
     declare int y : 8 ;
-    y : 90 ;
-    return ;
+    y : ( + (fact(4,"d")) 78 ) ;
+    return 12 ;
 }
 
 
