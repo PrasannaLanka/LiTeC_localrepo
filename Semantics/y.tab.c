@@ -695,10 +695,10 @@ static const yytype_int16 yyrline[] =
      127,   128,   129,   130,   135,   136,   141,   146,   155,   159,
      160,   161,   162,   166,   170,   174,   175,   180,   181,   182,
      186,   187,   192,   193,   194,   198,   201,   208,   208,   234,
-     245,   261,   262,   263,   264,   268,   269,   273,   274,   275,
-     276,   277,   278,   279,   280,   284,   285,   286,   290,   291,
-     292,   293,   295,   296,   300,   301,   302,   303,   308,   309,
-     321,   337,   338
+     245,   261,   271,   281,   291,   304,   305,   309,   310,   311,
+     312,   313,   314,   315,   316,   320,   321,   322,   326,   327,
+     328,   329,   331,   332,   336,   337,   338,   339,   344,   345,
+     357,   373,   374
 };
 #endif
 
@@ -1624,7 +1624,7 @@ yyreduce:
 
   case 41: /* assignment_expression: ID ':' postfix_expression  */
 #line 187 "parser.y"
-                                                        {ptr="assignment";(yyval.token_node).node=build_node((yyvsp[-2].token_id).name_token,(yyvsp[-2].token_id).node,(yyvsp[0].token_node).node); }
+                                                        {ptr="assignment";(yyval.token_node).node=build_node((yyvsp[-2].token_id).name_token,(yyvsp[-2].token_id).node,(yyvsp[0].token_node).node); check_assignment(current_symbol_table , (yyval.token_node).node);}
 #line 1629 "y.tab.c"
     break;
 
@@ -1732,178 +1732,214 @@ yyreduce:
 
   case 51: /* postfix_expression: '(' binary_operator primary_expression primary_expression ')'  */
 #line 261 "parser.y"
-                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);   }
-#line 1737 "y.tab.c"
+                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);  
+																		if((yyvsp[-2].token_node).node->data_type==(yyvsp[-1].token_node).node->data_type)
+																		{
+																			(yyval.token_node).node->data_type=(yyvsp[-2].token_node).node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
+#line 1746 "y.tab.c"
     break;
 
   case 52: /* postfix_expression: '(' binary_operator primary_expression postfix_expression ')'  */
-#line 262 "parser.y"
-                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);   }
-#line 1743 "y.tab.c"
-    break;
-
-  case 53: /* postfix_expression: '(' binary_operator postfix_expression primary_expression ')'  */
-#line 263 "parser.y"
-                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);   }
-#line 1749 "y.tab.c"
-    break;
-
-  case 54: /* postfix_expression: '(' binary_operator postfix_expression postfix_expression ')'  */
-#line 264 "parser.y"
-                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);   }
-#line 1755 "y.tab.c"
-    break;
-
-  case 55: /* logical_expression: primary_expression  */
-#line 268 "parser.y"
-                                                                                { ptr = "prm_exp"; (yyval.token_node).node = build_node(ptr, (yyvsp[0].token_node).node, NULL); }
+#line 271 "parser.y"
+                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);  
+																		if((yyvsp[-2].token_node).node->data_type==(yyvsp[-1].token_node).node->data_type)
+																		{
+																			(yyval.token_node).node->data_type=(yyvsp[-2].token_node).node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
 #line 1761 "y.tab.c"
     break;
 
-  case 56: /* logical_expression: expression logical_operator expression  */
-#line 269 "parser.y"
-                                                                                { (yyval.token_node).node = build_node((yyvsp[-1].token_node).name_token, (yyvsp[-2].token_node).node, (yyvsp[0].token_node).node); }
-#line 1767 "y.tab.c"
+  case 53: /* postfix_expression: '(' binary_operator postfix_expression primary_expression ')'  */
+#line 281 "parser.y"
+                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);  
+																		if((yyvsp[-2].token_node).node->data_type==(yyvsp[-1].token_node).node->data_type)
+																		{
+																			(yyval.token_node).node->data_type=(yyvsp[-2].token_node).node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
+#line 1776 "y.tab.c"
     break;
 
-  case 57: /* binary_operator: '+'  */
-#line 273 "parser.y"
-                                                {ptr="+"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
-#line 1773 "y.tab.c"
-    break;
-
-  case 58: /* binary_operator: '-'  */
-#line 274 "parser.y"
-                                                {ptr="-"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
-#line 1779 "y.tab.c"
-    break;
-
-  case 59: /* binary_operator: '*'  */
-#line 275 "parser.y"
-                                                {ptr="*"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
-#line 1785 "y.tab.c"
-    break;
-
-  case 60: /* binary_operator: '/'  */
-#line 276 "parser.y"
-                                                {ptr="/"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 54: /* postfix_expression: '(' binary_operator postfix_expression postfix_expression ')'  */
+#line 291 "parser.y"
+                                                                                { (yyval.token_node).node=build_node((yyvsp[-3].token_node).node->name,(yyvsp[-2].token_node).node,(yyvsp[-1].token_node).node);  
+																		if((yyvsp[-2].token_node).node->data_type==(yyvsp[-1].token_node).node->data_type)
+																		{
+																			(yyval.token_node).node->data_type=(yyvsp[-2].token_node).node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
 #line 1791 "y.tab.c"
     break;
 
-  case 61: /* binary_operator: '%'  */
-#line 277 "parser.y"
-                                                {ptr="%"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 55: /* logical_expression: primary_expression  */
+#line 304 "parser.y"
+                                                                                { ptr = "prm_exp"; (yyval.token_node).node = build_node(ptr, (yyvsp[0].token_node).node, NULL); }
 #line 1797 "y.tab.c"
     break;
 
-  case 62: /* binary_operator: '<'  */
-#line 278 "parser.y"
-                                                {ptr="<"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 56: /* logical_expression: expression logical_operator expression  */
+#line 305 "parser.y"
+                                                                                { (yyval.token_node).node = build_node((yyvsp[-1].token_node).name_token, (yyvsp[-2].token_node).node, (yyvsp[0].token_node).node); }
 #line 1803 "y.tab.c"
     break;
 
-  case 63: /* binary_operator: '>'  */
-#line 279 "parser.y"
-                                                {ptr=">"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 57: /* binary_operator: '+'  */
+#line 309 "parser.y"
+                                                {ptr="+"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1809 "y.tab.c"
     break;
 
-  case 64: /* binary_operator: '='  */
-#line 280 "parser.y"
-                                                {ptr="="; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 58: /* binary_operator: '-'  */
+#line 310 "parser.y"
+                                                {ptr="-"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1815 "y.tab.c"
     break;
 
-  case 65: /* logical_operator: '<'  */
-#line 284 "parser.y"
-                                                {ptr="<"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 59: /* binary_operator: '*'  */
+#line 311 "parser.y"
+                                                {ptr="*"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1821 "y.tab.c"
     break;
 
-  case 66: /* logical_operator: '>'  */
-#line 285 "parser.y"
-                                                {ptr=">"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 60: /* binary_operator: '/'  */
+#line 312 "parser.y"
+                                                {ptr="/"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1827 "y.tab.c"
     break;
 
-  case 67: /* logical_operator: '='  */
-#line 286 "parser.y"
-                                                {ptr="="; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 61: /* binary_operator: '%'  */
+#line 313 "parser.y"
+                                                {ptr="%"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1833 "y.tab.c"
     break;
 
-  case 68: /* type_specifier: CHAR  */
-#line 290 "parser.y"
-                                {ptr="char"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=char_t ; (yyval.token_node).node->data_type=char_t; }
+  case 62: /* binary_operator: '<'  */
+#line 314 "parser.y"
+                                                {ptr="<"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1839 "y.tab.c"
     break;
 
-  case 69: /* type_specifier: INT  */
-#line 291 "parser.y"
-                                                {ptr="int"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=int_t ;  (yyval.token_node).node->data_type=int_t;printf(" int \n"); }
+  case 63: /* binary_operator: '>'  */
+#line 315 "parser.y"
+                                                {ptr=">"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1845 "y.tab.c"
     break;
 
-  case 70: /* type_specifier: DOUBLE  */
-#line 292 "parser.y"
-                                                {ptr="double"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=double_t; (yyval.token_node).node->data_type=double_t; }
+  case 64: /* binary_operator: '='  */
+#line 316 "parser.y"
+                                                {ptr="="; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1851 "y.tab.c"
     break;
 
-  case 71: /* type_specifier: BOOL  */
-#line 293 "parser.y"
-                                                {ptr="bool"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=bool_t ; (yyval.token_node).node->data_type=bool_t;}
+  case 65: /* logical_operator: '<'  */
+#line 320 "parser.y"
+                                                {ptr="<"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1857 "y.tab.c"
     break;
 
-  case 72: /* type_specifier: STRUCT  */
-#line 295 "parser.y"
-                                                {ptr="struct"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+  case 66: /* logical_operator: '>'  */
+#line 321 "parser.y"
+                                                {ptr=">"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1863 "y.tab.c"
     break;
 
-  case 73: /* type_specifier: VOID  */
-#line 296 "parser.y"
-                                                {ptr="void"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=void_t;(yyval.token_node).node->data_type=void_t; }
+  case 67: /* logical_operator: '='  */
+#line 322 "parser.y"
+                                                {ptr="="; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
 #line 1869 "y.tab.c"
     break;
 
-  case 74: /* primary_expression: CONSTANT_INT  */
-#line 300 "parser.y"
-                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=int_t; }
+  case 68: /* type_specifier: CHAR  */
+#line 326 "parser.y"
+                                {ptr="char"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=char_t ; (yyval.token_node).node->data_type=char_t; }
 #line 1875 "y.tab.c"
     break;
 
-  case 75: /* primary_expression: CONSTANT_CHAR  */
-#line 301 "parser.y"
-                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=char_t;}
+  case 69: /* type_specifier: INT  */
+#line 327 "parser.y"
+                                                {ptr="int"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=int_t ;  (yyval.token_node).node->data_type=int_t;printf(" int \n"); }
 #line 1881 "y.tab.c"
     break;
 
-  case 76: /* primary_expression: CONSTANT_DOUBLE  */
-#line 302 "parser.y"
-                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=double_t;}
+  case 70: /* type_specifier: DOUBLE  */
+#line 328 "parser.y"
+                                                {ptr="double"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=double_t; (yyval.token_node).node->data_type=double_t; }
 #line 1887 "y.tab.c"
     break;
 
+  case 71: /* type_specifier: BOOL  */
+#line 329 "parser.y"
+                                                {ptr="bool"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=bool_t ; (yyval.token_node).node->data_type=bool_t;}
+#line 1893 "y.tab.c"
+    break;
+
+  case 72: /* type_specifier: STRUCT  */
+#line 331 "parser.y"
+                                                {ptr="struct"; (yyval.token_node).node=build_node(ptr,NULL,NULL); }
+#line 1899 "y.tab.c"
+    break;
+
+  case 73: /* type_specifier: VOID  */
+#line 332 "parser.y"
+                                                {ptr="void"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=void_t;(yyval.token_node).node->data_type=void_t; }
+#line 1905 "y.tab.c"
+    break;
+
+  case 74: /* primary_expression: CONSTANT_INT  */
+#line 336 "parser.y"
+                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=int_t; }
+#line 1911 "y.tab.c"
+    break;
+
+  case 75: /* primary_expression: CONSTANT_CHAR  */
+#line 337 "parser.y"
+                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=char_t;}
+#line 1917 "y.tab.c"
+    break;
+
+  case 76: /* primary_expression: CONSTANT_DOUBLE  */
+#line 338 "parser.y"
+                                { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); (yyval.token_node).node->data_type=double_t;}
+#line 1923 "y.tab.c"
+    break;
+
   case 77: /* primary_expression: ID  */
-#line 303 "parser.y"
+#line 339 "parser.y"
                                                 { (yyval.token_node).node=build_node((yyvsp[0].token_id).name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , (yyvsp[0].token_id).name_token);
 								if(item==NULL){printf("%s is undeclared identifier\n",(yyvsp[0].token_id).name_token);}
 								else{(yyval.token_node).node->data_type=item->data_type;}
 								
 									}
-#line 1897 "y.tab.c"
+#line 1933 "y.tab.c"
     break;
 
   case 78: /* primary_expression: STRING_LITERAL  */
-#line 308 "parser.y"
+#line 344 "parser.y"
                                         { (yyval.token_node).node=build_node((yyvsp[0].token_node).name_token,NULL,NULL); }
-#line 1903 "y.tab.c"
+#line 1939 "y.tab.c"
     break;
 
   case 79: /* primary_expression: '(' ID '(' ')' ')'  */
-#line 309 "parser.y"
+#line 345 "parser.y"
                                 { (yyval.token_node).node=build_node((yyvsp[-3].token_id).name_token,NULL,NULL);
 								item=search_in_all_sym_tbl(current_symbol_table , (yyvsp[-3].token_id).name_token);
 							   if(item==NULL)
@@ -1916,11 +1952,11 @@ yyreduce:
 									(yyval.token_node).node->data_type=item->data_type;
 								}
 								}
-#line 1920 "y.tab.c"
+#line 1956 "y.tab.c"
     break;
 
   case 80: /* primary_expression: '(' ID '(' id_list ')' ')'  */
-#line 321 "parser.y"
+#line 357 "parser.y"
                                     { (yyval.token_node).node=build_node( (yyvsp[-4].token_id).name_token , (yyvsp[-4].token_id).node , (yyvsp[-2].token_node).node );
 								  item=search_in_all_sym_tbl(current_symbol_table , (yyvsp[-4].token_id).name_token);
 								if(item==NULL)
@@ -1932,23 +1968,23 @@ yyreduce:
 									check_function_parameters(item->id_info.function_info.parameters,(yyvsp[-2].token_node).node);
 									(yyval.token_node).node->data_type=item->data_type; }    
 								}
-#line 1936 "y.tab.c"
+#line 1972 "y.tab.c"
     break;
 
   case 81: /* id_list: primary_expression  */
-#line 337 "parser.y"
+#line 373 "parser.y"
                                                         {(yyval.token_node).node=(yyvsp[0].token_node).node;}
-#line 1942 "y.tab.c"
+#line 1978 "y.tab.c"
     break;
 
   case 82: /* id_list: id_list ',' primary_expression  */
-#line 338 "parser.y"
+#line 374 "parser.y"
                                                         {ptr="id_list" ; (yyval.token_node).node=build_node(ptr,(yyvsp[-2].token_node).node,(yyvsp[0].token_node).node);   }
-#line 1948 "y.tab.c"
+#line 1984 "y.tab.c"
     break;
 
 
-#line 1952 "y.tab.c"
+#line 1988 "y.tab.c"
 
       default: break;
     }
@@ -2141,7 +2177,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 343 "parser.y"
+#line 379 "parser.y"
 
 
 void yyerror(char *s) 

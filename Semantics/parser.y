@@ -184,7 +184,7 @@ expression
 
 assignment_expression
 	: ID ':' primary_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
-	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); }
+	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node);}
 	;
 
 
@@ -258,10 +258,46 @@ parameter_list
 
 
 postfix_expression
-	: '(' binary_operator primary_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
-	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
-	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
-	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);   }
+	: '(' binary_operator primary_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
+																		if($3.node->data_type==$4.node->data_type)
+																		{
+																			$$.node->data_type=$3.node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
+	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
+																		if($3.node->data_type==$4.node->data_type)
+																		{
+																			$$.node->data_type=$3.node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
+	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
+																		if($3.node->data_type==$4.node->data_type)
+																		{
+																			$$.node->data_type=$3.node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
+	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
+																		if($3.node->data_type==$4.node->data_type)
+																		{
+																			$$.node->data_type=$3.node->data_type;
+																		}
+																		else
+																		{
+																			printf("Cannot perform on different data types\n");
+																		}
+																		 }
 	;
 
 logical_expression
