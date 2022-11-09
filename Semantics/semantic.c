@@ -119,6 +119,6 @@ void check_function_parameters(param* par,ast_node* node)
         printf("Function parameter doesn't match \n");
         return ;
     }
-    printf("Matched ra hawle \n ");
+    //printf("Matched ra hawle \n ");
     
 }

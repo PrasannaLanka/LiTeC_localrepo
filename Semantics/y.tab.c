@@ -1397,7 +1397,7 @@ yyreduce:
 
   case 6: /* external_declaration: function_definition  */
 #line 86 "parser.y"
-                                     {ptr="fun_declr"; (yyval.token_node).node=build_node(ptr,(yyvsp[0].token_node).node,NULL); }
+                                     {ptr="fun_declr"; (yyval.token_node).node=build_node(ptr,(yyvsp[0].token_node).node,NULL); check_function_return((yyval.token_node).node);}
 #line 1402 "y.tab.c"
     break;
 
