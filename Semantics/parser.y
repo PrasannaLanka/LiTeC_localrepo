@@ -83,7 +83,7 @@ translation_unit
 
 external_declaration
 	: declaration 					{ptr="external_declr"; $$.node=build_node(ptr,$1.node,NULL);}
-	| function_definition        {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); }
+	| function_definition        {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); check_function_return($$.node);}
 	;
 
 function_definition

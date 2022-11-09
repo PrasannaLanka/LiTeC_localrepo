@@ -3,7 +3,7 @@ int fact(int a1 , int a2)
     return 90 ;
 }
 
-int work(int p,int x)
+void work(int p,int x)
 {
     declare int y : 8 ;
     y : ( + "f" "j" );
