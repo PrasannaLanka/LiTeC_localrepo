@@ -19,7 +19,7 @@ void check_function_return(ast_node *node)
     
     data_type=node->left->left->data_type; // c is data type in string .It can be "int", "double" , "bool"
     
-    printf("%s ",c);
+    
     
     nd=node;
 
@@ -42,9 +42,7 @@ void check_function_return(ast_node *node)
         
     }
     nd=nd->left;
-    printf("name : %s \n",nd->name);
-    printf("data_type : %d \n",nd->data_type);
-
+    
     c="prm_exp";
     if (strcmp(c,nd->name)==0)
     {

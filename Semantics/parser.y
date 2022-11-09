@@ -78,7 +78,7 @@ translation_main
 
 translation_unit
 	: external_declaration                          { ptr="trans_unit"; $$.node=$1.node; }
-	| translation_unit external_declaration 		{printf("HII 2\n"); ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node);   }
+	| translation_unit external_declaration 		{ ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node);   }
 	;
 
 external_declaration
@@ -94,12 +94,12 @@ function_definition
 function_body
 	:declarator '{' {} 
 		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();
-														  print_symbol_table(current_symbol_table);
+														  
 														  ptr="fun_body"; no_of_parameters=0;
 													    if($1.node->left!=NULL)
 														{$$.node=build_node($1.node->name,$1.node->left,$4.node);
-														printf("h1\n");}  
-														else{$$.node=build_node(ptr,NULL,$4.node);printf("h2\n");}
+														}  
+														else{$$.node=build_node(ptr,NULL,$4.node);}
 														
 														}
 	;
@@ -225,8 +225,8 @@ declarator
 										params=parameter_list;
 										
 										$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
-										print_symbol_table(current_symbol_table);
-										printf("Called \n");}
+										
+										}
 	;
 
 
@@ -239,7 +239,7 @@ parameter_list
 																				$$.node=build_node($2.name_token,NULL,NULL); 
 																				$$.node->data_type=data_type; 
 																				
-																				link_p($2.name_token,data_type);printf("kk\n");   } 
+																				link_p($2.name_token,data_type);   } 
 																				
 																			}
 	| parameter_list ',' type_specifier ID				{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
@@ -324,7 +324,7 @@ logical_operator
 
 type_specifier
 	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ; $$.node->data_type=char_t; }      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t;printf(" int \n"); }
+	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t; }
 	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; $$.node->data_type=double_t; }
     | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ; $$.node->data_type=bool_t;}
 
@@ -411,15 +411,15 @@ int main(int argc, char *argv[])
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
 		{
-			printf("\nParsing error \n");
+			printf("Parsing error \n");
 		}
 		else
 		{
-			printf("\nparsing completed \n");
+			printf("parsing completed \n");
 		}
 		fclose(yyin);
 		print_ast(root);
-		printf("\n"); 
+		
 		
 		//printf("Symbol Table \n");
 		//print_symbol_table(table_top());

@@ -81,7 +81,7 @@ void count();
 ";"			{ count(); return(';'); }
 "!"			{ count(); return('!'); }
 "?"			{ count(); return('?'); }
-
+.			{}
 
 %%
 
