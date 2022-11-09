@@ -6,6 +6,7 @@ int fact(int a1 , int a2)
 int work(int p,int x)
 {
     declare int y : 8 ;
+    y : ( + "f" "j" );
     y : ( + (fact(4,"d")) 78 ) ;
     return 12 ;
 }
