@@ -34,8 +34,8 @@ void count();
 "if"			{ count(); return(IF); }
 "else"			{ count(); return(ELSE); }
 "loop"			{ count(); return(LOOP); }
-"continue"		{ count(); return{CONTINUE}; }
-"break"			{ count(); return(BREAK); }
+"loop"			{ count(); return(LOOP); }
+"continue"		{ count(); return(CONTINUE); }
 "TeX"			{ count(); return(TEX); }
 
 "void"			{ count(); return(VOID); }
