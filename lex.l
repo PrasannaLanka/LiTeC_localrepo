@@ -1,17 +1,17 @@
 
 D		     	[0-9]
 L		     	[a-zA-Z]
+H		     	[a-fA-F0-9]
+E		     	[Ee][+-]?{D}+
 
 
 %{
 #include <stdio.h>
-#include <stdlib.h>
 #include "y.tab.h"
+
+
 #include <string.h>
 
-#define MC yylval.token_node.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_node.name_token,yytext);
-#define MC_ID yylval.token_id.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_id.name_token,yytext);
-int line_number = 1;
 
 void count();
 %}
@@ -20,43 +20,35 @@ void count();
 
 
 
+"declare"		    { count();  return(DECLARE); }
+"if"			{ count();return(IF); }
+"else"			{ count();return(ELSE); }
+"break"			{ count();return(BREAK); }
+"continue"		{ count();return(CONTINUE); }
+"invariant"		{ count(); return(INVARIANT); }
+"loop"			{ count();return(LOOP); }
+"return"		{ count(); return(RETURN); }
 
-"declare"   {count() ; return(DECLARE);}
-
-
-
-"bool"			{ count(); return(BOOL); }
-"char"			{ count(); return(CHAR); }
-"int"			{ count(); return(INT);  }
+"bool"		{ count(); return(BOOL); }
+"char"		{ count(); return(CHAR); }
+"int"		{ count(); return(INT);  }
 "double"		{ count(); return(DOUBLE); }
 "struct"		{ count(); return(STRUCT); }
 
-"if"			{ count(); return(IF); }
-"else"			{ count(); return(ELSE); }
-"loop"			{ count(); return(LOOP); }
-"continue"		{ count(); return(CONTINUE); }
-"break"			{ count(); return(BREAK); }
-"TeX"			{ count(); return(TEX); }
-
 "void"			{ count(); return(VOID); }
-"return"		{count(); return(RETURN); }
-
-"true"			{count(); return(TRUE); }
-
-"false"			{count(); return(FALSE); }
 
 
-
-{L}({L}|{D})*   {   MC_ID 	count(); return(ID); }
-
-
-
-{D}+			{MC count(); return(CONSTANT_INT); }
-\"(\\.|[^\\"])\"	{MC count(); return(CONSTANT_CHAR); }
-\"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
-
+"TeX"           { count(); return(TEX); }
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
+"[("			{ count(); return(SF_OPEN); }
+")]"			{ count(); return(SF_CLOSE); }
+"[{"			{ count(); return(MS_OPEN); }
+"}]"			{ count(); return(MS_CLOSE); }
+
+{L}({L}|{D})*   { count(); return(ID); }
+{D}+			{ count(); return(CONSTANT); }
+\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
@@ -77,13 +69,12 @@ void count();
 ")"			{ count(); return(')'); }
 "["			{ count(); return('['); }
 "]"			{ count(); return(']'); }
-"."			{ count(); return('.'); }
+"."         { count(); return('.'); }
 ","			{ count(); return(','); }
 ";"			{ count(); return(';'); }
 "!"			{ count(); return('!'); }
 "?"			{ count(); return('?'); }
-[\n] 		{line_number++;}
-.			{}
+
 
 %%
 
@@ -112,19 +103,19 @@ loop:
 		putchar(b);
 }
 
-int column;
+int column = 0;
 
 void count()
 {
 	int i;
-	column = 1;
+
 	for (i = 0; yytext[i] != '\0'; i++)
 		if (yytext[i] == '\n')
-			column = 1;
+			column = 0;
 		else if (yytext[i] == '\t')
 			column += 8 - (column % 8);
 		else
 			column++;
 
-	//ECHO;
+	ECHO;
 }
