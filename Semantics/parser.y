@@ -170,18 +170,11 @@ jump_statement
 	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
 	| BREAK ';'						{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
 	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
-	| RETURN expression ';'					{ ptr = "j_exp"; $$.node = build_node(ptr, $2.node, NULL); }
+	| RETURN expression ';'					{ ptr = "ret_exp"; $$.node = build_node(ptr, $2.node, NULL); }
 	;
 
 declaration
 	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
-	;
-
-jump_statement
-	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
-	| BREAK ';'							{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
-	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
-	| RETURN expression ';'				{ ptr = "j_exp"; $$.node = build_node(ptr, $1.node, $2.node); }
 	;
 
 expression_statement
