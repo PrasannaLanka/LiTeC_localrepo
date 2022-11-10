@@ -128,7 +128,7 @@ statement
 	| iteration_statement			{ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
 	| tex_statement				{ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
 									single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
-	| jump_statement				{ ptr = "jump_stmt"; $$.node = build_node{ptr,$1.node,NULL}; }
+	| jump_statement				{printf("dfghj\n"); ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
 	;
 
 selection_statement
@@ -164,6 +164,13 @@ tex_data
 
 tex_function
 	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node; }
+	;
+
+jump_statement
+	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
+	| BREAK ';'						{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN expression ';'					{ ptr = "j_exp"; $$.node = build_node(ptr, $2.node, NULL); }
 	;
 
 declaration
