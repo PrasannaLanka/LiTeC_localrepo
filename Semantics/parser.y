@@ -50,7 +50,7 @@
 
 
 
-%token <token_node> DECLARE RETURN IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
+%token <token_node> DECLARE RETURN CONTINUE BREAK IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
 %token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
 
 %token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT TRUE FALSE
@@ -128,6 +128,7 @@ statement
 	| iteration_statement			{ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
 	| tex_statement				{ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
 									single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
+	| jump_statement				{ ptr = "jump_stmt"; $$.node = build_node{ptr,$1.node,NULL}; }
 	;
 
 selection_statement
@@ -167,6 +168,13 @@ tex_function
 
 declaration
 	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
+	;
+
+jump_statement
+	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
+	| BREAK ';'							{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN expression ';'				{ ptr = "j_exp"; $$.node = build_node(ptr, $1.node, $2.node); }
 	;
 
 expression_statement
