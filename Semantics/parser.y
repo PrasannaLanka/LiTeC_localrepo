@@ -383,7 +383,9 @@ primary_expression
 
 id_list
 	: primary_expression				{$$.node=$1.node;}
+	| postfix_expression				{$$.node=$1.node;}
 	| id_list ',' primary_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
+	| id_list ',' postfix_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
 	;
 
 
@@ -454,12 +456,3 @@ void link_p(char *name ,enum data_type_t d )
 	params=p;
 	return ;
 }
-
-
-
-
-
-
-
-
-
