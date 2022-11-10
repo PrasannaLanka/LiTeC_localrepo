@@ -441,7 +441,7 @@ int main(int argc, char *argv[])
 		printf("\nSymbol Table \n");
 		print_symbol_table(table_top());
 
-		check_function_return(root->left->left);
+		//check_function_return(root->left->left);
 		return 0;
 }
 
