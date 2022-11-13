@@ -70,71 +70,71 @@
 %%
 
 translation_main
-	: translation_unit               { ptr="Main"; $$.node=build_node(ptr,$1.node,NULL); root=$$.node ;}
+	: translation_unit             					{ ptr="Main"; $$.node=build_node(ptr,$1.node,NULL); root=$$.node; }
 	;
 
 
 
 translation_unit
 	: external_declaration                          { ptr="trans_unit"; $$.node=$1.node; }
-	| translation_unit external_declaration 		{ ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node);   }
+	| translation_unit external_declaration 		{ ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node); }
 	;
 
 external_declaration
-	: declaration 					{ptr="external_declr"; $$.node=build_node(ptr,$1.node,NULL);}
-	| function_definition           {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); check_function_return($$.node);}
+	: declaration 									{ ptr="external_declr"; $$.node=build_node(ptr,$1.node,NULL); }
+	| function_definition          					{ ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); check_function_return($$.node); }
 	;
 
 function_definition
-	:type_specifier { }
-	  function_body   {ptr="fun_def"; $$.node=build_node($3.node->name,$1.node,$3.node);  }
+	: type_specifier { } function_body  			{ ptr="fun_def"; $$.node=build_node($3.node->name,$1.node,$3.node); }
 	;
 
 function_body
-	:declarator '{' {} 
-		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();
-
-														  ptr="fun_body"; no_of_parameters=0;
-													    if($1.node->left!=NULL)
-														{$$.node=build_node($1.node->name,$1.node->left,$4.node);
+	: declarator '{' {} body '}' 					{ temp_symbol_table=table_pop(); current_symbol_table=table_top();
+													  ptr="fun_body"; no_of_parameters=0;
+													  if($1.node->left!=NULL)
+														{
+															$$.node=build_node($1.node->name,$1.node->left,$4.node);
 														}  
-														else{$$.node=build_node(ptr,NULL,$4.node);}
-														
-														}
+													  else
+													    {
+															$$.node=build_node(ptr,NULL,$4.node);
+													    }														
+													}
 	;
 
 body
-	:  compound_statement_content RETURN expression_statement  { ptr="body"; $$.node=build_node(ptr,$1.node,$3.node); }
-	| RETURN expression_statement { ptr="body"; $$.node=build_node(ptr,NULL,$2.node);  }
+	: compound_statement_content RETURN expression_statement   { ptr="body"; $$.node=build_node(ptr,$1.node,$3.node); }
+	| RETURN expression_statement 							   { ptr="body"; $$.node=build_node(ptr,NULL,$2.node); }
 	;  
 
 
 compound_statement
-	:  '{' {table_push(current_symbol_table); current_symbol_table=init_child_symbol_table(current_symbol_table);  } 
+	: '{' {table_push(current_symbol_table); current_symbol_table=init_child_symbol_table(current_symbol_table); } 
 			compound_statement_content '}'  {table_push(temp_symbol_table);	 ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
 	;
 
 compound_statement_content
-	: declaration							   {ptr="declr"; $$.node=build_node(ptr,$1.node,NULL);}
-	| statement									{ptr="stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| compound_statement_content declaration  {ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node);}
-	| compound_statement_content statement     {ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node);}
+	: declaration							  		{ ptr="declr"; $$.node=build_node(ptr,$1.node,NULL); }
+	| statement										{ ptr="stmt"; $$.node=build_node(ptr,$1.node,NULL); }
+	| compound_statement_content declaration  		{ ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node); }
+	| compound_statement_content statement     		{ ptr="cmp_stmt_content"; $$.node=build_node(ptr,$1.node,$2.node); }
 	;
 
 statement
-	: compound_statement			{ptr="comp_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| expression_statement			{ptr="expr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| selection_statement			{ptr="sel_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| iteration_statement			{ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
-	| tex_statement				{ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
-									single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
-	| jump_statement				{printf("dfghj\n"); ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
+	: compound_statement							{ ptr="comp_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
+	| expression_statement							{ ptr="expr_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
+	| selection_statement							{ ptr="sel_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
+	| iteration_statement							{ ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
+	| tex_statement				  					{ ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
+													single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
+	| jump_statement								{ printf("dfghj\n"); ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
 	;
 
 selection_statement
-	: IF '(' logical_expression ')' compound_statement						{ ptr = "if_"; $$.node = build_node(ptr, $3.node, $5.node);}
+	: IF '(' logical_expression ')' compound_statement									{ ptr = "if_"; $$.node = build_node(ptr, $3.node, $5.node); }
 	| IF '(' logical_expression ')' compound_statement ELSE compound_statement			{ ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); 
-																							ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
+																						  ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
 	;
 
 iteration_statement
@@ -152,123 +152,107 @@ iteration_statement
 	;
 
 tex_statement
-	: TEX '{' tex_data '}'					{ ptr = "tex"; $$.node = build_node(ptr, $3.node, NULL); }
+	: TEX '{' tex_data '}'					        { ptr = "tex"; $$.node = build_node(ptr, $3.node, NULL); }
 	;
 
 tex_data
-	: STRING_LITERAL					{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
-	| tex_function						{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
-	| tex_data ',' STRING_LITERAL				{ ptr = "tex_data"; $$.node = build_node(ptr, $3.node, $1.node); }
-	| tex_data ',' tex_function				{ ptr = "tex_data"; $$.node = build_node(ptr, $1.node, $3.node); }
+	: STRING_LITERAL								{ ptr = "tex_str"; $$.node = build_node(ptr, $1.node, NULL); }
+	| tex_function									{ ptr = "tex_fun"; $$.node = build_node(ptr, NULL, $1.node); }
+	| tex_data ',' STRING_LITERAL					{ ptr = "tex_data"; $$.node = build_node(ptr, $3.node, $1.node); }
+	| tex_data ',' tex_function						{ ptr = "tex_data"; $$.node = build_node(ptr, $1.node, $3.node); }
 	;
 
 tex_function
-	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node; }
+	: TEX_OPEN primary_expression TEX_CLOSE			{ $$.node = $2.node; }
 	;
 
 jump_statement
-	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
-	| BREAK ';'						{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
-	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
-	| RETURN expression ';'					{ ptr = "ret_exp"; $$.node = build_node(ptr, $2.node, NULL); }
+	: CONTINUE ';'									{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
+	| BREAK ';'										{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN ';'									{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN expression ';'							{ ptr = "ret_exp"; $$.node = build_node(ptr, $2.node, NULL); }
 	;
 
 declaration
-	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
+	: DECLARE type_specifier init_declarator ';'	{ ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node); }  
 	;
 
 expression_statement
-	:   ';'							   {ptr=";"; $$.node=build_node(ptr,NULL,NULL);  }
-	|  expression ';'                  { ptr="expr"; $$.node=build_node(ptr,$1.node,NULL); }
+	:   ';'							  				{ ptr=";"; $$.node=build_node(ptr,NULL,NULL); }
+	|  expression ';'                      			{ ptr="expr"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
 
 expression
-	: assignment_expression						{ptr="assign_exp"; $$.node=build_node(ptr,$1.node,NULL); }
-	| primary_expression						{ptr="prm_exp"; $$.node=build_node(ptr,$1.node,NULL); $$.node->data_type=$1.node->data_type;}
-	| postfix_expression						{ptr="post_exp"; $$.node=build_node(ptr,$1.node,NULL); }
+	: assignment_expression							{ ptr="assign_exp"; $$.node=build_node(ptr,$1.node,NULL); }
+	| primary_expression							{ ptr="prm_exp"; $$.node=build_node(ptr,$1.node,NULL); $$.node->data_type=$1.node->data_type; }
+	| postfix_expression							{ ptr="post_exp"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
 assignment_expression
-	: ID ':' primary_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
-	| ID ':' postfix_expression			{ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node);}
+	: ID ':' primary_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
+	| ID ':' postfix_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
 	;
 
 
 init_declarator
-	: declarator							{ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL);}
-	| declarator ':' primary_expression    {ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node);}
-	| declarator ':' postfix_expression		{ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node);}
-	;
+	: declarator									{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL); }
+	| declarator ':' primary_expression    			{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); }
+	| declarator ':' postfix_expression				{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); }
+	; 
 
 declarator
-	: ID							{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
-																			{printf("Redeclared of variable at line %d\n",line_number);}
-									 $1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;}			
-	| ID   '('')' 				{ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false)
-																			{printf("Redeclared of variable at line %d\n",line_number);} 
-																			current_symbol_table=init_child_symbol_table(current_symbol_table); 
-																			table_push(current_symbol_table);
-																			
-																			item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
-									$1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;          }	
-	| ID '('                     {  
-									if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
-																			{printf("Redeclared of variable at line %d\n",line_number);}
-									current_symbol_table=init_child_symbol_table(current_symbol_table); ptr="LOCAL"; current_symbol_table->name=(char*)malloc(sizeof(char)*10);
-									strcpy(current_symbol_table->name,ptr); table_push(current_symbol_table); 
-									parameter_list=(param*)malloc(sizeof(param));
-																				params=(param*)malloc(sizeof(param));
-																				parameter_list=params;
-																				}   
-	parameter_list ')'            {    item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
-											
-										function_info.return_data_type=data_type;
-										function_info.no_parameters=no_of_parameters;
-										function_info.parameters=parameter_list->next;
-										id_info.function_info=function_info; 
-										item->id_info=id_info;
-										parameter_list=NULL;
-										params=parameter_list;
-										
-										$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
-
-								  }
-										
-										
-
+	: ID											{ if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
+															{printf("ERROR: Redeclaration of variable at line %d\n",line_number);}
+									 				  $1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type; 
+													}			
+	| ID   '('')' 									{ if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false)
+															{printf("ERROR: Redeclaration of variable at line %d\n",line_number);} 
+													  current_symbol_table=init_child_symbol_table(current_symbol_table); 
+													  table_push(current_symbol_table);																			
+													  item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
+													  $1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type; 
+													}	
+	| ID '('                   						{ if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
+															{printf("ERROR: Redeclaration of variable at line %d\n",line_number);}
+									                  current_symbol_table=init_child_symbol_table(current_symbol_table); ptr="LOCAL"; current_symbol_table->name=(char*)malloc(sizeof(char)*10);
+								                      strcpy(current_symbol_table->name,ptr); table_push(current_symbol_table); 
+									                  parameter_list=(param*)malloc(sizeof(param));
+													  params=(param*)malloc(sizeof(param));
+													  parameter_list=params; 
+													}   
+	parameter_list ')'          					{ item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);											
+													  function_info.return_data_type=data_type;
+													  function_info.no_parameters=no_of_parameters;
+													  function_info.parameters=parameter_list->next;
+													  id_info.function_info=function_info; 
+													  item->id_info=id_info;
+													  parameter_list=NULL;
+													  params=parameter_list;										
+													  $1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
+								 					 }							
+			
 	;
-
-
 
 parameter_list
-	: type_specifier ID                          { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$2.name_token , function_param , data_type)==false)
-																			{printf("Redeclared of variable at line %d\n",line_number);} 
-																			else {
-																				no_of_parameters++;      
-																				 
-																				$$.node=build_node($2.name_token,NULL,NULL); 
-																				$$.node->data_type=data_type; 
-																				
-
-																				link_p($2.name_token,data_type);  } 
-
-																				
-																			}
-	| parameter_list ',' type_specifier ID				{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
-																			{printf("Redeclared of variable at line %d\n",line_number);}  
-																			else {
-																				$4.node=build_node($4.name_token,NULL,NULL);
-																				$4.node->data_type=data_type;  
-																				no_of_parameters++;
-																				ptr="param_list";  $$.node=build_node(ptr,$1.node,$4.node ); 
-																				 
-																				link_p($3.name_token,data_type);   } 
-																				
-															}
+		: type_specifier ID                             { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$2.name_token , function_param , data_type)==false)
+																				{printf("ERROR: Redeclaration of variable at line %d\n",line_number);} 
+																				else {
+																					no_of_parameters++;    
+																					$$.node=build_node($2.name_token,NULL,NULL); 
+																					$$.node->data_type=data_type; 	
+																					link_p($2.name_token,data_type); } 																				
+														}
+	| parameter_list ',' type_specifier ID				{ if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
+																				{printf("ERROR: Redeclaration of variable at line %d\n",line_number);}  
+																				else {
+																					$4.node=build_node($4.name_token,NULL,NULL);
+																					$4.node->data_type=data_type;  
+																					no_of_parameters++;
+																					ptr="param_list";  $$.node=build_node(ptr,$1.node,$4.node ); 																				 
+																					link_p($3.name_token,data_type);   } 																				
+														}
 	;
-
-
 
 
 postfix_expression
@@ -279,7 +263,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Operation on incompatible data types at line %d\n",line_number);
+																			printf("ERROR: Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -289,7 +273,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Operation on incompatible data types at line %d\n",line_number);
+																			printf("ERROR: Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -299,7 +283,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Operation on incompatible data types at line %d\n",line_number);
+																			printf("ERROR: Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -309,90 +293,87 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Operation on incompatible data types at line %d\n",line_number);
+																			printf("ERROR: Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	;
 
 logical_expression
-	: primary_expression							{ ptr = "prm_exp"; $$.node = build_node(ptr, $1.node, NULL); }
+	: primary_expression									{ ptr = "prm_exp"; $$.node = build_node(ptr, $1.node, NULL); }
 	| expression logical_operator expression				{ $$.node = build_node($2.name_token, $1.node, $3.node); }
 	;
 
 binary_operator
-	: '+'					{ptr="+"; $$.node=build_node(ptr,NULL,NULL); }
-	| '-'					{ptr="-"; $$.node=build_node(ptr,NULL,NULL); }
-	| '*'					{ptr="*"; $$.node=build_node(ptr,NULL,NULL); }
-	| '/'					{ptr="/"; $$.node=build_node(ptr,NULL,NULL); }
-	| '%'					{ptr="%"; $$.node=build_node(ptr,NULL,NULL); }
-	| '<'					{ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
-	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
-	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
+	: '+'					{ ptr="+"; $$.node=build_node(ptr,NULL,NULL); }
+	| '-'					{ ptr="-"; $$.node=build_node(ptr,NULL,NULL); }
+	| '*'					{ ptr="*"; $$.node=build_node(ptr,NULL,NULL); }
+	| '/'					{ ptr="/"; $$.node=build_node(ptr,NULL,NULL); }
+	| '%'					{ ptr="%"; $$.node=build_node(ptr,NULL,NULL); }
+	| '<'					{ ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
+	| '>'					{ ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
+	| '='					{ ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
 logical_operator
-	: '<'					{ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
-	| '>'					{ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
-	| '='					{ptr="="; $$.node=build_node(ptr,NULL,NULL); }
+	: '<'					{ ptr="<"; $$.node=build_node(ptr,NULL,NULL); }
+	| '>'					{ ptr=">"; $$.node=build_node(ptr,NULL,NULL); }
+	| '='					{ ptr="="; $$.node=build_node(ptr,NULL,NULL); }
 	;
 
 type_specifier
-	: CHAR                  {ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ; $$.node->data_type=char_t; }      
-	| INT					{ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t; }
-	| DOUBLE				{ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; $$.node->data_type=double_t; }
-    | BOOL					{ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ; $$.node->data_type=bool_t;}
-
-	| STRUCT				{ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
-	| VOID					{ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;$$.node->data_type=void_t; }
+	: CHAR                  { ptr="char"; $$.node=build_node(ptr,NULL,NULL); data_type=char_t ; $$.node->data_type=char_t; }      
+	| INT					{ ptr="int"; $$.node=build_node(ptr,NULL,NULL); data_type=int_t ;  $$.node->data_type=int_t; }
+	| DOUBLE				{ ptr="double"; $$.node=build_node(ptr,NULL,NULL); data_type=double_t; $$.node->data_type=double_t; }
+    | BOOL					{ ptr="bool"; $$.node=build_node(ptr,NULL,NULL); data_type=bool_t ; $$.node->data_type=bool_t;}
+	| STRUCT				{ ptr="struct"; $$.node=build_node(ptr,NULL,NULL); }
+	| VOID					{ ptr="void"; $$.node=build_node(ptr,NULL,NULL); data_type=void_t;$$.node->data_type=void_t; }
 	;
 
 primary_expression
 	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; }
-	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
-	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
+	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t; }
+	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t; }
 	| TRUE                  { ptr="true"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t;  }
 	| FALSE                 { ptr="false"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t; }
 	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
-								if(item==NULL){printf("%s is undeclared identifier at %d\n",$1.name_token,line_number);}
-								else{$$.node->data_type=item->data_type;}
-								
-									}	
+								if(item==NULL){printf("ERROR: %s is undeclared identifier at %d\n",$1.name_token,line_number);}
+								else{$$.node->data_type=item->data_type;}								
+							}	
 	| STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
 	| '('ID '('')'')'       { $$.node=build_node($2.name_token,NULL,NULL);
 								item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
 							   if(item==NULL)
 							   {	
-									printf("%s is undeclared identifier at %d\n",$2.name_token,line_number);
+									printf("ERROR: %s is undeclared identifier at %d\n",$2.name_token,line_number);
 							   		$$.node->data_type=void_t; 
 								} 
 							   else
 							   {
 									$$.node->data_type=item->data_type;
 								}
-								}
+							}
 	| '('ID '(' id_list ')' ')' { $$.node=build_node( $2.name_token , $2.node , $4.node );
 								  item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
 								if(item==NULL)
 								{
-									printf("%s is undeclared identifier at %d\n",$2.name_token,line_number);
+									printf("ERROR: %s is undeclared identifier at %d\n",$2.name_token,line_number);
 								  	$$.node->data_type=void_t;
 								} 
 								else{ 
 									check_function_parameters(item->id_info.function_info.parameters,$4.node);
 									$$.node->data_type=item->data_type; }    
-								}
+							    }
 
  	;
 
 
 id_list
-	: primary_expression				{$$.node=$1.node;}
-	| postfix_expression				{$$.node=$1.node;}
-	| id_list ',' primary_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
-	| id_list ',' postfix_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
+	: primary_expression					{ $$.node=$1.node; }
+	| postfix_expression					{ $$.node=$1.node; }
+	| id_list ',' primary_expression		{ ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node); }
+	| id_list ',' postfix_expression		{ ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node); }
 	;
-
-
+	
 
 %%
 
@@ -406,7 +387,7 @@ char *doubl_ptr="double";
 
 void yyerror () 
 {
-	fprintf(stderr, "Parsing failed, Syntax error at line %d\n",line_number);
+	fprintf(stderr, "ERROR: Parsing failed, Syntax error at line %d\n",line_number);
 	exit(1);
 }
 
