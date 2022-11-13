@@ -79,22 +79,26 @@ void check_assignment(symbol_table *sym_tbl, ast_node *node)
 void check_function_parameters(param *par, ast_node *node)
 {
     char *c = "id_list";
+    
     if ((node == NULL && par != NULL) || (node != NULL && par == NULL))
     {
         printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
         return;
     }
     if (node == NULL && par == NULL)
-    {
+    {  
         return;
     }
 
     if (strcmp(node->name, c) == 0)
     {
+    
         if (node->right->data_type == par->parameter_data_type)
         {
+            
             if (par->next && node->left)
             {
+                
                 check_function_parameters(par->next, node->left);
                 return;
             }
@@ -102,16 +106,37 @@ void check_function_parameters(param *par, ast_node *node)
             {
                 return;
             }
+            if ((node->left == NULL && par->next != NULL) || (node->left != NULL && par->next == NULL))
+            {
+                printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+                return;
+            }
+            if (node == NULL && par == NULL)
+            {
+                return;
+            }
         }
         else
         {
+            
             // printf("Function parameter doesn't match \n");
             printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
             return;
         }
+        
     }
-
-    if (node->data_type != par->parameter_data_type)
+    
+    if (node->data_type == par->parameter_data_type)
+    {
+                if ((node->left == NULL && par->next != NULL) || (node->left != NULL && par->next == NULL))
+                {
+                    printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+                    return;
+                }
+        return ;
+    }
+    
+    else
     {
         printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
         return;
