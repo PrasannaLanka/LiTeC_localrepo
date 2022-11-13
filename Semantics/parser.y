@@ -5,11 +5,9 @@
 	#include <string.h>
 	
 	#include "semantic.h"
-    int yylex(void);
-    void yyerror(char *); 
-
+    int yylex(void);  
 	extern FILE *yyin;
-
+	void yyerror();
 	char* ptr;
 	symbol_table *current_symbol_table;
 	symbol_table *temp_symbol_table;
@@ -26,6 +24,7 @@
 	int single_tex_function=0;
 	
 	void link_p(char *name ,enum data_type_t d );
+	extern int line_number;
 %}
  
 
@@ -51,10 +50,10 @@
 
 
 
-%token <token_node> DECLARE RETURN IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
+%token <token_node> DECLARE RETURN CONTINUE BREAK IF ELSE LOOP TEX TEX_OPEN TEX_CLOSE
 %token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
 
-%token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT
+%token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT TRUE FALSE
 %token <token_id> ID
 
 %type  <token_node> translation_main translation_unit external_declaration declaration function_definition
@@ -63,7 +62,7 @@
 %type <token_node>  init_declarator type_specifier expression
 %type <token_node> assignment_expression primary_expression postfix_expression 
 %type <token_node> binary_operator function_body body parameter_list id_list
-%type <token_node> selection_statement iteration_statement tex_statement logical_expression logical_operator
+%type <token_node> selection_statement iteration_statement tex_statement jump_statement logical_expression logical_operator
 
 %type <token_node> tex_data tex_function 
 %start translation_main
@@ -83,7 +82,7 @@ translation_unit
 
 external_declaration
 	: declaration 					{ptr="external_declr"; $$.node=build_node(ptr,$1.node,NULL);}
-	| function_definition        {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); check_function_return($$.node);}
+	| function_definition           {ptr="fun_declr"; $$.node=build_node(ptr,$1.node,NULL); check_function_return($$.node);}
 	;
 
 function_definition
@@ -94,7 +93,7 @@ function_definition
 function_body
 	:declarator '{' {} 
 		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();
-														  
+
 														  ptr="fun_body"; no_of_parameters=0;
 													    if($1.node->left!=NULL)
 														{$$.node=build_node($1.node->name,$1.node->left,$4.node);
@@ -129,6 +128,7 @@ statement
 	| iteration_statement			{ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL);}
 	| tex_statement				{ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
 									single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
+	| jump_statement				{printf("dfghj\n"); ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
 	;
 
 selection_statement
@@ -166,12 +166,19 @@ tex_function
 	: TEX_OPEN primary_expression TEX_CLOSE				{ $$.node = $2.node; }
 	;
 
+jump_statement
+	: CONTINUE ';'						{ ptr = "j_cnt"; $$.node = build_node(ptr, $1.node, NULL); }
+	| BREAK ';'						{ ptr = "j_brk"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN ';'						{ ptr = "j_rtn"; $$.node = build_node(ptr, $1.node, NULL); }
+	| RETURN expression ';'					{ ptr = "ret_exp"; $$.node = build_node(ptr, $2.node, NULL); }
+	;
+
 declaration
 	: DECLARE type_specifier init_declarator ';'			{ptr="declr"; $$.node=build_node(ptr,$2.node,$3.node);}  
 	;
 
 expression_statement
-	:   ';'								{ptr=";"; $$.node=build_node(ptr,NULL,NULL);  }
+	:   ';'							   {ptr=";"; $$.node=build_node(ptr,NULL,NULL);  }
 	|  expression ';'                  { ptr="expr"; $$.node=build_node(ptr,$1.node,NULL); }
 	;
 
@@ -196,10 +203,10 @@ init_declarator
 
 declarator
 	: ID							{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr); printf("redeclared\n");}
+																			{printf("Redeclared of variable at line %d\n",line_number);}
 									 $1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;}			
 	| ID   '('')' 				{ if ( insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t,data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");} 
+																			{printf("Redeclared of variable at line %d\n",line_number);} 
 																			current_symbol_table=init_child_symbol_table(current_symbol_table); 
 																			table_push(current_symbol_table);
 																			
@@ -207,7 +214,7 @@ declarator
 									$1.data_type=get_type(data_type);	$$.node=build_node($1.name_token,$1.node,NULL);	$$.node->data_type=data_type;          }	
 	| ID '('                     {  
 									if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , function_t , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}
+																			{printf("Redeclared of variable at line %d\n",line_number);}
 									current_symbol_table=init_child_symbol_table(current_symbol_table); ptr="LOCAL"; current_symbol_table->name=(char*)malloc(sizeof(char)*10);
 									strcpy(current_symbol_table->name,ptr); table_push(current_symbol_table); 
 									parameter_list=(param*)malloc(sizeof(param));
@@ -225,25 +232,31 @@ declarator
 										params=parameter_list;
 										
 										$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
+
+								  }
 										
-										}
+										
+
 	;
+
 
 
 parameter_list
 	: type_specifier ID                          { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$2.name_token , function_param , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");} 
+																			{printf("Redeclared of variable at line %d\n",line_number);} 
 																			else {
 																				no_of_parameters++;      
 																				 
 																				$$.node=build_node($2.name_token,NULL,NULL); 
 																				$$.node->data_type=data_type; 
 																				
-																				link_p($2.name_token,data_type);   } 
+
+																				link_p($2.name_token,data_type);  } 
+
 																				
 																			}
 	| parameter_list ',' type_specifier ID				{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
-																			{ptr="Redeclared";yyerror(ptr);printf("redeclared\n");}  
+																			{printf("Redeclared of variable at line %d\n",line_number);}  
 																			else {
 																				$4.node=build_node($4.name_token,NULL,NULL);
 																				$4.node->data_type=data_type;  
@@ -257,6 +270,7 @@ parameter_list
 
 
 
+
 postfix_expression
 	: '(' binary_operator primary_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
 																		if($3.node->data_type==$4.node->data_type)
@@ -265,7 +279,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Cannot perform on different data types\n");
+																			printf("Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator primary_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -275,7 +289,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Cannot perform on different data types\n");
+																			printf("Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator postfix_expression primary_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -285,7 +299,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Cannot perform on different data types\n");
+																			printf("Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	| '(' binary_operator postfix_expression postfix_expression  ')'	{ $$.node=build_node($2.node->name,$3.node,$4.node);  
@@ -295,7 +309,7 @@ postfix_expression
 																		}
 																		else
 																		{
-																			printf("Cannot perform on different data types\n");
+																			printf("Operation on incompatible data types at line %d\n",line_number);
 																		}
 																		 }
 	;
@@ -336,8 +350,10 @@ primary_expression
 	: CONSTANT_INT          { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=int_t; }
 	| CONSTANT_CHAR         { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=char_t;}
 	| CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t;}
+	| TRUE                  { ptr="true"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t;  }
+	| FALSE                 { ptr="false"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t; }
 	| ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
-								if(item==NULL){printf("%s is undeclared identifier\n",$1.name_token);}
+								if(item==NULL){printf("%s is undeclared identifier at %d\n",$1.name_token,line_number);}
 								else{$$.node->data_type=item->data_type;}
 								
 									}	
@@ -346,7 +362,7 @@ primary_expression
 								item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
 							   if(item==NULL)
 							   {	
-									printf("%s is undeclared identifier\n",$2.name_token);
+									printf("%s is undeclared identifier at %d\n",$2.name_token,line_number);
 							   		$$.node->data_type=void_t; 
 								} 
 							   else
@@ -358,7 +374,7 @@ primary_expression
 								  item=search_in_all_sym_tbl(current_symbol_table , $2.name_token);
 								if(item==NULL)
 								{
-									printf("%s is undeclared identifier\n",$2.name_token);
+									printf("%s is undeclared identifier at %d\n",$2.name_token,line_number);
 								  	$$.node->data_type=void_t;
 								} 
 								else{ 
@@ -371,18 +387,16 @@ primary_expression
 
 id_list
 	: primary_expression				{$$.node=$1.node;}
+	| postfix_expression				{$$.node=$1.node;}
 	| id_list ',' primary_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
+	| id_list ',' postfix_expression		{ptr="id_list" ; $$.node=build_node(ptr,$1.node,$3.node);   }
 	;
 
 
 
 %%
 
-void yyerror(char *s) 
-{
-    fprintf(stderr, "%s\n", s);
-	return ;
-}  
+
 
 /*For insertion we store data temporarily*/
 char *int_ptr="int";
@@ -390,8 +404,13 @@ char *char_ptr="char";
 char *float_ptr="float";
 char *doubl_ptr="double";
 
+void yyerror () 
+{
+	fprintf(stderr, "Parsing failed, Syntax error at line %d\n",line_number);
+	exit(1);
+}
 
-
+	
 int main(int argc, char *argv[])
 {
 	
@@ -411,19 +430,22 @@ int main(int argc, char *argv[])
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
 		{
-			printf("Parsing error \n");
+
+			yyerror();		
+			
 		}
 		else
 		{
-			printf("parsing completed \n");
+			printf("\nParsing completed \n");
+
 		}
 		fclose(yyin);
+		printf("\nast in pre-order\n");
 		print_ast(root);
 		
 		
-		//printf("Symbol Table \n");
-		//print_symbol_table(table_top());
-
+		printf("\nSymbol Table \n");
+		print_symbol_table(table_top());
 
 		//check_function_return(root->left->left);
 		return 0;
@@ -440,13 +462,3 @@ void link_p(char *name ,enum data_type_t d )
 	params=p;
 	return ;
 }
-
-
-
-
-
-
-
-
-
-

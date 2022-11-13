@@ -3,18 +3,15 @@ D		     	[0-9]
 L		     	[a-zA-Z]
 
 
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-
-
-
 #include <string.h>
 
 #define MC yylval.token_node.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_node.name_token,yytext);
 #define MC_ID yylval.token_id.name_token=(char*)malloc(sizeof(yytext)); strcpy(yylval.token_id.name_token,yytext);
+int line_number = 1;
 
 void count();
 %}
@@ -37,12 +34,16 @@ void count();
 "if"			{ count(); return(IF); }
 "else"			{ count(); return(ELSE); }
 "loop"			{ count(); return(LOOP); }
+"continue"		{ count(); return(CONTINUE); }
+"break"			{ count(); return(BREAK); }
 "TeX"			{ count(); return(TEX); }
 
 "void"			{ count(); return(VOID); }
 "return"		{count(); return(RETURN); }
 
+"true"			{count(); return(TRUE); }
 
+"false"			{count(); return(FALSE); }
 
 
 
@@ -81,6 +82,9 @@ void count();
 ";"			{ count(); return(';'); }
 "!"			{ count(); return('!'); }
 "?"			{ count(); return('?'); }
+
+[\n] 		{line_number++;}
+
 .			{}
 
 %%
@@ -110,15 +114,15 @@ loop:
 		putchar(b);
 }
 
-int column = 0;
+int column;
 
 void count()
 {
 	int i;
-
+	column = 1;
 	for (i = 0; yytext[i] != '\0'; i++)
 		if (yytext[i] == '\n')
-			column = 0;
+			column = 1;
 		else if (yytext[i] == '\t')
 			column += 8 - (column % 8);
 		else
