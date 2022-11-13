@@ -93,7 +93,7 @@ function_definition
 function_body
 	:declarator '{' {} 
 		body  '}'   {temp_symbol_table=table_pop(); current_symbol_table=table_top();
-														 
+
 														  ptr="fun_body"; no_of_parameters=0;
 													    if($1.node->left!=NULL)
 														{$$.node=build_node($1.node->name,$1.node->left,$4.node);
@@ -232,9 +232,11 @@ declarator
 										params=parameter_list;
 										
 										$1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
+
 								  }
 										
 										
+
 	;
 
 
@@ -248,7 +250,9 @@ parameter_list
 																				$$.node=build_node($2.name_token,NULL,NULL); 
 																				$$.node->data_type=data_type; 
 																				
+
 																				link_p($2.name_token,data_type);  } 
+
 																				
 																			}
 	| parameter_list ',' type_specifier ID				{if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$4.name_token , function_param , data_type)==false)
@@ -426,17 +430,19 @@ int main(int argc, char *argv[])
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
 		{
+
 			yyerror();		
 			
 		}
 		else
 		{
 			printf("\nParsing completed \n");
+
 		}
 		fclose(yyin);
 		printf("\nast in pre-order\n");
 		print_ast(root);
-		printf("\n"); 
+		
 		
 		printf("\nSymbol Table \n");
 		print_symbol_table(table_top());

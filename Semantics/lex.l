@@ -82,7 +82,9 @@ void count();
 ";"			{ count(); return(';'); }
 "!"			{ count(); return('!'); }
 "?"			{ count(); return('?'); }
+
 [\n] 		{line_number++;}
+
 .			{}
 
 %%

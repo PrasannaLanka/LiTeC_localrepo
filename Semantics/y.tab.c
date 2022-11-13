@@ -1385,7 +1385,7 @@ yyreduce:
 
   case 4: /* translation_unit: translation_unit external_declaration  */
 #line 81 "parser.y"
-                                                                {printf("HII 2\n"); ptr="trans_unit"; (yyval.token_node).node=build_node(ptr,(yyvsp[-1].token_node).node,(yyvsp[0].token_node).node);   }
+                                                                { ptr="trans_unit"; (yyval.token_node).node=build_node(ptr,(yyvsp[-1].token_node).node,(yyvsp[0].token_node).node);   }
 #line 1390 "y.tab.c"
     break;
 
@@ -1422,12 +1422,12 @@ yyreduce:
   case 10: /* function_body: declarator '{' $@2 body '}'  */
 #line 96 "parser.y"
                             {temp_symbol_table=table_pop(); current_symbol_table=table_top();
-														  print_symbol_table(current_symbol_table);
+														  
 														  ptr="fun_body"; no_of_parameters=0;
 													    if((yyvsp[-4].token_node).node->left!=NULL)
 														{(yyval.token_node).node=build_node((yyvsp[-4].token_node).node->name,(yyvsp[-4].token_node).node->left,(yyvsp[-1].token_node).node);
-														printf("h1\n");}  
-														else{(yyval.token_node).node=build_node(ptr,NULL,(yyvsp[-1].token_node).node);printf("h2\n");}
+														}  
+														else{(yyval.token_node).node=build_node(ptr,NULL,(yyvsp[-1].token_node).node);}
 														
 														}
 #line 1434 "y.tab.c"
@@ -1693,8 +1693,8 @@ yyreduce:
 										params=parameter_list;
 										
 										(yyvsp[-4].token_id).data_type=get_type(data_type); (yyval.token_node).node=build_node((yyvsp[-4].token_id).name_token ,(yyvsp[-1].token_node).node ,NULL ); (yyval.token_node).node->data_type=data_type; 
-										print_symbol_table(current_symbol_table);
-										printf("Called \n");}
+										
+										}
 #line 1699 "y.tab.c"
     break;
 
@@ -1708,7 +1708,7 @@ yyreduce:
 																				(yyval.token_node).node=build_node((yyvsp[0].token_id).name_token,NULL,NULL); 
 																				(yyval.token_node).node->data_type=data_type; 
 																				
-																				link_p((yyvsp[0].token_id).name_token,data_type);printf("kk\n");   } 
+																				link_p((yyvsp[0].token_id).name_token,data_type);   } 
 																				
 																			}
 #line 1715 "y.tab.c"
@@ -1876,7 +1876,7 @@ yyreduce:
 
   case 69: /* type_specifier: INT  */
 #line 327 "parser.y"
-                                                {ptr="int"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=int_t ;  (yyval.token_node).node->data_type=int_t;printf(" int \n"); }
+                                                {ptr="int"; (yyval.token_node).node=build_node(ptr,NULL,NULL); data_type=int_t ;  (yyval.token_node).node->data_type=int_t; }
 #line 1881 "y.tab.c"
     break;
 
@@ -2213,15 +2213,15 @@ int main(int argc, char *argv[])
    	  yyin=fopen(argv[--argc],"r");
 		if (yyparse())
 		{
-			printf("\nParsing error \n");
+			printf("Parsing error \n");
 		}
 		else
 		{
-			printf("\nparsing completed \n");
+			printf("parsing completed \n");
 		}
 		fclose(yyin);
 		print_ast(root);
-		printf("\n"); 
+		
 		
 		//printf("Symbol Table \n");
 		//print_symbol_table(table_top());
