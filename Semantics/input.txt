@@ -7,8 +7,15 @@ void work(int p,int x)
 {
     declare int y : 8 ;
     y : ( + "f" "j" );
-    y : ( + (fact(4,"d")) 78 ) ;
-    return "c" ;
+    y : ( + (fact(4,10)) 78 ) ;
+    return ;
+}
+
+int main()
+{
+    declare int u : (+ (work(1)) 0 );
+
+    return 0;
 }
 
 
