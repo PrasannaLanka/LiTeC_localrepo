@@ -82,7 +82,7 @@ void check_function_parameters(param *par, ast_node *node)
     
     if ((node == NULL && par != NULL) || (node != NULL && par == NULL))
     {
-        printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+        printf("ERROR: Invalid function arguments at line %d\n", line_number);
         return;
     }
     if (node == NULL && par == NULL)
@@ -108,7 +108,7 @@ void check_function_parameters(param *par, ast_node *node)
             }
             if ((node->left == NULL && par->next != NULL) || (node->left != NULL && par->next == NULL))
             {
-                printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+                printf("ERROR: Invalid function arguments at line %d\n", line_number);
                 return;
             }
             if (node == NULL && par == NULL)
@@ -120,7 +120,7 @@ void check_function_parameters(param *par, ast_node *node)
         {
             
             // printf("Function parameter doesn't match \n");
-            printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+            printf("ERROR: Invalid function arguments at line %d\n", line_number);
             return;
         }
         
@@ -130,7 +130,7 @@ void check_function_parameters(param *par, ast_node *node)
     {
                 if ((node->left == NULL && par->next != NULL) || (node->left != NULL && par->next == NULL))
                 {
-                    printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+                    printf("ERROR: Invalid function arguments at line %d\n", line_number);
                     return;
                 }
         return ;
@@ -138,7 +138,7 @@ void check_function_parameters(param *par, ast_node *node)
     
     else
     {
-        printf("ERROR: Invalid funciton arguments at line %d\n", line_number);
+        printf("ERROR: Invalid function arguments at line %d\n", line_number);
         return;
     }
 }
