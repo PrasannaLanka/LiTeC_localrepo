@@ -54,12 +54,12 @@
 %token <token_node> CONSTANT_INT CONSTANT_CHAR CONSTANT_FLOAT CONSTANT_DOUBLE
 
 %token <token_node> BOOL CHAR INT DOUBLE VOID  STRING_LITERAL STRUCT TRUE FALSE
-%token <token_id> ID
+%token <token_id> ID SF_OPEN SF_CLOSE MS_OPEN MS_CLOSE
 
-%type  <token_node> translation_main translation_unit external_declaration declaration function_definition
-%type <token_node>  declarator compound_statement compound_statement_content
-%type <token_node>  statement expression_statement 
-%type <token_node>  init_declarator type_specifier expression
+%type <token_node> translation_main translation translation_init translation_unit external_declaration
+%type <token_node> declaration function_definition declarator compound_statement compound_statement_content
+%type <token_node> statement expression_statement 
+%type <token_node> init_declarator type_specifier expression
 %type <token_node> assignment_expression primary_expression postfix_expression 
 %type <token_node> binary_operator function_body body parameter_list id_list
 %type <token_node> selection_statement iteration_statement tex_statement jump_statement logical_expression logical_operator
@@ -70,14 +70,21 @@
 %%
 
 translation_main
-    : translation_unit             					{ ptr="Main"; $$.node=build_node(ptr,$1.node,NULL); root=$$.node; }
+    : translation                                       { ptr = "Main"; $$.node = build_node(ptr,$1.node,NULL); root = $$.node; }
     ;
 
+translation
+	: translation SF_OPEN translation_init SF_CLOSE     { ptr = "sub_file"; $$.node = build_node(ptr,$1.node,$3.node); }
+	| SF_OPEN translation_init SF_CLOSE                 { ptr = "sub_file"; $$.node = build_node(ptr,$2.node,NULL); }
+	;
 
+translation_init
+	: ID MS_OPEN translation_unit MS_CLOSE translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$5.node); }
+	;
 
 translation_unit
-    : external_declaration                          { ptr="trans_unit"; $$.node=$1.node; }
-    | translation_unit external_declaration 		{ ptr="trans_unit"; $$.node=build_node(ptr,$1.node,$2.node); }
+    : external_declaration                          { ptr = "trans_unit"; $$.node = $1.node; }
+    | translation_unit external_declaration 		{ ptr = "trans_unit"; $$.node = build_node(ptr,$1.node,$2.node); }
     ;
 
 external_declaration
