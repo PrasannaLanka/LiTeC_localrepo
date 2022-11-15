@@ -117,8 +117,8 @@ body
 
 
 compound_statement
-    : '{' {table_push(current_symbol_table); current_symbol_table=init_child_symbol_table(current_symbol_table); } 
-            compound_statement_content '}'  {table_push(temp_symbol_table);	 ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
+    : '{' { current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} 
+            compound_statement_content '}'  {current_symbol_table=table_pop();current_symbol_table=table_top();	 ptr="cmp_stmt"; $$.node=build_node(ptr,$3.node,NULL); }
     ;
 
 compound_statement_content
