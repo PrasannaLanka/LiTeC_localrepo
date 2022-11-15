@@ -57,6 +57,10 @@ void count();
 
 "[:"			{ count(); return(TEX_OPEN); }
 ":]"			{ count(); return(TEX_CLOSE); }
+"{["			{ count(); return(SF_OPEN); }
+"]}"			{ count(); return(SF_CLOSE); }
+"(["			{ count(); return(MS_OPEN); }
+"])"			{ count(); return(MS_CLOSE); }
 
 "+"			{ count(); return('+'); }
 "-"			{ count(); return('-'); }
