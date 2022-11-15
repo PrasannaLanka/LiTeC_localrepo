@@ -74,8 +74,9 @@ translation_main
     ;
 
 translation
-	: translation SF_OPEN translation_init SF_CLOSE     { ptr = "sub_file"; $$.node = build_node(ptr,$1.node,$3.node); }
-	| SF_OPEN translation_init SF_CLOSE                 { ptr = "sub_file"; $$.node = build_node(ptr,$2.node,NULL); }
+	: translation SF_OPEN {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top(); ptr = "sub_file"; $$.node = build_node(ptr,$1.node,$4.node); }
+	| SF_OPEN {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top();
+                                                                                                                                                                  ptr = "sub_file"; $$.node = build_node(ptr,$3.node,NULL); }
 	;
 
 translation_init

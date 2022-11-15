@@ -7,7 +7,7 @@
             {
                 return 1;
             }
-            return (* (fact((+ 7 4))) n);
+            return (* (fact(12)) n);
         }
     ])
 
