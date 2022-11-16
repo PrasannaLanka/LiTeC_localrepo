@@ -52,6 +52,7 @@ void count();
 
 
 {D}+			{MC count(); return(CONSTANT_INT); }
+{D}+"."{D}*		{MC count(); return(CONSTANT_DOUBLE); }
 \"(\\.|[^\\"])\"	{MC count(); return(CONSTANT_CHAR); }
 \"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
 
