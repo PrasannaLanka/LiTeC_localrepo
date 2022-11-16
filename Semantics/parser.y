@@ -74,13 +74,13 @@ translation_main
     ;
 
 translation
-	: translation SF_OPEN {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top(); ptr = "sub_file"; $$.node = build_node(ptr,$1.node,$4.node); }
-	| SF_OPEN {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top();
+	: translation SF_OPEN {} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top(); ptr = "sub_file"; $$.node = build_node(ptr,$1.node,$4.node); }
+	| SF_OPEN {} translation_init SF_CLOSE                 {current_symbol_table=table_pop();current_symbol_table=table_top();
                                                                                                                                                                   ptr = "sub_file"; $$.node = build_node(ptr,$3.node,NULL); }
 	;
 
 translation_init
-	: ID MS_OPEN translation_unit MS_CLOSE translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$5.node); }
+	: ID MS_OPEN translation_unit MS_CLOSE {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$6.node); }
 	;
 
 translation_unit
@@ -136,7 +136,7 @@ statement
     | iteration_statement							{ ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
     | tex_statement				  					{ ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
                                                     single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
-    | jump_statement								{ printf("dfghj\n"); ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
+    | jump_statement								{  ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
     ;
 
 selection_statement
