@@ -142,3 +142,38 @@ void check_function_parameters(param *par, ast_node *node)
         return;
     }
 }
+
+int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
+    if (left_node->isMatrix!=1 || right_node->isMatrix!=1)
+    {
+        printf("ERROR : both are not matrix \n ");
+        return 1;
+    }
+    char *operator;
+    operator="+";
+    if (strcmp(parent->name,operator)==0)
+    {
+        if (left_node->matrix_info.row!=right_node->matrix_info.row)
+        {
+            printf("ERROR: no of rows didn't matched \n ");
+            return 1;
+        }
+        if (left_node->matrix_info.column!=right_node->matrix_info.column)
+        {
+            printf("ERROR: no of columns didn't matched \n ");
+            return 1;
+        }
+        else
+        {
+            parent->isMatrix=1;
+            parent->matrix_info.row=left_node->matrix_info.row;
+            parent->matrix_info.column=left_node->matrix_info.column;
+            printf("Both matrix matched \n ");
+            return 0;
+        }
+        
+    }
+    return 1;
+    
+    
+}

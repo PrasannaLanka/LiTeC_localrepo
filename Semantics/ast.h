@@ -6,6 +6,8 @@ struct ast_node_t
     char *name;
     value_t value;
     enum data_type_t data_type;
+    int isMatrix ;      // 1 if it matrix else 0 
+    matrix_info_t matrix_info;
     struct ast_node_t* left;
     struct ast_node_t* right;
 }typedef ast_node;
