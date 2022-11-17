@@ -19,12 +19,8 @@ void count();
 %%
 
 
-
-
+"/*"(.|\n)*"*/"		{/*a C comment*/}
 "declare"   {count() ; return(DECLARE);}
-
-
-
 "bool"			{ count(); return(BOOL); }
 "char"			{ count(); return(CHAR); }
 "int"			{ count(); return(INT);  }
