@@ -1,0 +1,52 @@
+/*redclaration of variable error*/
+{[
+    MainFile
+    ([
+    	declare int num : 276;
+        declare int act : num;
+        declare int rev : 0; 
+        declare int rem : 0;        
+    ])
+
+
+    int main()
+    {
+        declare int i : 0;
+        declare int i : 3;
+	    loop(; act > 0; i : ( + i 1))
+        {
+		rem : (% act 10);
+		rev : (+ (* rev 10) rem);
+		act : (/ act 10);
+	    }        
+        return 0;
+    }
+
+]}
+
+{[
+    SubFile1
+    ([
+        bool check(int a,int b)
+        {
+            if(num = rev)
+            {
+                return false;
+            }   
+            else
+            {
+                return true;
+            }
+            return false;
+        }
+        
+    ])
+
+    int main()
+    {
+        (check(num,rev));
+        return 0;
+    }
+]}
+
+
