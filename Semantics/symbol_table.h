@@ -21,7 +21,7 @@ static int m=0;
 
 
 enum data_type_t{char_t, int_t , double_t ,bool_t , void_t };
-typedef enum id_type{ variable_t , function_t , struct_t , array_t ,function_param }id_type;
+typedef enum id_type{ variable_t , function_t , struct_t , array_t ,function_param ,matrix_t}id_type;
 
 // only one data type can exist for a variable ,so respective value 
 union Value
@@ -31,6 +31,7 @@ union Value
     double double_value;
     char char_value;
     char *string;
+    int address_of_int;
 }typedef value_t;
 
 struct data_type_d
@@ -67,13 +68,18 @@ struct function_data
     
 }typedef fun_data_t;
 
+struct matrix_data
+{
+    int row;
+    int column;
+}typedef matrix_info_t;
 
 
 union identifier_data
 {
     //array information array size , data type
     array_data_t array_info;
-
+    matrix_info_t matrix_info;
     //return type for function
     fun_data_t function_info;
 }typedef id_data_t;

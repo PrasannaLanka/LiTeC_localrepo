@@ -41,8 +41,13 @@
     {
         declare int x : 10;
         declare int y : 20;
+        declare int mat2[3][3] ;
+        declare int mat[3][3] ;
+        declare int mat1[3][3];
 
         y : (mul(x, y));
+        
+        mat1 : (+ mat2 mat );
 
         declare int z;
         loop(z : y; z > 0; z : (- z 1))
