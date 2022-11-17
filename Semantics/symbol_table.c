@@ -36,13 +36,12 @@ unsigned int get_hash_key(char *id_name,int len)
 
 bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, enum data_type_t data_type)
 {
-
+    
     size_t sz=strlen(name);
     int l = (int)sz;
     
     unsigned int key=get_hash_key(name,l);
-
-    //printf("Insertion phase : generated key for %s is %u\n",name,key);
+    //printf("Key for %s : %d \n",name,key);
     if (symbol_table_t[key]==NULL)
     {
         item_t *new_item=(item_t*)malloc(sizeof(item_t));
@@ -52,37 +51,50 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, 
         strcpy(new_item->name,name);
         new_item->next=NULL;
         symbol_table_t[key]=new_item;
-        //printf("\n inserted\n");
+        
         return true;
         
     }
     else
     {
-        //printf("Reached \n");
+        item_t *new_item=(item_t*)malloc(sizeof(item_t*));
+            new_item->name=(char*)malloc(sizeof(name));
+            new_item->iden_type=iden_type;
+            new_item->data_type=data_type;
+            strcpy(new_item->name,name);
+
+            new_item->next=NULL;
+            symbol_table_t[key]->next=new_item;
+
+            return true;
+
         item_t *head=symbol_table_t[key];
         while (head->next!=NULL)
         {
             if (strcmp(head->name,name)==0)
             {
-                //printf("\n %s is already declared \n ",name);
+                
                 return false;
             }
             
             head=head->next;
         }
-        if(head->next==NULL && strcmp(head->name,name)==1)
+        if(head->next==NULL && strcmp(head->name,name)!=0)
         {
+
             item_t *new_item=(item_t*)malloc(sizeof(item_t*));
             new_item->name=(char*)malloc(sizeof(name));
             new_item->iden_type=iden_type;
             new_item->data_type=data_type;
             strcpy(new_item->name,name);
+
             new_item->next=NULL;
             head->next=new_item;
+
             return true;
             
         }
-        //printf("\n %s is already declared \n ",name);
+
         return false;
     }
 }
@@ -106,15 +118,23 @@ item_t* search_in_symbol_table(item_t **symbol_table_t ,  char *name)
     
     item_t *head=symbol_table_t[key];
     
-    const char* p1=name;
+    char* p1=name;
     item_t *it=head;
-    
-    while (it!=NULL && strcmp(p1,it->name)==1 )
-    {
-        it=it->next;
-    }
 
-    
+    while (it!=NULL && strcmp(name,it->name)!=0 )
+    {
+        it=it->next;  
+    }   
+    p1="sat2";
+    if(strcmp(p1,name)==0)
+    {
+        if (it->next!=NULL)
+        {
+            printf("Name : %s  \n" , it->next->name);
+        }
+        
+
+    }
     return it;
 }
 
@@ -129,7 +149,7 @@ item_t* search_in_all_sym_tbl(symbol_table *sym_tbl , char *name)
 {
     //we can optimise it by passing hash key from here , currently we are doing hasing in search in symbol table function
     item_t *it=(item_t*)malloc(sizeof(item_t));
-    
+    //printf("Searching for %s ........\n",name);
     it=search_in_symbol_table(sym_tbl->symbol_table_t,name);
     
    
