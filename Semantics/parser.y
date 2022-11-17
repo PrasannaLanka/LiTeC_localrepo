@@ -20,7 +20,7 @@
     int no_of_parameters=0;
     id_data_t id_info;
     item_t * item;
-
+    matrix_info_t matrix_info;
     int single_tex_function=0;
     
     void link_p(char *name ,enum data_type_t d );
@@ -45,6 +45,8 @@
         char *name_token;
         struct ast_node_t *node;
     }token_str;
+
+
 }
 
 
@@ -240,6 +242,21 @@ declarator
                                                       $1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
                                                       }							
             
+    |ID '['CONSTANT_INT']' '[' CONSTANT_INT']'      { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , matrix_t , data_type)==false)
+                                                            {printf("ERROR: Redeclaration of variable at line %d\n",line_number);}  
+                                                            else{printf("\n Inserted \n ");}
+                                                            $$.node=build_node($1.name_token,$1.node,NULL);   
+                                                            $$.node->data_type=data_type;
+                                                            item=search_in_all_sym_tbl(current_symbol_table, $1.name_token);
+                                                            if(item==NULL){printf("Got NULL for %s \n",$$.node->name);}
+                                                            else{printf("GOT item for Name is : %s\n",item->name);}
+                                                            matrix_info.row=atoi($3.name_token);
+                                                            matrix_info.column=atoi($6.name_token);
+                                                            id_info.matrix_info=matrix_info;
+                                                            item->id_info=id_info;
+
+                                                            }
+    
     ;
 
 parameter_list
@@ -268,6 +285,11 @@ postfix_expression
                                                                         if($3.node->data_type==$4.node->data_type)
                                                                         {
                                                                             $$.node->data_type=$3.node->data_type;
+                                                                            //
+                                                                            if($3.node->isMatrix==1 || $4.node->isMatrix==1)
+                                                                            {
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
@@ -343,9 +365,21 @@ primary_expression
     | CONSTANT_DOUBLE       { $$.node=build_node($1.name_token,NULL,NULL); $$.node->data_type=double_t; }
     | TRUE                  { ptr="true"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t;  }
     | FALSE                 { ptr="false"; $$.node=build_node(ptr,NULL,NULL); $$.node->data_type=bool_t; }
-    | ID					{ $$.node=build_node($1.name_token,NULL,NULL); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
+    | ID					{ $$.node=build_node($1.name_token,NULL,NULL);print_symbol_table(table_top()); item=search_in_all_sym_tbl(current_symbol_table , $1.name_token);
                                 if(item==NULL){printf("ERROR: %s is undeclared identifier at %d\n",$1.name_token,line_number);}
-                                else{$$.node->data_type=item->data_type;}								
+                                else
+                                {
+                                    $$.node->data_type=item->data_type;
+                                    if(item->iden_type==matrix_t) // id is matrix 
+                                    {
+                                        printf("Got item for %s \n",item->name);
+                                        $$.node->isMatrix=1;
+                                        matrix_info.row=item->id_info.matrix_info.row;
+                                        matrix_info.column=item->id_info.matrix_info.column;
+                                        $$.node->matrix_info=matrix_info;
+                                    }
+                                }	
+                                							
                             }	
     | STRING_LITERAL		{ $$.node=build_node($1.name_token,NULL,NULL); }
     | '('ID '('')'')'       { $$.node=build_node($2.name_token,NULL,NULL);
@@ -430,7 +464,7 @@ int main(int argc, char *argv[])
         }
         fclose(yyin);
         printf("\nast in pre-order\n");
-        print_ast(root);
+        //print_ast(root);
         
         
         printf("\nSymbol Table \n");
