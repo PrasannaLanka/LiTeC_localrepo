@@ -138,7 +138,9 @@ statement
     | iteration_statement							{ ptr="itr_stmt"; $$.node=build_node(ptr,$1.node,NULL); }
     | tex_statement				  					{ ptr="tex_stmt"; $$.node=build_node(ptr,$1.node,NULL); 
                                                     single_tex_function++; if(single_tex_function==2){ printf("\n More than one TeX Function \n") ; }  }
+
     | jump_statement								{  ptr = "jump_stmt"; $$.node = build_node(ptr,$1.node,NULL); }
+
     ;
 
 selection_statement
