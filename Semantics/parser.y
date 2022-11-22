@@ -65,6 +65,7 @@
 %type <token_node> assignment_expression primary_expression postfix_expression 
 %type <token_node> binary_operator function_body body parameter_list id_list
 %type <token_node> selection_statement iteration_statement tex_statement jump_statement logical_expression logical_operator
+%type <token_node> matrix_assignment matrix_index matrix_value
 
 %type <token_node> tex_data tex_function 
 %start translation_main
@@ -203,7 +204,18 @@ expression
 
 assignment_expression
     : ID ':' primary_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
-    | ID ':' postfix_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
+    | ID ':' postfix_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }                 
+    | matrix_assignment                             {$$.node=$1.node;}
+    ;
+matrix_assignment
+    : ID matrix_index matrix_value                  { $$.node=build_node($1.name_token,$2.node,$3.node); }
+    ;
+
+matrix_index
+    : '[' primary_expression ']' '[' primary_expression ']'  {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node);}
+    ;
+matrix_value
+    :   ':' primary_expression                      {ptr="prm_exp"; $$.node=build_node(ptr,$2.node,NULL);}
     ;
 
 
@@ -301,6 +313,10 @@ postfix_expression
                                                                         if($3.node->data_type==$4.node->data_type)
                                                                         {
                                                                             $$.node->data_type=$3.node->data_type;
+                                                                            if($3.node->isMatrix==1 || $4.node->isMatrix==1)
+                                                                            {
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
@@ -311,6 +327,10 @@ postfix_expression
                                                                         if($3.node->data_type==$4.node->data_type)
                                                                         {
                                                                             $$.node->data_type=$3.node->data_type;
+                                                                            if($3.node->isMatrix==1 || $4.node->isMatrix==1)
+                                                                            {
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
@@ -321,6 +341,10 @@ postfix_expression
                                                                         if($3.node->data_type==$4.node->data_type)
                                                                         {
                                                                             $$.node->data_type=$3.node->data_type;
+                                                                            if($3.node->isMatrix==1 || $4.node->isMatrix==1)
+                                                                            {
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
