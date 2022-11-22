@@ -19,12 +19,8 @@ void count();
 %%
 
 
-
-
+"/*"(.|\n)*"*/"		{/*a C comment*/}
 "declare"   {count() ; return(DECLARE);}
-
-
-
 "bool"			{ count(); return(BOOL); }
 "char"			{ count(); return(CHAR); }
 "int"			{ count(); return(INT);  }
@@ -52,6 +48,7 @@ void count();
 
 
 {D}+			{MC count(); return(CONSTANT_INT); }
+{D}+"."{D}*		{MC count(); return(CONSTANT_DOUBLE); }
 \"(\\.|[^\\"])\"	{MC count(); return(CONSTANT_CHAR); }
 \"(\\.|[^\\"])*\"	{MC count(); return(STRING_LITERAL); }
 
