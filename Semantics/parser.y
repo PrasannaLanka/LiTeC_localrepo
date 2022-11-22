@@ -220,9 +220,28 @@ matrix_index
                                                                 if($5.node->data_type!=int_t)
                                                                 { printf(" ERROR : column index must be int data type at line %d \n",line_number);}      
                                                                 }
+    | '[' postfix_expression ']' '[' postfix_expression']'     { ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node); 
+                                                                if($2.node->data_type!=int_t)
+                                                                { printf(" ERROR : row index must be int data type at line %d \n",line_number);}
+                                                                if($5.node->data_type!=int_t)
+                                                                { printf(" ERROR : column index must be int data type at line %d \n",line_number);}      
+                                                                }     
+    |  '[' primary_expression ']' '[' postfix_expression ']'   {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node); 
+                                                                if($2.node->data_type!=int_t)
+                                                                { printf(" ERROR : row index must be int data type at line %d \n",line_number);}
+                                                                if($5.node->data_type!=int_t)
+                                                                { printf(" ERROR : column index must be int data type at line %d \n",line_number);}      
+                                                                }
+    |  '[' postfix_expression ']'  '[' primary_expression ']'   {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node); 
+                                                                if($2.node->data_type!=int_t)
+                                                                { printf(" ERROR : row index must be int data type at line %d \n",line_number);}
+                                                                if($5.node->data_type!=int_t)
+                                                                { printf(" ERROR : column index must be int data type at line %d \n",line_number);}      
+                                                                }
     ;
 matrix_value
     :   ':' primary_expression                      {ptr="prm_exp"; $$.node=build_node(ptr,$2.node,NULL); $$.node->data_type=$2.node->data_type; }
+    |    ':' postfix_expression                     {ptr="post_exp"; $$.node=build_node(ptr,$2.node,NULL);$$.node->data_type=$2.node->data_type;   }
     ;
 
 
