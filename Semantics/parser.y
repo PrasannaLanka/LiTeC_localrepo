@@ -205,17 +205,24 @@ expression
 assignment_expression
     : ID ':' primary_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
     | ID ':' postfix_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }                 
-    | matrix_assignment                             {$$.node=$1.node;}
+    | matrix_assignment                             {$$.node=$1.node; }
     ;
 matrix_assignment
-    : ID matrix_index matrix_value                  { $$.node=build_node($1.name_token,$2.node,$3.node); }
+    : ID matrix_index matrix_value                  { $$.node=build_node($1.name_token,$2.node,$3.node); 
+                                                      
+                                                     if ( check_matrix_assignment(current_symbol_table ,$$.node)==0){}       }
     ;
 
 matrix_index
-    : '[' primary_expression ']' '[' primary_expression ']'  {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node);}
+    : '[' primary_expression ']' '[' primary_expression ']'  {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node); 
+                                                                if($2.node->data_type!=int_t)
+                                                                { printf(" ERROR : row index must be int data type at line %d \n",line_number);}
+                                                                if($5.node->data_type!=int_t)
+                                                                { printf(" ERROR : column index must be int data type at line %d \n",line_number);}      
+                                                                }
     ;
 matrix_value
-    :   ':' primary_expression                      {ptr="prm_exp"; $$.node=build_node(ptr,$2.node,NULL);}
+    :   ':' primary_expression                      {ptr="prm_exp"; $$.node=build_node(ptr,$2.node,NULL); $$.node->data_type=$2.node->data_type; }
     ;
 
 
