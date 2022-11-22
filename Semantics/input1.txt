@@ -44,10 +44,10 @@
         declare int mat2[3][3] ;
         declare int mat[3][3] ;
         declare int mat1[3][3];
-
+        mat1[1][2] : 78 ;
         y : (mul(x, y));
         
-        mat1 : (+ mat2 mat );
+        mat1 : (+ mat2 ( * mat mat ) );
 
         declare int z;
         loop(z : y; z > 0; z : (- z 1))
