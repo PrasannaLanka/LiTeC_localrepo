@@ -196,7 +196,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
             parent->isMatrix = 1;
             parent->matrix_info.row = left_node->matrix_info.row;
             parent->matrix_info.column = left_node->matrix_info.column;
-            printf("Scalar Multiplication with left variable as the matrix");
+//             printf("Scalar Multiplication with left variable as the matrix");
             return 0;
         }
 
@@ -207,7 +207,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
             parent->isMatrix = 1;
             parent->matrix_info.row = left_node->matrix_info.row;
             parent->matrix_info.column = left_node->matrix_info.column;
-            printf("Scalar Division with left variable as the matrix");
+//             printf("Scalar Division with left variable as the matrix");
             return 0;
         }
 
@@ -223,7 +223,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
             parent->isMatrix = 1;
             parent->matrix_info.row = right_node->matrix_info.row;
             parent->matrix_info.column = right_node->matrix_info.column;
-            printf("Scalar Multiplication with right variable as the matrix");
+//             printf("Scalar Multiplication with right variable as the matrix");
             return 0;
         }
 
@@ -235,7 +235,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
             return 1;
         }
 
-        printf("Only Scalar Multiplication and Division are possible\n");
+        printf("ERROR: Only Scalar Multiplication and Division are possible\n");
         return 1;
     }
     else
@@ -259,7 +259,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
                 parent->isMatrix=1;
                 parent->matrix_info.row=left_node->matrix_info.row;
                 parent->matrix_info.column=left_node->matrix_info.column;
-                printf("Both matrix matched \n ");
+//                 printf("Both matrix matched \n ");
                 return 0;
             }
             
@@ -284,7 +284,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
                 parent->isMatrix = 1;
                 parent->matrix_info.row = left_node->matrix_info.row;
                 parent->matrix_info.column = left_node->matrix_info.column;
-                printf("Both matrix matched \n ");
+//                 printf("Both matrix matched \n ");
                 return 0;
             }
             
@@ -304,7 +304,7 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
                 parent->isMatrix = 1;
                 parent->matrix_info.row = left_node->matrix_info.row;
                 parent->matrix_info.column = right_node->matrix_info.column;
-                printf("The two matrices can be multiplied\n");
+//                 printf("The two matrices can be multiplied\n");
                 return 0;
             }
         }
