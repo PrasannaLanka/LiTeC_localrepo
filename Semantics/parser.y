@@ -148,6 +148,8 @@ selection_statement
     : IF '(' logical_expression ')' compound_statement									{ ptr = "if_"; $$.node = build_node(ptr, $3.node, $5.node); }
     | IF '(' logical_expression ')' compound_statement ELSE compound_statement			{ ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); 
                                                                                           ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
+	| IF '(' logical_expression ')' compound_statement ELSE selection_statement         { ptr = "if_"; ast_node* _if = build_node(ptr, $3.node, $5.node); 
+                                                                                          ptr = "if_else"; $$.node = build_node(ptr, _if, $7.node); }
     ;
 
 iteration_statement
