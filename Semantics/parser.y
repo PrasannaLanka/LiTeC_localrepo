@@ -208,9 +208,9 @@ assignment_expression
 
 
 init_declarator
-    : declarator									{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL); }
-    | declarator ':' primary_expression    			{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); }
-    | declarator ':' postfix_expression				{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); }
+    : declarator						{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL); }
+    | declarator ':' primary_expression    			{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); check_declaration($$.node); }
+    | declarator ':' postfix_expression				{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); check_declaration($$.node); }
     ; 
 
 declarator
