@@ -13,4 +13,3 @@ bash runme.sh <br />
 ./parser example.ltc<br />
 (example can be any executable file)
 
-## File hierarchy ##
