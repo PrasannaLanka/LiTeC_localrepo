@@ -91,6 +91,44 @@ void check_assignment(symbol_table *sym_tbl, ast_node *node)
     }
 }
 
+void check_declaration_helper(symbol_table *sym_tbl, ast_node *node)
+{
+    item_t *item1 =search_in_all_sym_tbl(sym_tbl,node->left->name);
+    item_t *item2 = search_in_all_sym_tbl(sym_tbl,node->right->name);
+    if (item1==NULL || item2==NULL)
+    {
+        printf("ERROR : identifier is undeclared at line %d \n  ",line_number);
+        return;
+    }
+    if (item1->iden_type!=matrix_t || item2->iden_type!=matrix_t)
+    {
+        printf("ERROR : Both are not matrix at line %d \n",line_number);
+        return ;
+    }
+    
+    int mat1_row,mat1_col,mat2_row,mat2_col;
+
+    mat1_row=item1->id_info.matrix_info.row;
+    mat1_col=item1->id_info.matrix_info.column;
+    
+    mat2_row=item2->id_info.matrix_info.row;
+    mat2_col=item2->id_info.matrix_info.column;
+
+    if (mat1_row!=mat2_row)
+    {
+        printf("ERROR : rows are not matching at line  %d ",line_number);
+        return ;
+    }
+    if (mat1_col!=mat2_col)
+    {
+        printf("ERROR : rows are not matching at line  %d ",line_number);
+        return ;
+    }
+    
+    return ;
+    
+}
+
 void check_declaration(ast_node *node)
 {
     if(node->right->data_type == node->left->data_type)
@@ -343,7 +381,7 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
     
     int row=item->id_info.matrix_info.row;
     int col=item->id_info.matrix_info.column;
-    char *index_ptr="matrix_index";
+    char *index_ptr="matrix_index_prm";
     if (strcmp(index_ptr,node->left->name)==0)
     { 
         if (node->left->left->data_type!=int_t || node->left->right->data_type!=int_t)
@@ -363,10 +401,35 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
             printf("ERROR : column is out of bound at line %d \n",line_number);
             return 0;
         }
+        printf("ENtered \n ");
         return 1;
         
         
     }
+    index_ptr="matrix_index";
+    if (strcmp(index_ptr,node->left->name)==0)
+    { 
+        if (node->left->left->data_type!=int_t || node->left->right->data_type!=int_t)
+        {
+            return 0;
+        }
+        return 1;
+        int given_row=atoi(node->left->left->name);
+        int given_col=atoi(node->left->right->name);
+        if (given_row>=row)
+        {
+            printf("ERROR : row is out of bound at line %d \n",line_number);
+            return 0;
+        }
+        if (given_col>=col)
+        {
+            printf("ERROR : column is out of bound at line %d \n",line_number);
+            return 0;
+        }
+        return 1;
+           
+    }
+
     else{printf("ERROR occured in matrix index at line %d \n",line_number);}
     
 
@@ -378,3 +441,7 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
     return 0;
 }
 
+int check_array_assignment(symbol_table *sym_tbl,ast_node *node)
+{
+
+}

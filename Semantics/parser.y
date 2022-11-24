@@ -21,6 +21,7 @@
     id_data_t id_info;
     item_t * item;
     matrix_info_t matrix_info;
+    array_data_t array_info;
     int single_tex_function=0;
     
     void link_p(char *name ,enum data_type_t d );
@@ -65,7 +66,7 @@
 %type <token_node> assignment_expression primary_expression postfix_expression 
 %type <token_node> binary_operator function_body body parameter_list id_list
 %type <token_node> selection_statement iteration_statement tex_statement jump_statement logical_expression logical_operator
-%type <token_node> matrix_assignment matrix_index matrix_value
+%type <token_node> matrix_assignment matrix_index matrix_value array_assignment array_index array_value
 
 %type <token_node> tex_data tex_function 
 %start translation_main
@@ -205,7 +206,8 @@ expression
 assignment_expression
     : ID ':' primary_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }
     | ID ':' postfix_expression						{ ptr="assignment";$$.node=build_node($1.name_token,$1.node,$3.node); check_assignment(current_symbol_table , $$.node); }                 
-    | matrix_assignment                             {$$.node=$1.node; }
+    | matrix_assignment                             { $$.node=$1.node; }
+    | array_assignment                              { $$.node=$1.node; }
     ;
 matrix_assignment
     : ID matrix_index matrix_value                  { $$.node=build_node($1.name_token,$2.node,$3.node); 
@@ -214,7 +216,7 @@ matrix_assignment
     ;
 
 matrix_index
-    : '[' primary_expression ']' '[' primary_expression ']'  {ptr="matrix_index"; $$.node=build_node(ptr,$2.node,$5.node); 
+    : '[' primary_expression ']' '[' primary_expression ']'  {ptr="matrix_index_prm"; $$.node=build_node(ptr,$2.node,$5.node); 
                                                                 if($2.node->data_type!=int_t)
                                                                 { printf(" ERROR : row index must be int data type at line %d \n",line_number);}
                                                                 if($5.node->data_type!=int_t)
@@ -245,9 +247,27 @@ matrix_value
     ;
 
 
+array_assignment
+    : ID array_index array_value                   {$$.node=build_node($1.name_token,$2.node,$3.node);
+                                                    if( check_array_assignment(current_symbol_table,$$.node)==0){}            }
+    ;
+
+array_index 
+    : '[' primary_expression ']'               {ptr="array_index"; $$.node=build_node(ptr,$2.node,NULL); 
+                                                if($2.node->data_type!=int_t)
+                                                  {printf("ERROR : index must be int type at line %d \n",line_number);}
+                                                  }
+    | '[' postfix_expression  ']'              {}
+    ;
+array_value
+    : ':' primary_expression                    {}
+    | ':' postfix_expression                    {}
+    ;
+
+
 init_declarator
     : declarator						{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,NULL); }
-    | declarator ':' primary_expression    			{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); check_declaration($$.node); }
+    | declarator ':' primary_expression    			{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); check_declaration($$.node); if($1.node->isMatrix==1) {check_declaration_helper(current_symbol_table, $$.node);} }
     | declarator ':' postfix_expression				{ ptr="init_declarator";$$.node=build_node(ptr,$1.node,$3.node); check_declaration($$.node); }
     ; 
 
@@ -282,11 +302,22 @@ declarator
                                                       $1.data_type=get_type(data_type); $$.node=build_node($1.name_token ,$4.node ,NULL ); $$.node->data_type=data_type; 
                                                       }							
             
+    |ID '['CONSTANT_INT ']'                         { /*Array declaration*/ 
+                                                                if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , array_t , data_type)==false)
+                                                                { printf("ERROR: Redeclaration of variable at line %d\n",line_number);    } 
+                                                                item=search_in_all_sym_tbl(current_symbol_table, $1.name_token);
+                                                                array_info.array_size=atoi($3.name_token);
+                                                                item->id_info.array_info.array_size=atoi($3.name_token);
+                                                                
+                                                                
+                                                                }
     |ID '['CONSTANT_INT']' '[' CONSTANT_INT']'      { if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , matrix_t , data_type)==false)
                                                             {printf("ERROR: Redeclaration of variable at line %d\n",line_number);}  
                                                             
                                                             $$.node=build_node($1.name_token,$1.node,NULL);   
                                                             $$.node->data_type=data_type;
+
+                                                            $$.node->isMatrix=1;
                                                             item=search_in_all_sym_tbl(current_symbol_table, $1.name_token);
                                                             
                                                             matrix_info.row=atoi($3.name_token);
@@ -355,7 +386,7 @@ postfix_expression
                                                                             $$.node->data_type=$3.node->data_type;
                                                                             if($3.node->isMatrix==1 || $4.node->isMatrix==1)
                                                                             {
-                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations line %d\n",line_number);}
                                                                             }
                                                                         }
                                                                         else
@@ -369,7 +400,7 @@ postfix_expression
                                                                             $$.node->data_type=$3.node->data_type;
                                                                             if($3.node->isMatrix==1 || $4.node->isMatrix==1)
                                                                             {
-                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations \n");}
+                                                                                if(check_matrix($$.node ,$3.node , $4.node)==1){printf("Error in matrix operations line %d\n",line_number);}
                                                                             }
                                                                         }
                                                                         else
@@ -494,7 +525,7 @@ int main(int argc, char *argv[])
       global_sym_tbl->name=(char*)malloc(sizeof(char)*10);
       strcpy(global_sym_tbl->name,ptr);
       current_symbol_table=global_sym_tbl;
-      table_push(current_symbol_table);
+      table_push(current_symbol_table);                        // push the table to stack .
       ptr=(char*)malloc(sizeof(char)*10);
       params=(param*)malloc(sizeof(param));
       parameter_list=(param*)malloc(sizeof(param));
@@ -513,18 +544,20 @@ int main(int argc, char *argv[])
             printf("\nParsing completed \n");
 
         }
+        printf("Semantic analysis completed \n");
         fclose(yyin);
-        printf("\nast in pre-order\n");
+        //printf("\nast in pre-order\n");
         //print_ast(root);
         
         
-        printf("\nSymbol Table \n");
-        print_symbol_table(table_top());
+        //printf("\nSymbol Table \n");
+        //print_symbol_table(table_top());
 
         //check_function_return(root->left->left);
         return 0;
 }
 
+//It is used for linking parameters for functions 
 void link_p(char *name ,enum data_type_t d )
 {
     param* p = (param*)malloc(sizeof(param));

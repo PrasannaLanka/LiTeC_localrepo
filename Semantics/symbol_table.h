@@ -9,12 +9,30 @@
 
 static int table_size=0;
 static int m=0;
-// symbol table is implementated using hashing , each bucket has linked list 
 
-// item is the entry in the symbol table .
+/*
+   symbol table is implementated using hashing , each bucket has linked list 
+   symbol_table structure has 
+        * symbol_table_t which has entries 
+                * [item] [item][item]......
+                    |      |
+                    |      |            
+                  [item] [item]
+                    |      |
+                    |      |
+                  [item] [item]
+
+        * parent which is parent symbol table
+                    parent_symbol_table
+                            |<-------------child1-symbol-table
+                            |
+                            |<-------------child2-symbol-table
+
+   item type is the entry in the symbol table .
+   symbol table  data structures :  p->p->p->p-> ....... and each p pointes to p->  item* -> item*->  item*->......
+*/
 
 
-// symbol table  data structures :  p->p->p->p-> ....... and each p pointes to p->  item* -> item*->  item*->......
 
 
 
