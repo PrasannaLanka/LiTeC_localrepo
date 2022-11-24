@@ -1,72 +1,23 @@
 {[
     MainFile
     ([
-        int fact(int n)
-        {
-            if(n < 2)
-            {
-                return 1;
-            }
-            n : (- n 1);
-            return (* (fact(n)) (+ n 1));
-        }
+        declare int global_variable : 10 ;
     ])
 
-    int work(int p, int x)
-    {
-        declare int y;
-        y : ( + (fact(p)) x) ;
-        return y;
-    }
 
     int main()
     {
-        declare int u : (+ (work(1, 4)) 0);
+        declare int A[2][5]  ;
+        declare int B[5][5] : A ;
+         A: (+ A (+ A A ));
+
+
         return 0;
     }
 
 ]}
 
 
-{[
-    SubFile1
-    ([
-        int mul(int a1 , int a2)
-        {
-            return (* a1 a2);
-        }
-    ])
 
-    int main1()
-    {
-        declare int x : 10;
-        declare int y : 20;
-        declare int mat2[3][3] ;
-        declare int mat[3][3] ;
-        declare int mat1[3][3];
-        mat1[1][2] : 78 ;
-        mat[(+ 0 1 )][(* 1 1 )] : x ; 
-        y : (mul(x, y));
-        
-        mat1 : (+ mat2 ( * mat mat ) );
-
-        declare int z;
-        loop(z : y; z > 0; z : (- z 1))
-        {
-            if(y < 0)
-            {
-                break;
-            }
-            else
-            {
-                x : (* x 2);
-            }
-        }
-
-         y : (fact(12)) ;
-
-        return 0;
-    }
-]}
 
 
