@@ -1,0 +1,29 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+    ])
+
+    int main()
+    {
+        declare int u : (+ x 10);
+        
+        declare int v : 15;
+        
+        declare int i : 20;
+
+        /* Interchanging the positions of if and else statements */
+        else
+        {
+            i : v;
+        }
+        if(x = v)
+        {
+            i : u;
+        }
+
+        return 0;
+    }
+
+]}
