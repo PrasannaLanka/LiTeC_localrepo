@@ -1,0 +1,56 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+
+        int main()
+        {
+            declare int u : (+ x 10);
+            
+            declare int v : 15;
+
+            return 0;
+        }
+    ])
+
+    /* This section after main_section can't be kept empty */
+]}
+
+{[
+    SubFile1
+    ([
+        declare int y : 20;
+
+        declare char c : "x";
+    ])
+
+    int main()
+    {
+        declare int m : (/ x y);
+        
+        declare char b : a;
+
+        return 0;
+    }
+
+]}
+
+{[
+    SubFile2
+    ([
+        declare int z : 30;
+    ])
+
+    int main()
+    {
+        declare int m : (% x (* y z));
+        
+        declare char b : c;
+        
+        c : a;
+
+        return 0;
+    }
+
+]}
