@@ -84,7 +84,9 @@ translation
 	;
 
 translation_init
-	: ID MS_OPEN translation_unit MS_CLOSE {current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$6.node); }
+	: ID MS_OPEN translation_unit MS_CLOSE {data_type=int_t;   if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
+                                                            {printf("ERROR: Redeclaration of variable at line %d\n",line_number);}
+						current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$6.node); }
 	;
 
 translation_unit
