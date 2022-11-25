@@ -481,6 +481,7 @@ primary_expression
                                 } 
                                else
                                {
+			       		check_function_parameters(item->id_info.function_info.parameters,NULL);
                                     $$.node->data_type=item->data_type;
                                 }
                             }
