@@ -178,6 +178,7 @@ tex_data
 
 tex_function
     : TEX_OPEN primary_expression TEX_CLOSE			{ $$.node = $2.node; }
+    | TEX_OPEN postfix_expression TEX_CLOSE         { $$.node = $2.node; }
     ;
 
 jump_statement
@@ -306,8 +307,10 @@ declarator
                                                                 if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , array_t , data_type)==false)
                                                                 { printf("ERROR: Redeclaration of variable at line %d\n",line_number);    } 
                                                                 item=search_in_all_sym_tbl(current_symbol_table, $1.name_token);
-                                                                array_info.array_size=atoi($3.name_token);
-                                                                item->id_info.array_info.array_size=atoi($3.name_token);
+                                                                if(atoi($3.name_token)<0){printf("ERROR : index must be positive at line %d \n",line_number);}
+                                                                else{
+                                                                array_info.array_size=atoi($3.name_token); 
+                                                                item->id_info.array_info.array_size=atoi($3.name_token); }
                                                                 
                                                                 
                                                                 }
@@ -320,8 +323,11 @@ declarator
                                                             $$.node->isMatrix=1;
                                                             item=search_in_all_sym_tbl(current_symbol_table, $1.name_token);
                                                             
-                                                            matrix_info.row=atoi($3.name_token);
-                                                            matrix_info.column=atoi($6.name_token);
+                                                            if(atoi($3.name_token)<0){printf("ERROR :  row index must be positive at line %d \n",line_number); }
+                                                            else {
+                                                            matrix_info.row=atoi($3.name_token); }
+                                                            if(atoi($6.name_token)<0){printf("ERROR :  column index must be positive at line %d \n",line_number); }
+                                                            else{ matrix_info.column=atoi($6.name_token);}
                                                             id_info.matrix_info=matrix_info;
                                                             item->id_info=id_info;
 
