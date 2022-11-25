@@ -1,0 +1,38 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+    ])
+
+    int main()
+    {
+        declare int u : (+ x 10);
+        
+        declare int v : 15;
+        
+        declare int i : 20;
+        
+        /* Declaring else without using if statment */
+        else
+        {
+            i : v;
+        }
+
+        if((- x v) > u)
+        {
+            i : (/ i 2);
+        }
+        else if((+ x v) < u)
+        {
+            i : (% i 2);
+        }
+        else
+        {
+            i : (* i 2);
+        }
+
+        return 0;
+    }
+
+]}
