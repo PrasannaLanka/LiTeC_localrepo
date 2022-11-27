@@ -557,12 +557,12 @@ int main(int argc, char *argv[])
         }
         printf("Semantic analysis completed \n");
         fclose(yyin);
-        //printf("\nast in pre-order\n");
-        //print_ast(root);
+        printf("\nast in pre-order\n");
+        print_ast(root);
         
         
-        //printf("\nSymbol Table \n");
-        //print_symbol_table(table_top());
+        printf("\nGlobal Symbol Table \n");
+        print_symbol_table(table_top());
 
         //check_function_return(root->left->left);
         return 0;
