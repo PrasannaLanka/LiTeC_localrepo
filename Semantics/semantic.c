@@ -54,8 +54,6 @@ void check_function_return(ast_node *node)
         }
     }
 }
-
-// int f = "c";
 void check_assignment(symbol_table *sym_tbl, ast_node *node)
 {
     char *c = "assignment";
@@ -93,7 +91,6 @@ void check_assignment(symbol_table *sym_tbl, ast_node *node)
     }
 }
 
-//int matrix[2][2];  int matrix2[2][1]=matrix    ; we should verify the dimensions of both matrix .
 void check_declaration_helper(symbol_table *sym_tbl, ast_node *node)
 {
     item_t *item1 =search_in_all_sym_tbl(sym_tbl,node->left->name);
@@ -132,7 +129,6 @@ void check_declaration_helper(symbol_table *sym_tbl, ast_node *node)
     
 }
 
-// int matrix[5][5]=5; error 
 void check_declaration(ast_node *node)
 {
     if(node->right->data_type == node->left->data_type)
@@ -228,7 +224,6 @@ void check_function_parameters(param *par, ast_node *node)
     }
 }
 
-// (+ m1[5][5] m2[4][5] )  // error 
 int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
     if(left_node->isMatrix == 1 && right_node->isMatrix == 0)
     {
@@ -357,7 +352,6 @@ int check_matrix(ast_node *parent , ast_node *left_node , ast_node *right_node){
     return 1;
 }
 
-// int m[3][5] ;  m[5][5] = 90 ; //error 
 int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
 {   
     if (node==NULL || node->name==NULL)
@@ -407,7 +401,7 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
             printf("ERROR : column is out of bound at line %d \n",line_number);
             return 0;
         }
-        printf("ENtered \n ");
+        //printf("ENtered \n ");
         return 1;
         
         
@@ -447,7 +441,3 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
     return 0;
 }
 
-int check_array_assignment(symbol_table *sym_tbl,ast_node *node)
-{
-
-}

@@ -1,0 +1,36 @@
+{[
+    MainFile
+    ([
+        int fact(int x)
+        {
+            return 10 ;
+        }
+    ])
+
+    int main()
+    {
+        declare int u : (fact()) ;
+        return 0;
+    }
+
+]}
+{[
+    MainFile
+    ([
+        int fact1(int x)
+        {
+            return 10 ;
+        }
+    ])
+
+    int main()
+    {
+        declare int u : (fact1()) ;
+        return 0;
+    }
+
+]}
+
+
+
+

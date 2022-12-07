@@ -84,9 +84,9 @@ translation
 	;
 
 translation_init
-	: ID MS_OPEN translation_unit MS_CLOSE {data_type=int_t;   if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
+	: ID MS_OPEN translation_unit MS_CLOSE { data_type=int_t;   if (insert_symbol_tbl(current_symbol_table->symbol_table_t ,$1.name_token , variable_t , data_type)==false)
                                                             {printf("ERROR: Redeclaration of variable at line %d\n",line_number);}
-						current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$6.node); }
+                                                current_symbol_table=init_child_symbol_table(current_symbol_table); table_push(current_symbol_table);} translation_unit { ptr = "trans_init"; $$.node = build_node(ptr,$3.node,$6.node); }
 	;
 
 translation_unit
@@ -182,7 +182,7 @@ tex_data
 
 tex_function
     : TEX_OPEN primary_expression TEX_CLOSE			{ $$.node = $2.node; }
-    | TEX_OPEN postfix_expression TEX_CLOSE         { $$.node = $2.node; }
+    | TEX_OPEN postfix_expression TEX_CLOSE			{ $$.node = $2.node; }
     ;
 
 jump_statement
@@ -254,7 +254,7 @@ matrix_value
 
 array_assignment
     : ID array_index array_value                   {$$.node=build_node($1.name_token,$2.node,$3.node);
-                                                    if( check_array_assignment(current_symbol_table,$$.node)==0){}            }
+                                                               }
     ;
 
 array_index 
@@ -483,7 +483,7 @@ primary_expression
                                 } 
                                else
                                {
-			       		check_function_parameters(item->id_info.function_info.parameters,NULL);
+                                    check_function_parameters(item->id_info.function_info.parameters,NULL);
                                     $$.node->data_type=item->data_type;
                                 }
                             }
@@ -557,11 +557,12 @@ int main(int argc, char *argv[])
         }
         printf("Semantic analysis completed \n");
         fclose(yyin);
-        printf("\nast in pre-order\n");
+        printf("\nAST in pre-order\n");
         print_ast(root);
+        printf("\n");
         
         
-        printf("\nGlobal Symbol Table \n");
+        printf("\nSymbol Table \n");
         print_symbol_table(table_top());
 
         //check_function_return(root->left->left);

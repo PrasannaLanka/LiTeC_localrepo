@@ -50,7 +50,9 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, 
         new_item->data_type=data_type;
         strcpy(new_item->name,name);
         new_item->next=NULL;
+        symbol_table_t[key]=new_item;
         
+        return true;
         
     }
     else
@@ -62,9 +64,7 @@ bool insert_symbol_tbl(item_t** symbol_table_t ,char* name , id_type iden_type, 
             strcpy(new_item->name,name);
 
             new_item->next=NULL;
-            symbol_table_t[key]->next=new_item;
-
-            return true;
+            
 
         item_t *head=symbol_table_t[key];
         while (head->next!=NULL)
