@@ -8,6 +8,9 @@
 
     int main()
     {
+        declare int ar[4];
+        ar[4] : 19 ;
+
         declare int A[5][5] ;
         declare int x2:0;
         declare int x5:0;

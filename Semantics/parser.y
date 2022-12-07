@@ -254,19 +254,22 @@ matrix_value
 
 array_assignment
     : ID array_index array_value                   {$$.node=build_node($1.name_token,$2.node,$3.node);
-                                                               }
+                                                      if( check_array_assignment(current_symbol_table,$$.node)   ==0 ){}    }
     ;
 
 array_index 
-    : '[' primary_expression ']'               {ptr="array_index"; $$.node=build_node(ptr,$2.node,NULL); 
+    : '[' primary_expression ']'               {ptr="array_index_prmexp"; $$.node=build_node(ptr,$2.node,NULL); 
                                                 if($2.node->data_type!=int_t)
                                                   {printf("ERROR : index must be int type at line %d \n",line_number);}
                                                   }
-    | '[' postfix_expression  ']'              {}
+    | '[' postfix_expression  ']'              {ptr="array_index_postexp"; $$.node=build_node(ptr,$2.node,NULL); 
+                                                    if($2.node->data_type!=int_t)
+                                                  {printf("ERROR : index must be int type at line %d \n",line_number);}
+                                                    }
     ;
 array_value
-    : ':' primary_expression                    {}
-    | ':' postfix_expression                    {}
+    : ':' primary_expression                    { ptr="array_value"; $$.node=build_node(ptr,$2.node,NULL); $$.node->data_type=$2.node->data_type;  }
+    | ':' postfix_expression                    { ptr="array_value"; $$.node=build_node(ptr,$2.node,NULL); $$.node->data_type=$2.node->data_type;  }
     ;
 
 

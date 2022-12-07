@@ -441,3 +441,42 @@ int check_matrix_assignment(symbol_table *sym_tbl,ast_node *node)
     return 0;
 }
 
+int check_array_assignment(symbol_table *sym_tbl,ast_node *node)
+{
+    //printf("Called \n ");
+    if (node==NULL || node->name==NULL)
+    {
+        printf("Error occured while checking array assignment \n");
+        return 0;  //return 0 means false 
+    }
+    item_t *item=search_in_all_sym_tbl(sym_tbl,node->name);
+    if (item==NULL)
+    {
+        printf("ERROR :%s is not declared at line %d \n",node->name,line_number);
+        return 0;
+    }
+    if (item->iden_type!=array_t)
+    {
+        printf("ERROR : %s is not array at line  %d \n",node->name,line_number);
+        return 0 ; // return 0 means false 
+    }
+    if (item->data_type!=node->right->data_type)
+    {
+        printf("ERROR : incompatible data type assignment to %s at line %d \n",node->name,line_number);
+        return 0;
+    }
+    char *ar_ptr="array_index_prmexp";
+    int array_size=item->id_info.array_info.array_size;
+    if (strcmp(ar_ptr,node->left->name)==0)
+    {
+        if (array_size<=atoi(node->left->left->name))
+        {
+            printf("ERROR : index is out of bound at line %d \n",line_number);
+            return 0;
+        }
+        
+    }
+    
+
+    return 1;
+}
