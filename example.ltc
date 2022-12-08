@@ -1,0 +1,57 @@
+{[
+    MainFile
+    ([
+        int fact(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (fact(n)) (+ n 1));
+        }
+    ])
+
+    declare int A[3][3];
+    declare int B[3][3];
+    declare int C[3][3];
+    declare int i : 0 ;
+    declare int j : 0 ;
+    int main()
+    {
+        loop( i:0 ; i < 3 ; i: (+ i 1) )
+        {
+            loop(j:0; j < 3 ; j: (+ j 1) )
+            {
+                A[i][j] : (* i j );
+                B[i][j] : (+ i j );
+            }
+        }
+
+       
+        TeX{
+           "/document{article}",
+           "/autor{Name}",
+           "/title{TITLE}",
+           "/begin{document}",
+           "/section{MatrixAdd}",
+            [: ( + A B ) :],
+            "/section{MatrixMult}",
+            [:( * A B ):],
+            "/section{MatrixScalar}",
+            [:(* 3 A ):],
+            [:(/ A 5 ):],
+            "/end{document}"
+
+        }
+        
+
+
+
+
+        return 0;
+    }
+
+    
+
+]}
