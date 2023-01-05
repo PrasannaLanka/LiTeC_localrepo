@@ -1,0 +1,34 @@
+[(
+    Main
+    [{
+        declare struct student
+        {
+            char name[50];
+            int id;
+        };
+    }]
+    
+    int main(void)
+    {
+        
+        return 0;
+    }
+)]
+
+[(
+    SF1
+    [{
+        declare struct engineering_student
+        {
+            struct student st;
+            int year;
+            bool graduated;
+        };
+    }]
+    
+    int main(void)
+    {
+        
+        return 0;
+    }
+)]
