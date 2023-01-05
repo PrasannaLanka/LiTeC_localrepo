@@ -1,0 +1,57 @@
+{[
+    MainFile
+    ([
+        int fact(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (fact(n)) (+ n 1));
+        }
+    ])
+
+    int work(int p, int x)
+    {
+        declare int y;
+        y : ( + (fact(p)) x) ;
+        return y;
+    }
+
+    int main()
+    {
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile1
+    ([
+        int mul(int a1 , int a2)
+        {
+            return (* a1 a2);
+        }
+    ])
+
+    int main1()
+    {
+        declare int x : 10;
+        declare int y;
+
+        y : (fact(12));
+        y : (mul(x, y));
+
+        TeX
+        {
+            [:(mul(4, (mul(1, 7)))):],
+            "Hello",
+            [:(fact((mul(x, y)))):]         /* Comma is not there between tex_function and string_literal */
+            "Error"
+        }
+
+        return 0;
+    }
+]}

@@ -1,0 +1,66 @@
+{[
+    MainFile
+    ([
+        int factorial(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (factorial(n)) (+ n 1));
+        }
+    ])
+
+    int work(int p, int x)
+    {
+        declare int y;
+        y : ( + (factorial(p)) x) ;
+        return y;
+    }
+
+    int main()
+    {
+        declare int u : (+ (work(1, 4)) 0);
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile1
+    ([
+        int mul(int a1 , int a2)
+        {
+            return (* a1 a2);
+        }
+    ])
+
+    int main1()
+    {
+        declare int x : 10;
+        declare int y : 20;
+
+        y : (mul(x, y));
+
+        declare int z;
+        loop(z : y; z > 0; z : (- z 1))
+        {
+            if(y < 0)
+            {
+                break;
+            }
+            else
+            {
+                x : (* x 2);
+            }
+        }
+
+         y : (factorial(12)) ;
+
+        return 0;
+    }
+]}
+
+

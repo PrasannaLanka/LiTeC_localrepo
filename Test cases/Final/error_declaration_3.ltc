@@ -1,0 +1,20 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+    ])
+    void foo()
+    {
+        x : (+ x x );
+        return ;
+    }
+
+    int main()
+    {
+        declare int u : (+ x 10);
+        declare char b : (* a (foo()) ) ;       /* Operation on incompatible datatypes */
+        return 0;
+    }
+
+]}

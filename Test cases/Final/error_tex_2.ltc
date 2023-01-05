@@ -1,0 +1,52 @@
+{[
+    MainFile
+    ([
+        int fact(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (fact(n)) (+ n 1));
+        }
+    ])
+
+    int work(int p, int x)
+    {
+        declare int y;
+        y : ( + (fact(p)) x) ;
+        return y;
+    }
+
+    int main()
+    {
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile1
+    ([
+        declare int y;
+    ])
+
+    int main1()
+    {
+        declare int x : 10;
+
+        y : (fact(12));
+
+        TeX
+        {
+            [:(mul(4, (mul(1, 7)))):],          /*Using undeclared function in TeX function*/
+            "Hello",
+            [:(fact((mul(x, y)))):],
+            "Error"
+        }
+
+        return 0;
+    }
+]}

@@ -1,0 +1,16 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+    ])
+
+    int main()
+    {
+        declare int u : 10;
+        declare int u : 20;             /* Redeclaration error */
+
+        return 0;
+    }
+
+]}

@@ -1,0 +1,53 @@
+{[
+    MainFile
+    ([
+	int summ(int n)
+	{
+	    declare int sum : 0;
+	    declare int i : 0;
+	    loop(i : 0; i < n; i : ( + i 1))
+	    {
+		sum : (+ sum i);
+	    }
+	    return sum;
+	}
+    ])
+
+
+    int main()
+    {
+      	declare int newvar : (summ(3));  
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile1
+    ([
+	void swaper(int a1, int a2)
+	{
+	    declare int temp;
+	    temp : a1;
+	    a1 : a2;
+	    a2 : temp;
+	    return;
+	}
+
+        
+    ])
+
+    int main()
+    {
+	declare int u : 5;
+	declare int new : (summ(u));
+	(swaper(u, new));
+	return 0;
+
+    }
+]}
+
+
+
+

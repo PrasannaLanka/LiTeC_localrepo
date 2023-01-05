@@ -1,0 +1,43 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+        declare char a : "b";
+    ])
+
+    int main()
+    {
+        declare int u : (+ x 10);
+        
+        declare int v : 15;
+
+        return 0;
+    }
+
+    SubFile1                    /* We can't declare two main_sections in the same subfile */
+    ([
+        declare int y : 20;
+
+        declare char c : "x";
+    ])
+
+]}
+
+{[
+    SubFile2
+    ([
+        declare int z : 30;
+    ])
+
+    int main()
+    {
+        declare int m : (% x (* y z));
+        
+        declare char b : c;
+        
+        c : a;
+
+        return 0;
+    }
+
+]}

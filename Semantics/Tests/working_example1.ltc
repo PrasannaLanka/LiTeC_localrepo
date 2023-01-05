@@ -1,0 +1,90 @@
+{[
+    MainFile
+    ([
+        int fact(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (fact(n)) (+ n 1));
+        }
+    ])
+
+    declare int A[3][3];
+    declare int B[3][3];
+    declare int C[3][3];
+    declare int i : 0 ;
+    declare int j : 0 ;
+    int main()
+    {
+        loop( i:0 ; i < 3 ; i: (+ i 1) )
+        {
+            loop(j:0; j < 3 ; j: (+ j 1) )
+            {
+                A[i][j] : (* i j );
+                B[i][j] : (+ i j );
+            }
+        }
+
+       
+        TeX{
+           "/document{article}",
+           "/autor{Name}",
+           "/title{TITLE}",
+           "/begin{document}",
+           "/section{MatrixAdd}",
+            [: ( + A B ) :],
+            "/section{MatrixMult}",
+            [:( * A B ):],
+            "/section{MatrixScalar}",
+            [:(* 3 A ):],
+            [:(/ A 5 ):],
+            "/end{document}"
+
+        }
+        
+
+
+
+
+        return 0;
+    }
+
+    
+
+]}
+{[
+    Subfile1
+    ([
+        declare int global_variable : 10 ;
+    ])
+
+
+    int main()
+    {
+        declare int ar[4];
+        ar[3] : 19 ;
+
+        declare int A[5][5] ;
+        declare int x2:0;
+        declare int x5:0;
+        loop(x2: 0; x2<10 ;x2:(+ x2 1) )
+        {
+            loop(x5: 0 ; x5<10 ; x5 : (+ x5 1) )
+            {
+                A[x2][x5]: (+ x2 x5 ) ;
+                
+            }
+        }
+        A[(+ 1 0)][0] : 0;
+        declare int B[5][5] : A ;
+        declare int C[5][5];
+        A: (+ A (* A A ));
+        declare int array[5];
+
+        return 0;
+    }
+
+]}

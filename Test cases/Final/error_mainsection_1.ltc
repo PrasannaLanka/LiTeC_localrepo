@@ -1,0 +1,55 @@
+{[
+    MainFile
+    ([
+        declare int x : 10;
+
+        int mul(int x, int y)
+        {
+            return (* x y);
+        }
+    ])
+
+    int main()
+    {
+        declare int u : (+ x 10);
+        
+        declare int v : 15;
+
+        return 0;
+    }
+
+]}
+
+{[
+    SubFile1
+    ([
+        declare int y : 20;
+    ])
+
+    int main()
+    {
+        declare int m : (mul(x, y));
+        m : (foo());                    /* foo() is declared in the next Subfile */
+        return 0;
+    }
+
+]}
+
+{[
+    SubFile2
+    ([
+        declare int z : (mul(4, 7));
+        int foo()
+        {
+            return 10;
+        }
+    ])
+
+    int main()
+    {
+        declare int m : (% x (mul(y, z)));
+
+        return 0;
+    }
+
+]}

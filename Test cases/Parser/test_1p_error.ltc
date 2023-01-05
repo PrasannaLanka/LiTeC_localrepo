@@ -1,0 +1,37 @@
+[(
+    Main
+    [{
+    	  /* Keyword declare is not used in the declaration of x */
+          int x : 4000;
+    }]
+    
+    int main(void)
+    {
+    	/* Keyword declare is not used in the declaration of y */
+        int y : 2020;
+
+        y : ( + 100 44 );
+        y : ( * ( / y 10 ) 7 );
+
+        return 0;
+    }
+)]
+
+[(
+    SF1
+    [{
+    	/* Keyword declare is not used in the declaration of a */
+        int a : 8000;
+    }]
+
+    int main()
+    {
+    	/* Keyword declare is not used in the declaration of b */
+        int b : 2022;
+
+        a : ( - a ( % b 1000 ) );
+        b : ( * ( + ( / ( - ( % b 100 ) 20 ) 1 ) 100 ) 4 );
+        
+        return 0;
+    }
+)]

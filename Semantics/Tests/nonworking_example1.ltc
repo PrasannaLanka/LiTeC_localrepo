@@ -1,0 +1,114 @@
+{[
+    MainFile
+    ([
+        int factorial(int n)
+        {
+            if(n < 2)
+            {
+                return 1;
+            }
+            n : (- n 1);
+            return (* (factorial(n)) (+ n 1));
+        }
+    ])
+
+    int work(int p, int x)
+    {
+        declare int y;
+        y : ( + (factorial(p)) x) ;
+        return y;
+    }
+
+    int main()
+    {
+        declare int u : (+ (work(1, 4)) 0);
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile1
+    ([
+        int mul(int a1 , int a2)
+        {
+            return (* a1 a2);
+        }
+    ])
+
+    int main()
+    {
+        declare int x : 10;
+        declare int y : 20;
+
+        y : (mul(x, y));
+
+        declare int z;
+        loop(z : y; z > 0; z : (- z 1))
+        {
+            if(y < 0)
+            {
+                break;
+            }
+            else
+            {
+                x : (* x 2);
+            }
+        }
+
+         y : (factorial(12,13)) ;
+
+        return 0;
+    }
+]}
+
+{[
+    SubFile2
+    ([
+	int summ(int n)
+	{
+	    declare int sum : 0;
+	    declare int i : 0;
+	    loop(i : 0; i < n; i : ( + i 1))
+	    {
+		sum : (+ sum "i");
+	    }
+	    return sum;
+	}
+    ])
+
+
+    int main()
+    {
+      	declare char newvar : (summ(3));  
+        return 0;
+    }
+
+]}
+
+
+{[
+    SubFile3
+    ([
+	void swaper(int a1, int a2)
+	{
+	    declare int temp;
+	    temp : a1;
+	    a1 : a2;
+	    a2 : temp;
+	    return;
+	}
+
+        
+    ])
+
+    int main()
+    {
+	declare int u : 5;
+	declare int new : (summ(u));
+	(swaper(u, new));
+	return 0;
+
+    }
+]}

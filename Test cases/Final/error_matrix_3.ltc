@@ -1,0 +1,26 @@
+{[
+    MainFile
+    ([
+        declare int globa_variable : 10;
+    ])
+
+
+    int main()
+    {
+        declare int A[5][5];
+        declare int i:0;
+        declare int j:0;
+        
+        declare int B[5][5] : A;
+        B[10][1] : (* 0 0 );
+        A[0][6] : globa_variable;           /* Out of bound */
+        A : (+ A B);
+        B : (* B A);
+        A : (* 4 A);
+        B : (/ B 7);
+        A : (- (+ A B) (/ (* B A) 1));
+
+        return 0;
+    }
+
+]}
